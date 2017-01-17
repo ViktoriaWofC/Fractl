@@ -50,6 +50,9 @@ namespace Fract
             try {
                 bitEnd = new Bitmap(Image.FromFile(fileName));
                 pictureBoxEndImage.Image = bitEnd;
+
+                DecompressFunc();
+
             }
             catch (System.IO.FileNotFoundException ec)
             {
@@ -58,11 +61,32 @@ namespace Fract
                 MessageBoxButtons buttons = MessageBoxButtons.OK;
                 DialogResult result;
                 result = MessageBox.Show(message, caption, buttons);
-                if (result == System.Windows.Forms.DialogResult.OK)
-                {
-                    this.Close();
-                }
+                //if (result == System.Windows.Forms.DialogResult.OK)
+                //{
+                //    this.Close();
+                //}
             }
+        }              
+
+        public void DecompressFunc()
+        {
+
+
+
+            String str = "sdf";
+            labelDecompressCharacteristic.Text = str;
+        }
+
+        private void buttonCompress_Click(object sender, EventArgs e)
+        {
+            CompressFunc();
+        }
+
+        public void CompressFunc()
+        {
+
+            String str = "!!!";
+            labelCompressCharacteristic.Text = str;
         }
 
         private void buttonOpenImage_Click(object sender, EventArgs e)

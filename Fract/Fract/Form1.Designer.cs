@@ -47,6 +47,8 @@
             this.pictureBoxEndImage = new System.Windows.Forms.PictureBox();
             this.textBoxTest = new System.Windows.Forms.TextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.labelCompressCharacteristic = new System.Windows.Forms.Label();
+            this.labelDecompressCharacteristic = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).BeginInit();
@@ -81,6 +83,7 @@
             this.buttonCompress.TabIndex = 5;
             this.buttonCompress.Text = "Компрессия";
             this.buttonCompress.UseVisualStyleBackColor = true;
+            this.buttonCompress.Click += new System.EventHandler(this.buttonCompress_Click);
             // 
             // buttonOpenImage
             // 
@@ -260,7 +263,7 @@
             // 
             // textBoxTest
             // 
-            this.textBoxTest.Location = new System.Drawing.Point(31, 325);
+            this.textBoxTest.Location = new System.Drawing.Point(261, 325);
             this.textBoxTest.Multiline = true;
             this.textBoxTest.Name = "textBoxTest";
             this.textBoxTest.Size = new System.Drawing.Size(353, 41);
@@ -270,11 +273,31 @@
             // 
             this.openFileDialog.FileName = "openFileDialog1";
             // 
+            // labelCompressCharacteristic
+            // 
+            this.labelCompressCharacteristic.AutoSize = true;
+            this.labelCompressCharacteristic.Location = new System.Drawing.Point(49, 325);
+            this.labelCompressCharacteristic.Name = "labelCompressCharacteristic";
+            this.labelCompressCharacteristic.Size = new System.Drawing.Size(35, 13);
+            this.labelCompressCharacteristic.TabIndex = 4;
+            this.labelCompressCharacteristic.Text = "label5";
+            // 
+            // labelDecompressCharacteristic
+            // 
+            this.labelDecompressCharacteristic.AutoSize = true;
+            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(655, 325);
+            this.labelDecompressCharacteristic.Name = "labelDecompressCharacteristic";
+            this.labelDecompressCharacteristic.Size = new System.Drawing.Size(35, 13);
+            this.labelDecompressCharacteristic.TabIndex = 5;
+            this.labelDecompressCharacteristic.Text = "label5";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 378);
+            this.Controls.Add(this.labelDecompressCharacteristic);
+            this.Controls.Add(this.labelCompressCharacteristic);
             this.Controls.Add(this.textBoxTest);
             this.Controls.Add(this.panelEndImage);
             this.Controls.Add(this.panelStartImage);
@@ -323,6 +346,8 @@
         private System.Windows.Forms.PictureBox pictureBoxStartImage;
         private System.Windows.Forms.PictureBox pictureBoxEndImage;
         private System.Windows.Forms.OpenFileDialog openFileDialog;
+        private System.Windows.Forms.Label labelCompressCharacteristic;
+        private System.Windows.Forms.Label labelDecompressCharacteristic;
     }
 }
 
