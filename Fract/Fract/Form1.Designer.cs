@@ -42,10 +42,10 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.panelStartImage = new System.Windows.Forms.Panel();
-            this.panelEndImage = new System.Windows.Forms.Panel();
-            this.textBoxTest = new System.Windows.Forms.TextBox();
             this.pictureBoxStartImage = new System.Windows.Forms.PictureBox();
+            this.panelEndImage = new System.Windows.Forms.Panel();
             this.pictureBoxEndImage = new System.Windows.Forms.PictureBox();
+            this.textBoxTest = new System.Windows.Forms.TextBox();
             this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
@@ -53,8 +53,8 @@
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberIteracDecompr)).BeginInit();
             this.panelStartImage.SuspendLayout();
-            this.panelEndImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStartImage)).BeginInit();
+            this.panelEndImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).BeginInit();
             this.SuspendLayout();
             // 
@@ -166,6 +166,7 @@
             this.buttonDecompress.TabIndex = 6;
             this.buttonDecompress.Text = "Декомпрессия";
             this.buttonDecompress.UseVisualStyleBackColor = true;
+            this.buttonDecompress.Click += new System.EventHandler(this.buttonDecompress_Click);
             // 
             // comboBoxBaseImage
             // 
@@ -230,23 +231,6 @@
             this.panelStartImage.Size = new System.Drawing.Size(338, 140);
             this.panelStartImage.TabIndex = 2;
             // 
-            // panelEndImage
-            // 
-            this.panelEndImage.AutoScroll = true;
-            this.panelEndImage.Controls.Add(this.pictureBoxEndImage);
-            this.panelEndImage.Location = new System.Drawing.Point(467, 161);
-            this.panelEndImage.Name = "panelEndImage";
-            this.panelEndImage.Size = new System.Drawing.Size(338, 140);
-            this.panelEndImage.TabIndex = 3;
-            // 
-            // textBoxTest
-            // 
-            this.textBoxTest.Location = new System.Drawing.Point(31, 325);
-            this.textBoxTest.Multiline = true;
-            this.textBoxTest.Name = "textBoxTest";
-            this.textBoxTest.Size = new System.Drawing.Size(353, 41);
-            this.textBoxTest.TabIndex = 0;
-            // 
             // pictureBoxStartImage
             // 
             this.pictureBoxStartImage.Location = new System.Drawing.Point(3, 3);
@@ -256,13 +240,31 @@
             this.pictureBoxStartImage.TabIndex = 0;
             this.pictureBoxStartImage.TabStop = false;
             // 
+            // panelEndImage
+            // 
+            this.panelEndImage.AutoScroll = true;
+            this.panelEndImage.Controls.Add(this.pictureBoxEndImage);
+            this.panelEndImage.Location = new System.Drawing.Point(467, 161);
+            this.panelEndImage.Name = "panelEndImage";
+            this.panelEndImage.Size = new System.Drawing.Size(338, 140);
+            this.panelEndImage.TabIndex = 3;
+            // 
             // pictureBoxEndImage
             // 
             this.pictureBoxEndImage.Location = new System.Drawing.Point(3, 3);
             this.pictureBoxEndImage.Name = "pictureBoxEndImage";
             this.pictureBoxEndImage.Size = new System.Drawing.Size(311, 109);
+            this.pictureBoxEndImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBoxEndImage.TabIndex = 1;
             this.pictureBoxEndImage.TabStop = false;
+            // 
+            // textBoxTest
+            // 
+            this.textBoxTest.Location = new System.Drawing.Point(31, 325);
+            this.textBoxTest.Multiline = true;
+            this.textBoxTest.Name = "textBoxTest";
+            this.textBoxTest.Size = new System.Drawing.Size(353, 41);
+            this.textBoxTest.TabIndex = 0;
             // 
             // openFileDialog
             // 
@@ -291,8 +293,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numberIteracDecompr)).EndInit();
             this.panelStartImage.ResumeLayout(false);
             this.panelStartImage.PerformLayout();
-            this.panelEndImage.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStartImage)).EndInit();
+            this.panelEndImage.ResumeLayout(false);
+            this.panelEndImage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

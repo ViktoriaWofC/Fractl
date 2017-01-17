@@ -12,11 +12,57 @@ namespace Fract
 {
     public partial class Form1 : Form
     {
-        Bitmap bit;
+        Bitmap bitStart, bitEnd;
 
         public Form1()
         {
             InitializeComponent();
+        }
+
+        private void buttonDecompress_Click(object sender, EventArgs e)
+        {
+            String fileName = Environment.CurrentDirectory;
+            switch (Convert.ToString(comboBoxBaseImage.SelectedItem))
+            {
+                case "Белое":
+                    {
+                        fileName += @"\baseWhite.jpg";
+                    }
+                    break;
+                case "Черное":
+                    {
+                        fileName += @"\baseBlack.jpg";
+                    }
+                    break;
+                case "Клеточка большая":
+                    {
+                        fileName += @"\baseCletBig.jpg";
+                    }
+                    break;
+                case "Клеточка маленькая":
+                    {
+                        fileName += @"\baseCletLittle.jpg";
+                    }
+                    break;
+
+            }
+
+            try {
+                bitEnd = new Bitmap(Image.FromFile(fileName));
+                pictureBoxEndImage.Image = bitEnd;
+            }
+            catch (System.IO.FileNotFoundException ec)
+            {
+                string message = "Выберите базовое изображение";
+                string caption = "Error base image";
+                MessageBoxButtons buttons = MessageBoxButtons.OK;
+                DialogResult result;
+                result = MessageBox.Show(message, caption, buttons);
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    this.Close();
+                }
+            }
         }
 
         private void buttonOpenImage_Click(object sender, EventArgs e)
@@ -24,8 +70,8 @@ namespace Fract
             if(openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 String fileName = openFileDialog.FileName;
-                bit = new Bitmap(Image.FromFile(fileName));
-                pictureBoxStartImage.Image = bit;
+                bitStart = new Bitmap(Image.FromFile(fileName));
+                pictureBoxStartImage.Image = bitStart;                
             }
         }
     }
