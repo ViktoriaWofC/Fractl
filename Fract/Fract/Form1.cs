@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -95,6 +96,29 @@ namespace Fract
             pictureBoxEndImage.Image = bitEnd;
 
             labelDecompressCharacteristic.Text = s;
+
+
+            // чтение из файла
+            string lon;
+            
+
+            //File.WriteAllLines(@"bat.txt", stringList);
+            lon = File.ReadAllText(@"bat.txt");
+            //using (FileStream fstream = File.OpenRead(@"C:\SomeDir\noname\note.txt"))
+            //{
+            //    // преобразуем строку в байты
+            //    byte[] array = new byte[fstream.Length];
+            //    // считываем данные
+            //    fstream.Read(array, 0, array.Length);
+            //    // декодируем байты в строку
+            //    string textFromFile = System.Text.Encoding.Default.GetString(array);
+            //    Console.WriteLine("Текст из файла: {0}", textFromFile);
+            //}
+            using (BinaryReader reader = new BinaryReader(File.Open(@"bat.bat", FileMode.Open)))
+            {
+                lon = reader.ReadString();
+            }
+
         }
 
         private void buttonCompress_Click(object sender, EventArgs e)
@@ -141,6 +165,40 @@ namespace Fract
 
             String str = "!!!";
             labelCompressCharacteristic.Text = s;
+
+            ///
+            long[] longList = new long[rangList.Count];
+            string[] stringList = new string[rangList.Count];
+            string lon = "";
+            int ii = 0;
+            long d = 0;
+            foreach (Rang rang in rangList)
+            {
+                //преобразование из Rang в число long
+                d = Convert.ToInt32(rang.getBright()) + (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                //longList.add(d);
+                longList[ii] = d;
+                stringList[ii] = Convert.ToString(d);
+                lon += d + " ";
+                ii++;
+            }
+
+            //запись в файл
+            //File.WriteAllLines(@"bat.txt", stringList);
+            File.WriteAllText(@"bat.txt", lon);
+            //using (FileStream fstream = new FileStream(@"bat.txt", FileMode.Create))
+            //{
+            //    // преобразуем строку в байты
+            //    byte[] array = System.Text.Encoding.Default.GetBytes(lon);
+            //    // запись массива байтов в файл
+            //    fstream.Write(array, 0, array.Length);
+            //    //Console.WriteLine("Текст записан в файл");
+            //}
+            using (BinaryWriter writer = new BinaryWriter(File.Open(@"bat.bat", FileMode.Create)))
+            {
+                writer.Write(lon);
+            }
+            
         }
 
 
@@ -150,9 +208,11 @@ namespace Fract
         {
             String test = "";
 
+
             long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
             //преобразование из Rang в число long
             long d = 0;
+            d = 0;
             //d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
             d = br+ (y0<<10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51) ;
             test +="" + d;
@@ -166,6 +226,28 @@ namespace Fract
 
             test += Environment.NewLine;
 
+            d = Convert.ToInt32(rangList[0].getBright())
+                + (rangList[100].getY0() << 10)
+                + (rangList[100].getX0() << 21)
+                + (rangList[100].getK() << 25)
+                + (rangList[100].getAfinn() << 29)
+                + (rangList[100].getY() << 40)
+                + (rangList[100].getX() << 51);
+
+            test = "start " + Convert.ToInt32(rangList[0].getBright()) + " "
+                + (rangList[100].getY0()) + " "
+                + (rangList[100].getX0()) + " "
+                + (rangList[100].getK()) + " "
+                + (rangList[100].getAfinn()) + " "
+                + (rangList[100].getY()) + " "
+                + (rangList[100].getX());
+
+            test += Environment.NewLine;
+            test += "long " + d;
+            test += Environment.NewLine;
+
+
+
             long i1 = Convert.ToInt32(d >> 51);
             long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
             long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
@@ -173,7 +255,7 @@ namespace Fract
             long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
             long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
             long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
-            test += " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
+            test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
             textBoxTest.Text = test;
         }
 
