@@ -208,54 +208,68 @@ namespace Fract
         {
             String test = "";
 
+            //тест сжатия домен блока до рангового
+            Bitmap bitTest = bitStart;
+            //int hh = 32, z = hh / 2;
+            int hh = bitTest.Width, z = hh / 2;
+            int[,] domenBig = new int[hh, hh];
+            int[,] domen = new int[z, z];
+            Color color;
 
-            long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
-            //преобразование из Rang в число long
-            long d = 0;
-            d = 0;
-            //d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
-            d = br+ (y0<<10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51) ;
-            test +="" + d;
-            test += " ! \n" + (d >> 51) 
-                    + " " + ((d - (x << 51)) >> 40)
-                    + " " + ((d - (x << 51) - (y << 40)) >> 29) 
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29)) >> 25)
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25)) >> 21) 
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21)) >> 10) 
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21) - (y0 << 10)));
+            for (int i = 0; i < hh; i++)
+                for (int j = 0; j < hh; j++)
+                {
+                    domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                }
 
-            test += Environment.NewLine;
+            int x = bitTest.Width - z;
+            int y = bitTest.Height - z;
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
+                {
+                    color = Color.FromArgb(domenBig[i, j]);
+                    bitTest.SetPixel(x+ j, y + i, color);
+                }
 
-            d = Convert.ToInt32(rangList[0].getBright())
-                + (rangList[100].getY0() << 10)
-                + (rangList[100].getX0() << 21)
-                + (rangList[100].getK() << 25)
-                + (rangList[100].getAfinn() << 29)
-                + (rangList[100].getY() << 40)
-                + (rangList[100].getX() << 51);
+            pictureBoxEndImage.Image = bitTest;
 
-            test = "start " + Convert.ToInt32(rangList[0].getBright()) + " "
-                + (rangList[100].getY0()) + " "
-                + (rangList[100].getX0()) + " "
-                + (rangList[100].getK()) + " "
-                + (rangList[100].getAfinn()) + " "
-                + (rangList[100].getY()) + " "
-                + (rangList[100].getX());
+            /*int d, sum,k = 1;
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
+                {
+                    sum = 0;
+                    //sumR = 0; sumG = 0; sumB = 0;
+                    for (int ii = 0; ii < 2 * k; ii++)
+                        for (int jj = 0; jj < 2 * k; jj++)
+                        {
+                            sum += domenBig[i * 2 * k + ii, j * 2 * k + jj];
 
-            test += Environment.NewLine;
-            test += "long " + d;
-            test += Environment.NewLine;
+                            //color = new Color(domenBig[i * 2 * k + ii][j * 2 * k + jj]);
+                            //sum += color.getRed();
 
 
+                        }
+                    d = (int)(sum / Math.Pow(4, k));
 
-            long i1 = Convert.ToInt32(d >> 51);
-            long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
-            long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
-            long i4 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29)) >> 25);
-            long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
-            long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
-            long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
-            test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
+                    //Color color = new Color(d);
+                    //dR = color.getRed();
+                    //dG = color.getGreen();
+                    //dB = color.getBlue();
+                    //int grey = (int) (0.3*dR + 0.59*dG + 0.11 *dB);
+                    //d = grey + (grey << 8) + (grey << 16);
+
+                    //color = new Color(d,d,d);
+                    //domen[i][j] = color.getRGB();
+                    domen[i, j] = d;
+
+                    //dR = (int) (sumR/Math.pow(4,k));
+                    //dG = (int) (sumG/Math.pow(4,k));
+                    //dB = (int) (sumB/Math.pow(4,k));
+                    //domen[i][j] = dB + (dG << 8) + (dR << 16);
+                }*/
+
+
+
             textBoxTest.Text = test;
         }
 
@@ -284,6 +298,53 @@ namespace Fract
         //test += " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
         //    textBoxTest.Text = test;
 
+        //long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
+        ////преобразование из Rang в число long
+        //long d = 0;
+        //d = 0;
+        //    //d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
+        //    d = br+ (y0<<10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51) ;
+        //    test +="" + d;
+        //    test += " ! \n" + (d >> 51) 
+        //            + " " + ((d - (x << 51)) >> 40)
+        //            + " " + ((d - (x << 51) - (y << 40)) >> 29) 
+        //            + " " + ((d - (x << 51) - (y << 40) - (af << 29)) >> 25)
+        //            + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25)) >> 21) 
+        //            + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21)) >> 10) 
+        //            + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21) - (y0 << 10)));
+
+        //    test += Environment.NewLine;
+
+        //    d = Convert.ToInt32(rangList[0].getBright())
+        //        + (rangList[100].getY0() << 10)
+        //        + (rangList[100].getX0() << 21)
+        //        + (rangList[100].getK() << 25)
+        //        + (rangList[100].getAfinn() << 29)
+        //        + (rangList[100].getY() << 40)
+        //        + (rangList[100].getX() << 51);
+
+        //    test = "start " + Convert.ToInt32(rangList[0].getBright()) + " "
+        //        + (rangList[100].getY0()) + " "
+        //        + (rangList[100].getX0()) + " "
+        //        + (rangList[100].getK()) + " "
+        //        + (rangList[100].getAfinn()) + " "
+        //        + (rangList[100].getY()) + " "
+        //        + (rangList[100].getX());
+
+        //    test += Environment.NewLine;
+        //    test += "long " + d;
+        //    test += Environment.NewLine;
+
+
+
+        //    long i1 = Convert.ToInt32(d >> 51);
+        //long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
+        //long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
+        //long i4 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29)) >> 25);
+        //long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
+        //long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
+        //long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
+        //test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
 
         private void buttonOpenImage_Click(object sender, EventArgs e)
         {
