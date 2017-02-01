@@ -198,6 +198,9 @@ namespace Fract
             {
                 writer.Write(lon);
             }
+
+            //
+            compress.SaveSumCompare();
             
         }
 
@@ -212,63 +215,36 @@ namespace Fract
             Bitmap bitTest = bitStart;
             //int hh = 32, z = hh / 2;
             int hh = bitTest.Width, z = hh / 2;
-            int[,] domenBig = new int[hh, hh];
+            int[,] domenBig = new int[z, z];
             int[,] domen = new int[z, z];
             Color color;
 
-            for (int i = 0; i < hh; i++)
-                for (int j = 0; j < hh; j++)
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
                 {
-                    domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                    domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
                 }
 
             int x = bitTest.Width - z;
             int y = bitTest.Height - z;
+            //for (int i = 0; i < z; i++)
+            //    for (int j = 0; j < z; j++)
+            //    {
+            //        color = Color.FromArgb(domenBig[i, j]);
+            //        bitTest.SetPixel(x+ j, y + i, color);
+            //    }
+            //pictureBoxEndImage.Image = bitTest;
+
+            //domenBig = setAfinnInt(domenBig,5); 
+
             for (int i = 0; i < z; i++)
                 for (int j = 0; j < z; j++)
                 {
                     color = Color.FromArgb(domenBig[i, j]);
-                    bitTest.SetPixel(x+ j, y + i, color);
+                    bitTest.SetPixel(x + j, y + i, color);
                 }
 
             pictureBoxEndImage.Image = bitTest;
-
-            /*int d, sum,k = 1;
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
-                {
-                    sum = 0;
-                    //sumR = 0; sumG = 0; sumB = 0;
-                    for (int ii = 0; ii < 2 * k; ii++)
-                        for (int jj = 0; jj < 2 * k; jj++)
-                        {
-                            sum += domenBig[i * 2 * k + ii, j * 2 * k + jj];
-
-                            //color = new Color(domenBig[i * 2 * k + ii][j * 2 * k + jj]);
-                            //sum += color.getRed();
-
-
-                        }
-                    d = (int)(sum / Math.Pow(4, k));
-
-                    //Color color = new Color(d);
-                    //dR = color.getRed();
-                    //dG = color.getGreen();
-                    //dB = color.getBlue();
-                    //int grey = (int) (0.3*dR + 0.59*dG + 0.11 *dB);
-                    //d = grey + (grey << 8) + (grey << 16);
-
-                    //color = new Color(d,d,d);
-                    //domen[i][j] = color.getRGB();
-                    domen[i, j] = d;
-
-                    //dR = (int) (sumR/Math.pow(4,k));
-                    //dG = (int) (sumG/Math.pow(4,k));
-                    //dB = (int) (sumB/Math.pow(4,k));
-                    //domen[i][j] = dB + (dG << 8) + (dR << 16);
-                }*/
-
-
 
             textBoxTest.Text = test;
         }

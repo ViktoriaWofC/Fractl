@@ -47,13 +47,14 @@ namespace Fract
                             //int f = color.getRed();
                             //domenBig[i][j] = f;//bi.getRGB(rang.getX() + j, rang.getY() + i);
                             //domenBig[i][j] = bi.getRGB(rang.getX() + j, rang.getY() + i);
+                            //domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
                             domenBig[i, j] = bi.GetPixel(rang.getX() + j, rang.getY() + i).ToArgb(); 
                         }
 
                     int d = 0, sum = 0;
                     //и уменьшаем его усреднением
-                    for (int i = 0; i < r; i++)
-                        for (int j = 0; j < r; j++)
+                    for (int i = 0; i < r; i = i + 2 * rang.getK()) //i++)
+                        for (int j = 0; j < r; j = j + 2 * rang.getK()) //j++)
                         {
                             sum = 0;
                             for (int ii = 0; ii < 2 * rang.getK(); ii++)
@@ -61,7 +62,9 @@ namespace Fract
                                 {
                                     //color = new Color(domenBig[i * 2 * rang.getK() + ii][j * 2 * rang.getK() + jj]);
                                     //sum += color.getRed();
-                                    sum += domenBig[i * 2 * rang.getK() + ii, j * 2 * rang.getK() + jj];
+                                    //sum += domenBig[i * 2 * rang.getK() + ii, j * 2 * rang.getK() + jj];
+                                    color = Color.FromArgb(domenBig[i + ii, j + jj]);
+                                    sum += color.R;
                                 }
 
 
@@ -69,10 +72,13 @@ namespace Fract
 
                             //color = new Color(d,d,d);
                             //domen[i][j] = color.getRGB();
-                            domen[i, j] = d;
+                            //domen[i, j] = d;
+
+                            color = Color.FromArgb(d, d, d);
+                            domen[i / (2 * rang.getK()), j / (2 * rang.getK())] = color.ToArgb();
                         }
 
-                    domen = setAfinnInt(domen, rang.getK());
+                    domen = setAfinnInt(domen, rang.getAfinn());
 
                     //преобразование яркости
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,10 @@ namespace Fract
         private int m;//количество блоков по ширине
         private double epsilon;//коэффициент компрессии?
 
+        //
+        private String sss;
+        private int jhgjhg = 0;
+
         public Compress(int[,] pix, int r, double epsilon)
         {
             this.pix = pix;
@@ -27,6 +32,8 @@ namespace Fract
             this.m = width / r;
             this.n = height / r;
             this.epsilon = epsilon;
+
+            this.sss = "";
         }
 
         public List<Rang> getRangList()
@@ -88,48 +95,38 @@ namespace Fract
                     Color color;// = new Color(domen[i][j]);
                     int sumR, sumG, sumB, dR, dG, dB;
                     //
-                    for (int i = 0; i < z; i++)
-                        for (int j = 0; j < z; j++)
+                    for (int i = 0; i < z; i = i+2* k)//i++)
+                        for (int j = 0; j < z; j = j+2* k)//j++)
                         {
                             sum = 0;
                             //sumR = 0; sumG = 0; sumB = 0;
                             for (int ii = 0; ii < 2 * k; ii++)
                                 for (int jj = 0; jj < 2 * k; jj++)
                                 {
-                                    sum += domenBig[i * 2 * k + ii, j * 2 * k + jj];
+                                    color = Color.FromArgb(domenBig[i + ii, j + jj]);
+                                    sum += color.R;
 
+                                    //sum += domenBig[i * 2 * k + ii, j * 2 * k + jj];
                                     //color = new Color(domenBig[i * 2 * k + ii][j * 2 * k + jj]);
                                     //sum += color.getRed();
-
-
                                 }
                             d = (int)(sum / Math.Pow(4, k));
 
                             //Color color = new Color(d);
-                            //dR = color.getRed();
-                            //dG = color.getGreen();
-                            //dB = color.getBlue();
+                            //dR = color.getRed();  //dG = color.getGreen();//dB = color.getBlue();
                             //int grey = (int) (0.3*dR + 0.59*dG + 0.11 *dB);
                             //d = grey + (grey << 8) + (grey << 16);
-
                             //color = new Color(d,d,d);
                             //domen[i][j] = color.getRGB();
-                            domen[i,j] = d;
 
-                            //dR = (int) (sumR/Math.pow(4,k));
-                            //dG = (int) (sumG/Math.pow(4,k));
-                            //dB = (int) (sumB/Math.pow(4,k));
+                            color = Color.FromArgb(d, d, d);
+                            domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
+                            //domen[i,j] = d;
+
+                            //dR = (int) (sumR/Math.pow(4,k));   //dG = (int) (sumG/Math.pow(4,k));   //dB = (int) (sumB/Math.pow(4,k));
                             //domen[i][j] = dB + (dG << 8) + (dR << 16);
                         }
 
-                    /*for (int i = 0; i < z; i++)
-                        for (int j = 0; j < z; j++) {
-                            sum = 0;
-                            for(int ir = 0; ir<2*k;ir++)
-                                for(int jr = 0; jr<2*k;jr++)
-                                    sum += pix[r * id + i*f+ir][r * jd + j*f +jr];
-                            domen[i][j] = (int) (sum / 4^k);
-                        }*/
 
                     //сравниваем ранговый и доменный блок
                     int h = 0;
@@ -148,7 +145,7 @@ namespace Fract
                                 if (compareBlocs(rang, changeBright(domen, bright)))
                                 {
                                     b = true;
-                                    ran = new Rang(jd * r, id * r, h, k, x, y, k);
+                                    ran = new Rang(jd * r, id * r, h, k, x, y, bright);
                                 }
                                 else {
                                     if (bright / 2 == 1)
@@ -215,7 +212,7 @@ namespace Fract
                     //colorRang = new Color(rang[i][j]);
                     //h = (colorDomen.getRed() - colorRang.getRed())/1000;
 
-                    h = (domen[i,j] - rang[i,j]) / 10000;
+                    h = (domen[i, j] - rang[i, j])/100000;// / 10000;
 
                     sum += h * h;
                 }
@@ -223,11 +220,23 @@ namespace Fract
             //sum = sum/100;
             // if((sum!=0)&&(sum!=1531)&&(sum!=441032))
             //   System.out.println("");
+
+            if (jhgjhg < 150)
+            {
+                jhgjhg++;
+                sss += " " + sum+"\r\n";
+            }
+
             if (sum < epsilon)
                 b = true;
             else b = false;
 
             return b;
+        }
+
+        public void SaveSumCompare()
+        {
+            File.WriteAllText(@"sum_compare.txt", sss);
         }
 
         public int[,] changeBright(int[,] pix, double k)

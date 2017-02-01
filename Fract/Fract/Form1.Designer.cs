@@ -100,7 +100,7 @@
             // 
             this.numberCoefCompress.Location = new System.Drawing.Point(160, 56);
             this.numberCoefCompress.Maximum = new decimal(new int[] {
-            40000,
+            4000000,
             0,
             0,
             0});
