@@ -139,20 +139,20 @@ namespace Fract
                             ran = new Rang(jd * r, id * r, h, k, x, y, 1);
                         }
                         else {
-                            double bright = 4;
-                            while ((bright >= 0.25) && (b == false))
-                            {
-                                if (compareBlocs(rang, changeBright(domen, bright)))
-                                {
-                                    b = true;
-                                    ran = new Rang(jd * r, id * r, h, k, x, y, bright);
-                                }
-                                else {
-                                    if (bright / 2 == 1)
-                                        bright = bright / 4;
-                                    else bright = bright / 2;
-                                }
-                            }
+                            //double bright = 4;
+                            //while ((bright >= 0.25) && (b == false))
+                            //{
+                            //    if (compareBlocs(rang, changeBright(domen, bright)))
+                            //    {
+                            //        b = true;
+                            //        ran = new Rang(jd * r, id * r, h, k, x, y, bright);
+                            //    }
+                            //    else {
+                            //        if (bright / 2 == 1)
+                            //            bright = bright / 4;
+                            //        else bright = bright / 2;
+                            //    }
+                            //}
                             h++;
                             domen = setAfinnInt(domen, h);
                         }
@@ -208,16 +208,17 @@ namespace Fract
                 for (int j = 0; j < k; j++)
                 {
 
-                    //colorDomen = new Color(domen[i][j]);
-                    //colorRang = new Color(rang[i][j]);
-                    //h = (colorDomen.getRed() - colorRang.getRed())/1000;
+                    colorDomen = Color.FromArgb(domen[i, j]);
+                    colorRang = Color.FromArgb(rang[i, j]);
+                    //sum += color.R;
 
-                    h = (domen[i, j] - rang[i, j])/100000;// / 10000;
+                    h = (colorDomen.R - colorRang.R);
+                    //h = (domen[i, j] - rang[i, j])/100000;// / 10000;
 
                     sum += h * h;
                 }
 
-            //sum = sum/100;
+            sum = sum/1000;
             // if((sum!=0)&&(sum!=1531)&&(sum!=441032))
             //   System.out.println("");
 

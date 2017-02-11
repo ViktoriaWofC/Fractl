@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fract", "Fract\Fract.csproj", "{C98CB548-480C-4A7B-BF2B-8C3DE38F3A96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Converter", "Converter\Converter.csproj", "{5792C37A-70D7-45CB-B3B9-216E3AD01753}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{C98CB548-480C-4A7B-BF2B-8C3DE38F3A96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C98CB548-480C-4A7B-BF2B-8C3DE38F3A96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C98CB548-480C-4A7B-BF2B-8C3DE38F3A96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5792C37A-70D7-45CB-B3B9-216E3AD01753}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5792C37A-70D7-45CB-B3B9-216E3AD01753}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5792C37A-70D7-45CB-B3B9-216E3AD01753}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5792C37A-70D7-45CB-B3B9-216E3AD01753}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

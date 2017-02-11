@@ -94,6 +94,8 @@ namespace Fract
             //String str = "sdf";
 
             pictureBoxEndImage.Image = bitEnd;
+            pictureBoxEndImage.Width = bitStart.Width;
+            pictureBoxEndImage.Height = bitStart.Height;
 
             labelDecompressCharacteristic.Text = s;
 
@@ -211,40 +213,69 @@ namespace Fract
         {
             String test = "";
 
-            //тест сжатия домен блока до рангового
-            Bitmap bitTest = bitStart;
-            //int hh = 32, z = hh / 2;
-            int hh = bitTest.Width, z = hh / 2;
-            int[,] domenBig = new int[z, z];
-            int[,] domen = new int[z, z];
-            Color color;
+            ////тест сжатия домен блока до рангового
+            //Bitmap bitTest = bitStart;
+            ////int hh = 32, z = hh / 2;
+            //int hh = bitTest.Width, z = hh / 2;
+            //int[,] domenBig = new int[z, z];
+            //int[,] domen = new int[z, z];
+            //Color color;
 
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
-                {
-                    domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
-                }
+            //for (int i = 0; i < z; i++)
+            //    for (int j = 0; j < z; j++)
+            //    {
+            //        domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
+            //    }
 
-            int x = bitTest.Width - z;
-            int y = bitTest.Height - z;
+            //int x = bitTest.Width - z;
+            //int y = bitTest.Height - z;
+            ////for (int i = 0; i < z; i++)
+            ////    for (int j = 0; j < z; j++)
+            ////    {
+            ////        color = Color.FromArgb(domenBig[i, j]);
+            ////        bitTest.SetPixel(x+ j, y + i, color);
+            ////    }
+            ////pictureBoxEndImage.Image = bitTest;
+
+            ////domenBig = setAfinnInt(domenBig,5); 
+
             //for (int i = 0; i < z; i++)
             //    for (int j = 0; j < z; j++)
             //    {
             //        color = Color.FromArgb(domenBig[i, j]);
-            //        bitTest.SetPixel(x+ j, y + i, color);
+            //        bitTest.SetPixel(x + j, y + i, color);
             //    }
+
             //pictureBoxEndImage.Image = bitTest;
 
-            //domenBig = setAfinnInt(domenBig,5); 
+            //////////////////////////////////////////////////////////
+            long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
+            test += x + " " + y + " " + af + " " + k + " " + x0 + " " + y0 + " " + br + " \r\n";
+            //преобразование из Rang в число long
+            long d = 0;
+            d = 0;
+            //d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
+            d = br + (y0 << 10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51);
+            test += "" + d;
+            test += "\r\n" + (d >> 51)
+                    + " " + ((d - (x << 51)) >> 40)
+                    + " " + ((d - (x << 51) - (y << 40)) >> 29)
+                    + " " + ((d - (x << 51) - (y << 40) - (af << 29)) >> 25)
+                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25)) >> 21)
+                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21)) >> 10)
+                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21) - (y0 << 10)));
 
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
-                {
-                    color = Color.FromArgb(domenBig[i, j]);
-                    bitTest.SetPixel(x + j, y + i, color);
-                }
+            test += Environment.NewLine;
 
-            pictureBoxEndImage.Image = bitTest;
+           
+            long i1 = Convert.ToInt32(d >> 51);
+            long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
+            long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
+            long i4 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29)) >> 25);
+            long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
+            long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
+            long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
+            test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
 
             textBoxTest.Text = test;
         }

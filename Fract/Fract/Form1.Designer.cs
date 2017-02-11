@@ -104,11 +104,6 @@
             0,
             0,
             0});
-            this.numberCoefCompress.Minimum = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
             this.numberCoefCompress.Name = "numberCoefCompress";
             this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
             this.numberCoefCompress.TabIndex = 3;
