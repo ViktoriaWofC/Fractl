@@ -72,6 +72,7 @@ namespace Fract
             int z = rang.GetLength(0);//размер доменного блока = размер рангового
             int f = r * 2 / z;//кол-во усредняемых пикселей
             int[,] domen = new int[z,z];
+            int[,] domenAfin = new int[z, z];
             int[,] domenBig = new int[r * 2,r * 2];
 
             bool b = false;
@@ -93,47 +94,34 @@ namespace Fract
                     //и уменьшаем его усреднением
                     //
                     Color color;// = new Color(domen[i][j]);
-                    int sumR, sumG, sumB, dR, dG, dB;
                     //
-                    for (int i = 0; i < z; i = i+2* k)//i++)
-                        for (int j = 0; j < z; j = j+2* k)//j++)
+                    for (int i = 0; i < z*2; i = i+2* k)//i++)z
+                        for (int j = 0; j < z*2; j = j+2* k)//j++)z
                         {
                             sum = 0;
-                            //sumR = 0; sumG = 0; sumB = 0;
                             for (int ii = 0; ii < 2 * k; ii++)
                                 for (int jj = 0; jj < 2 * k; jj++)
                                 {
                                     color = Color.FromArgb(domenBig[i + ii, j + jj]);
                                     sum += color.R;
-
-                                    //sum += domenBig[i * 2 * k + ii, j * 2 * k + jj];
-                                    //color = new Color(domenBig[i * 2 * k + ii][j * 2 * k + jj]);
-                                    //sum += color.getRed();
                                 }
                             d = (int)(sum / Math.Pow(4, k));
 
-                            //Color color = new Color(d);
-                            //dR = color.getRed();  //dG = color.getGreen();//dB = color.getBlue();
-                            //int grey = (int) (0.3*dR + 0.59*dG + 0.11 *dB);
-                            //d = grey + (grey << 8) + (grey << 16);
-                            //color = new Color(d,d,d);
-                            //domen[i][j] = color.getRGB();
 
                             color = Color.FromArgb(d, d, d);
                             domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
-                            //domen[i,j] = d;
-
-                            //dR = (int) (sumR/Math.pow(4,k));   //dG = (int) (sumG/Math.pow(4,k));   //dB = (int) (sumB/Math.pow(4,k));
-                            //domen[i][j] = dB + (dG << 8) + (dR << 16);
                         }
 
 
                     //сравниваем ранговый и доменный блок
                     int h = 0;
+                    for (int afi = 0; afi < domen.GetLength(0); afi++)
+                        for (int afj = 0; afj < domen.GetLength(0); afj++)
+                            domenAfin[afi, afj] = domen[afi, afj];
 
                     while ((h < 6) && (b == false))
                     {
-                        if (compareBlocs(rang, domen))
+                        if (compareBlocs(rang, domenAfin))//if (compareBlocs(rang, domen))
                         {
                             b = true;
                             ran = new Rang(jd * r, id * r, h, k, x, y, 1);
@@ -154,7 +142,7 @@ namespace Fract
                             //    }
                             //}
                             h++;
-                            domen = setAfinnInt(domen, h);
+                            domenAfin = setAfinnInt(domen, h);
                         }
 
                     }
@@ -170,7 +158,7 @@ namespace Fract
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
                 if (r / k > 4)
-                    while (ran == null)
+                    //while (ran == null)
                     {
                         int[,] rangDop = new int[z / 2, z / 2];
                         for (int ir = 0; ir < 2; ir++)
@@ -179,10 +167,11 @@ namespace Fract
                                 //выделяем ранговый блок
                                 for (int i = 0; i < z / 2; i++)
                                     for (int j = 0; j < z / 2; j++)
-                                        rangDop[i,j] = pix[r * x + ir * z / 2 + i, r * y + jr * z / 2 + j];
+                                        rangDop[i,j] = pix[x + ir * z / 2 + i, y + jr * z / 2 + j];
+                            //rangDop[i, j] = pix[r * x + ir * z / 2 + i, r * y + jr * z / 2 + j];
 
 
-                                getDomenBloc(rangDop, k, r * x + ir * z / 2, r * y + jr * z / 2);
+                                getDomenBloc(rangDop, k, x + ir * z / 2, y + jr * z / 2);//x*r,y*r
                             }
 
                     }

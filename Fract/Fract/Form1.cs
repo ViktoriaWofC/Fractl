@@ -171,7 +171,7 @@ namespace Fract
             ///
             long[] longList = new long[rangList.Count];
             string[] stringList = new string[rangList.Count];
-            string lon = "";
+            string lon = "", lonTest = "";
             int ii = 0;
             long d = 0;
             foreach (Rang rang in rangList)
@@ -182,12 +182,15 @@ namespace Fract
                 longList[ii] = d;
                 stringList[ii] = Convert.ToString(d);
                 lon += d + " ";
+                //
+                lonTest += rang.getX() + " "+rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " "+ rang.getY0() + " " +rang.getBright()+ "\r\n";
                 ii++;
             }
 
             //запись в файл
             //File.WriteAllLines(@"bat.txt", stringList);
             File.WriteAllText(@"bat.txt", lon);
+            File.WriteAllText(@"batTest.txt", lonTest);
             //using (FileStream fstream = new FileStream(@"bat.txt", FileMode.Create))
             //{
             //    // преобразуем строку в байты
@@ -213,72 +216,238 @@ namespace Fract
         {
             String test = "";
 
-            ////тест сжатия домен блока до рангового
-            //Bitmap bitTest = bitStart;
-            ////int hh = 32, z = hh / 2;
-            //int hh = bitTest.Width, z = hh / 2;
-            //int[,] domenBig = new int[z, z];
-            //int[,] domen = new int[z, z];
-            //Color color;
+            String fileName = "D:/университет/диплом/fractImage/baseClet2.jpg";
 
-            //for (int i = 0; i < z; i++)
-            //    for (int j = 0; j < z; j++)
-            //    {
-            //        domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
-            //    }
+            //тест сжатия домен блока до рангового
+            Bitmap bitTest = new Bitmap(Image.FromFile(fileName));
+            //int hh = 32, z = hh / 2;
+            int hh = 32;//bitTest.Width;
+            int z = hh / 2;
 
-            //int x = bitTest.Width - z;
-            //int y = bitTest.Height - z;
-            ////for (int i = 0; i < z; i++)
-            ////    for (int j = 0; j < z; j++)
-            ////    {
-            ////        color = Color.FromArgb(domenBig[i, j]);
-            ////        bitTest.SetPixel(x+ j, y + i, color);
-            ////    }
-            ////pictureBoxEndImage.Image = bitTest;
+            //int hh = 16;
+            //int z = hh / 2;
 
-            ////domenBig = setAfinnInt(domenBig,5); 
+            int[,] domenBig = new int[hh, hh];
+            int[,] domen = new int[z, z];
+            int[,] rang = new int[z, z];
+            Color color;
 
+            for (int i = 0; i < hh; i++)
+                for (int j = 0; j < hh; j++)
+                {
+                    domenBig[i, j] = bitStart.GetPixel(j, 32+i).ToArgb();
+                }
+
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
+                {
+                    rang[i, j] = bitStart.GetPixel(j,i+16).ToArgb();
+                }
+
+            //и уменьшаем его усреднением
+            //
+            //Color color;// = new Color(domen[i][j]);
+            int k = 1;
+            int sum,d;
+            //
+            for (int i = 0; i < hh; i = i + 2 * k)//i++)
+                for (int j = 0; j < hh; j = j + 2 * k)//j++)
+                {
+                    sum = 0;
+                    for (int ii = 0; ii < 2 * k; ii++)
+                        for (int jj = 0; jj < 2 * k; jj++)
+                        {
+                            color = Color.FromArgb(domenBig[i + ii, j + jj]);
+                            sum += color.R;
+                        }
+                    d = (int)(sum / Math.Pow(4, k));
+                    color = Color.FromArgb(d, d, d);
+                    domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
+
+                }
+
+            int x = 0;// bitTest.Width - z;
+            int y = 0;// bitTest.Height - z;
             //for (int i = 0; i < z; i++)
             //    for (int j = 0; j < z; j++)
             //    {
             //        color = Color.FromArgb(domenBig[i, j]);
-            //        bitTest.SetPixel(x + j, y + i, color);
+            //        bitTest.SetPixel(x+ j, y + i, color);
             //    }
-
             //pictureBoxEndImage.Image = bitTest;
 
+            //domenBig = setAfinnInt(domenBig,5); 
+            for (int i = 0; i < hh; i++)
+                for (int j = 0; j < hh; j++)
+                {
+                    color = Color.FromArgb(domenBig[i, j]);
+                    bitTest.SetPixel(x + j, y + i, color);
+                }
+
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
+                {
+                    color = Color.FromArgb(domen[i, j]);
+                    bitTest.SetPixel(x + j+40, y + i, color);
+                }
+
+            for (int i = 0; i < z; i++)
+                for (int j = 0; j < z; j++)
+                {
+                    color = Color.FromArgb(rang[i, j]);
+                    bitTest.SetPixel(x + j+70, y + i, color);
+                }
+
+            pictureBoxEndImage.Image = bitTest;
             //////////////////////////////////////////////////////////
-            long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
-            test += x + " " + y + " " + af + " " + k + " " + x0 + " " + y0 + " " + br + " \r\n";
-            //преобразование из Rang в число long
-            long d = 0;
-            d = 0;
-            //d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
-            d = br + (y0 << 10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51);
-            test += "" + d;
-            test += "\r\n" + (d >> 51)
-                    + " " + ((d - (x << 51)) >> 40)
-                    + " " + ((d - (x << 51) - (y << 40)) >> 29)
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29)) >> 25)
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25)) >> 21)
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21)) >> 10)
-                    + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21) - (y0 << 10)));
 
-            test += Environment.NewLine;
+            bool rf = compareBlocs(rang, domen, 200);
 
-           
-            long i1 = Convert.ToInt32(d >> 51);
-            long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
-            long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
-            long i4 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29)) >> 25);
-            long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
-            long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
-            long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
-            test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
+            domen = setAfinnInt(domen, 2);
+
+            rf = compareBlocs(rang, domen, 200);
+
+
+
+            //////////////////////////////////////////////////////////л
+            //long x = 1005, y = 10, af = 3, k = 2, x0 = 15, y0 = 23, br = 123;
+            //test += x + " " + y + " " + af + " " + k + " " + x0 + " " + y0 + " " + br + " \r\n";
+            ////преобразование из Rang в число long
+            //long d = 0;
+            //d = 0;
+            ////d = y0 + (x0 << 10) + (k << 21) + (af << 25) + (y << 29) + (x << 40) +(br << 51);
+            //d = br + (y0 << 10) + (x0 << 21) + (k << 25) + (af << 29) + (y << 40) + (x << 51);
+            //test += "" + d;
+            //test += "\r\n" + (d >> 51)
+            //        + " " + ((d - (x << 51)) >> 40)
+            //        + " " + ((d - (x << 51) - (y << 40)) >> 29)
+            //        + " " + ((d - (x << 51) - (y << 40) - (af << 29)) >> 25)
+            //        + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25)) >> 21)
+            //        + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21)) >> 10)
+            //        + " " + ((d - (x << 51) - (y << 40) - (af << 29) - (k << 25) - (x0 << 21) - (y0 << 10)));
+
+            //test += Environment.NewLine;
+
+
+            //long i1 = Convert.ToInt32(d >> 51);
+            //long i2 = Convert.ToInt32((d - (i1 << 51)) >> 40);
+            //long i3 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40)) >> 29);
+            //long i4 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29)) >> 25);
+            //long i5 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25)) >> 21);
+            //long i6 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21)) >> 10);
+            //long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
+            //test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
 
             textBoxTest.Text = test;
         }
+
+        public bool compareBlocs(int[,] rang, int[,] domen, double epsilon)
+        {
+            bool b = false;
+            double sum = 0;
+            int k = rang.GetLength(0);
+            double h = 0;
+
+            Color colorDomen, colorRang;
+
+            for (int i = 0; i < k; i++)
+                for (int j = 0; j < k; j++)
+                {
+
+                    colorDomen = Color.FromArgb(domen[i, j]);
+                    colorRang = Color.FromArgb(rang[i, j]);
+
+                    h = (colorDomen.R - colorRang.R);
+
+                    sum += h * h;
+                }
+
+            sum = sum / 1000;
+
+
+            if (sum < epsilon)
+                b = true;
+            else b = false;
+
+            return b;
+        }
+
+        public int[,] setAfinnInt(int[,] pix, int k)
+        {
+            //int argb;
+            int n = pix.GetLength(0);
+            int x, y;
+            int[,] p = new int[n, n];
+
+            if (k < 4)
+            {
+
+                if (k == 1)
+                {//поворот на 90
+
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - i;
+                            y = j;
+                            p[y, x] = pix[i, j];
+                        }
+
+                }
+                else if (k == 2)
+                {//поворот на 180
+                    int h;
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - i;
+                            y = j;
+                            h = x;
+                            x = n - 1 - y;
+                            y = h;
+                            p[y, x] = pix[i, j];
+                        }
+                }
+                else if (k == 3)
+                {//поворот на 270
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = i;
+                            y = n - 1 - j;
+                            p[y, x] = pix[i, j];
+                        }
+                }
+
+            }
+            else {
+                if (k == 4)
+                {//отражение по вертикали
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - j;
+                            y = i;
+                            p[y, x] = pix[i, j];
+                        }
+                }
+                else if (k == 5)
+                {//отражение по горизонтали
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = j;
+                            y = n - 1 - i;
+                            p[y, x] = pix[i, j];
+                        }
+                }
+            }
+
+            if (k == 0)
+                return pix;
+            else return p;
+        }
+
 
 
         /// //////////////////////////////////////////////////////////////

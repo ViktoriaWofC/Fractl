@@ -53,8 +53,8 @@ namespace Fract
 
                     int d = 0, sum = 0;
                     //и уменьшаем его усреднением
-                    for (int i = 0; i < r; i = i + 2 * rang.getK()) //i++)
-                        for (int j = 0; j < r; j = j + 2 * rang.getK()) //j++)
+                    for (int i = 0; i < r*2; i = i + 2 * rang.getK()) //i++)r
+                        for (int j = 0; j < r*2; j = j + 2 * rang.getK()) //j++)r
                         {
                             sum = 0;
                             for (int ii = 0; ii < 2 * rang.getK(); ii++)
@@ -89,28 +89,6 @@ namespace Fract
                             //bi.setRGB(rang.getX0() + j, rang.getY0() + i, domen[i, j] + (domen[i, j] << 8) + (domen[i, j] << 16));
                             color = Color.FromArgb(domen[i, j]);
                             bi.SetPixel(rang.getX0() + j, rang.getY0() + i,color);
-
-                            //bi.setRGB(rang.getX0()+j,rang.getY0()+i,domen[i][j]);
-
-                            //
-
-                            /*int dd = domen[i][j];//color.getRed();
-                            if(dd<0)
-                                dd = 0;
-                            else if(dd>255)
-                                dd = 255;
-                            color = new Color(dd,dd,dd);
-                            bi.setRGB(rang.getX0()+j,rang.getY0() + i,color.getRGB());*/
-
-                            //color = new Color(domen[i][j]);
-                            //int red = color.getRed();
-                            //int green = color.getGreen();
-                            //int blue = color.getBlue();
-                            //bi.setRGB(rang.getX0()+j,rang.getY0() + i,color.getRGB());
-
-
-                            //bi.setRGB(rang.getX0()+j,rang.getY0() + i,blue + (green << 8) + (red << 16));
-                            //bi.setRGB(rang.getX0()+j,rang.getY0() + i,color.getRGB() + (color.getRGB() << 8) + (color.getRGB() << 16));
 
                         }
                 }
