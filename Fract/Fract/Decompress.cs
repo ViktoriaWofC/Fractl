@@ -81,6 +81,7 @@ namespace Fract
                     domen = setAfinnInt(domen, rang.getAfinn());
 
                     //преобразование яркости
+                    domen = changeBright(domen, rang.getBright());
 
                     //;
                     for (int i = 0; i < r; i++)
@@ -175,6 +176,27 @@ namespace Fract
             if (k == 0)
                 return pix;
             else return p;
+        }
+
+        public int[,] changeBright(int[,] pix, double k)
+        {
+            int n = pix.GetLength(0);
+            int x;
+            int[,] p = new int[n, n];
+            Color color;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
+                    x = color.R;//color.getRed();
+                    x = (int)(x * k);
+                    if (x > 255)
+                        x = 255;
+                    color = Color.FromArgb(x, x, x);
+                    p[i, j] = color.ToArgb();
+                }
+            return p;
         }
     }
 }

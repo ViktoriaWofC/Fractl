@@ -221,7 +221,7 @@ namespace Fract
             //тест сжатия домен блока до рангового
             Bitmap bitTest = new Bitmap(Image.FromFile(fileName));
             //int hh = 32, z = hh / 2;
-            int hh = 32;//bitTest.Width;
+            int hh = 64;//bitTest.Width;
             int z = hh / 2;
 
             //int hh = 16;
@@ -229,83 +229,96 @@ namespace Fract
 
             int[,] domenBig = new int[hh, hh];
             int[,] domen = new int[z, z];
+            int[,] domenBr = new int[z, z];
             int[,] rang = new int[z, z];
             Color color;
 
-            for (int i = 0; i < hh; i++)
-                for (int j = 0; j < hh; j++)
-                {
-                    domenBig[i, j] = bitStart.GetPixel(j, 32+i).ToArgb();
-                }
+            //for (int i = 0; i < hh; i++)
+            //    for (int j = 0; j < hh; j++)
+            //    {
+            //        domenBig[i, j] = bitStart.GetPixel(j, 32+i).ToArgb();
+            //    }
 
             for (int i = 0; i < z; i++)
                 for (int j = 0; j < z; j++)
                 {
-                    rang[i, j] = bitStart.GetPixel(j,i+16).ToArgb();
+                    domen[i, j] = bitStart.GetPixel(j, bitStart.Height - z + i).ToArgb();
                 }
 
-            //и уменьшаем его усреднением
-            //
-            //Color color;// = new Color(domen[i][j]);
-            int k = 1;
-            int sum,d;
-            //
-            for (int i = 0; i < hh; i = i + 2 * k)//i++)
-                for (int j = 0; j < hh; j = j + 2 * k)//j++)
-                {
-                    sum = 0;
-                    for (int ii = 0; ii < 2 * k; ii++)
-                        for (int jj = 0; jj < 2 * k; jj++)
-                        {
-                            color = Color.FromArgb(domenBig[i + ii, j + jj]);
-                            sum += color.R;
-                        }
-                    d = (int)(sum / Math.Pow(4, k));
-                    color = Color.FromArgb(d, d, d);
-                    domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
-
-                }
-
-            int x = 0;// bitTest.Width - z;
-            int y = 0;// bitTest.Height - z;
             //for (int i = 0; i < z; i++)
             //    for (int j = 0; j < z; j++)
             //    {
-            //        color = Color.FromArgb(domenBig[i, j]);
-            //        bitTest.SetPixel(x+ j, y + i, color);
+            //        rang[i, j] = bitStart.GetPixel(j,i+16).ToArgb();
             //    }
-            //pictureBoxEndImage.Image = bitTest;
 
-            //domenBig = setAfinnInt(domenBig,5); 
-            for (int i = 0; i < hh; i++)
-                for (int j = 0; j < hh; j++)
+
+            pictureBoxEndImage.Image = bitTest;
+            int x = 0;// bitTest.Width - z;
+            int y = 0;// bitTest.Height - z;
+
+
+            //////////////////////////////test change bright
+            bool b = false;
+            int kk = 0;
+            double bright = 4;
+            while ((bright >= 0.25) && (b == false))
+            {
+
+                domenBr = changeBright(domen, bright);
+
+                //if (compareBlocs(rang, changeBright(domen, bright)))
                 {
-                    color = Color.FromArgb(domenBig[i, j]);
-                    bitTest.SetPixel(x + j, y + i, color);
+                    //b = true;
+                    //ran = new Rang(jd * r, id * r, h, k, x, y, bright);
+                }
+                //else 
+                {
+                    if (bright / 2 == 1)
+                        bright = bright / 4;
+                    else 
+                    bright = bright / 2;
                 }
 
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
-                {
-                    color = Color.FromArgb(domen[i, j]);
-                    bitTest.SetPixel(x + j+40, y + i, color);
-                }
+                for (int i = 0; i < z; i++)
+                    for (int j = 0; j < z; j++)
+                    {
+                        color = Color.FromArgb(domenBr[i, j]);
+                        bitTest.SetPixel(x + j + 40, y + i+kk*z+15, color);
+                    }
+                kk++;
+            }
+            //////////////////////////////////////////
 
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
-                {
-                    color = Color.FromArgb(rang[i, j]);
-                    bitTest.SetPixel(x + j+70, y + i, color);
-                }
+
+            //for (int i = 0; i < hh; i++)
+            //    for (int j = 0; j < hh; j++)
+            //    {
+            //        color = Color.FromArgb(domenBig[i, j]);
+            //        bitTest.SetPixel(x + j, y + i, color);
+            //    }
+
+            //for (int i = 0; i < z; i++)
+            //    for (int j = 0; j < z; j++)
+            //    {
+            //        color = Color.FromArgb(domenBr[i, j]);
+            //        bitTest.SetPixel(x + j + 40, y + i, color);
+            //    }
+
+            //for (int i = 0; i < z; i++)
+            //    for (int j = 0; j < z; j++)
+            //    {
+            //        color = Color.FromArgb(rang[i, j]);
+            //        bitTest.SetPixel(x + j+70, y + i, color);
+            //    }
 
             pictureBoxEndImage.Image = bitTest;
             //////////////////////////////////////////////////////////
 
-            bool rf = compareBlocs(rang, domen, 200);
+            //bool rf = compareBlocs(rang, domen, 200);
 
-            domen = setAfinnInt(domen, 2);
+            //domen = setAfinnInt(domen, 2);
 
-            rf = compareBlocs(rang, domen, 200);
+            //rf = compareBlocs(rang, domen, 200);
 
 
 
@@ -448,6 +461,26 @@ namespace Fract
             else return p;
         }
 
+        public int[,] changeBright(int[,] pix, double k)
+        {
+            int n = pix.GetLength(0);
+            int x;
+            int[,] p = new int[n, n];
+            Color color;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
+                    x = color.R;//color.getRed();
+                    x = (int)(x * k);
+                    if (x > 255)
+                        x = 255;
+                    color = Color.FromArgb(x, x, x);
+                    p[i, j] = color.ToArgb();
+                }
+            return p;
+        }
 
 
         /// //////////////////////////////////////////////////////////////

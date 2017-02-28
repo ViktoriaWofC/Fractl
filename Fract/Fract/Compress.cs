@@ -127,24 +127,23 @@ namespace Fract
                             ran = new Rang(jd * r, id * r, h, k, x, y, 1);
                         }
                         else {
-                            //double bright = 4;
-                            //while ((bright >= 0.25) && (b == false))
-                            //{
-                            //    if (compareBlocs(rang, changeBright(domen, bright)))
-                            //    {
-                            //        b = true;
-                            //        ran = new Rang(jd * r, id * r, h, k, x, y, bright);
-                            //    }
-                            //    else {
-                            //        if (bright / 2 == 1)
-                            //            bright = bright / 4;
-                            //        else bright = bright / 2;
-                            //    }
-                            //}
+                            double bright = 4;
+                            while ((bright >= 0.25) && (b == false))
+                            {
+                                if (compareBlocs(rang, changeBright(domenAfin, bright)))
+                                {
+                                    b = true;
+                                    ran = new Rang(jd * r, id * r, h, k, x, y, bright);
+                                }
+                                else {
+                                    if (bright / 2 == 1)
+                                        bright = bright / 4;
+                                    else bright = bright / 2;
+                                }
+                            }
                             h++;
                             domenAfin = setAfinnInt(domen, h);
                         }
-
                     }
                     jd++;
                 }
@@ -153,8 +152,6 @@ namespace Fract
             //если для рангового блока не нашли доменного
             if (ran == null)
             {
-
-
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
                 if (r / k > 4)
@@ -168,8 +165,6 @@ namespace Fract
                                 for (int i = 0; i < z / 2; i++)
                                     for (int j = 0; j < z / 2; j++)
                                         rangDop[i,j] = pix[x + ir * z / 2 + i, y + jr * z / 2 + j];
-                            //rangDop[i, j] = pix[r * x + ir * z / 2 + i, r * y + jr * z / 2 + j];
-
 
                                 getDomenBloc(rangDop, k, x + ir * z / 2, y + jr * z / 2);//x*r,y*r
                             }
@@ -242,7 +237,10 @@ namespace Fract
                     color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
                     x = color.R;//color.getRed();
                     x = (int)(x * k);
-                    p[i,j] = x;
+                    if (x > 255)
+                        x = 255;
+                    color = Color.FromArgb(x, x, x);
+                    p[i, j] = color.ToArgb();
                 }
             return p;
         }

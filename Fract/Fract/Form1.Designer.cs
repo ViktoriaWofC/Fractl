@@ -237,7 +237,7 @@
             this.panelStartImage.Controls.Add(this.pictureBoxStartImage);
             this.panelStartImage.Location = new System.Drawing.Point(46, 161);
             this.panelStartImage.Name = "panelStartImage";
-            this.panelStartImage.Size = new System.Drawing.Size(338, 140);
+            this.panelStartImage.Size = new System.Drawing.Size(338, 400);
             this.panelStartImage.TabIndex = 2;
             // 
             // pictureBoxStartImage
@@ -255,7 +255,7 @@
             this.panelEndImage.Controls.Add(this.pictureBoxEndImage);
             this.panelEndImage.Location = new System.Drawing.Point(467, 161);
             this.panelEndImage.Name = "panelEndImage";
-            this.panelEndImage.Size = new System.Drawing.Size(338, 140);
+            this.panelEndImage.Size = new System.Drawing.Size(338, 400);
             this.panelEndImage.TabIndex = 3;
             // 
             // pictureBoxEndImage
@@ -269,7 +269,7 @@
             // 
             // textBoxTest
             // 
-            this.textBoxTest.Location = new System.Drawing.Point(261, 325);
+            this.textBoxTest.Location = new System.Drawing.Point(261, 602);
             this.textBoxTest.Multiline = true;
             this.textBoxTest.Name = "textBoxTest";
             this.textBoxTest.Size = new System.Drawing.Size(353, 41);
@@ -282,7 +282,7 @@
             // labelCompressCharacteristic
             // 
             this.labelCompressCharacteristic.AutoSize = true;
-            this.labelCompressCharacteristic.Location = new System.Drawing.Point(46, 315);
+            this.labelCompressCharacteristic.Location = new System.Drawing.Point(46, 592);
             this.labelCompressCharacteristic.Name = "labelCompressCharacteristic";
             this.labelCompressCharacteristic.Size = new System.Drawing.Size(35, 13);
             this.labelCompressCharacteristic.TabIndex = 4;
@@ -291,7 +291,7 @@
             // labelDecompressCharacteristic
             // 
             this.labelDecompressCharacteristic.AutoSize = true;
-            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(655, 315);
+            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(655, 592);
             this.labelDecompressCharacteristic.Name = "labelDecompressCharacteristic";
             this.labelDecompressCharacteristic.Size = new System.Drawing.Size(35, 13);
             this.labelDecompressCharacteristic.TabIndex = 5;
@@ -299,7 +299,7 @@
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(134, 342);
+            this.buttonTest.Location = new System.Drawing.Point(134, 619);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(75, 23);
             this.buttonTest.TabIndex = 6;
@@ -311,7 +311,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(913, 378);
+            this.ClientSize = new System.Drawing.Size(913, 678);
             this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.labelDecompressCharacteristic);
             this.Controls.Add(this.labelCompressCharacteristic);
