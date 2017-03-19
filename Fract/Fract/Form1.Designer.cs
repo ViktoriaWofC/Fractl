@@ -50,6 +50,9 @@
             this.labelCompressCharacteristic = new System.Windows.Forms.Label();
             this.labelDecompressCharacteristic = new System.Windows.Forms.Label();
             this.buttonTest = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.radioButtonBase = new System.Windows.Forms.RadioButton();
+            this.radioButtonQuadro = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).BeginInit();
@@ -69,7 +72,7 @@
             this.groupBox1.Controls.Add(this.numberRangSize);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 59);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(423, 116);
             this.groupBox1.TabIndex = 0;
@@ -160,7 +163,7 @@
             this.groupBox2.Controls.Add(this.numberIteracDecompr);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(454, 12);
+            this.groupBox2.Location = new System.Drawing.Point(454, 59);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(447, 116);
             this.groupBox2.TabIndex = 1;
@@ -235,7 +238,7 @@
             // 
             this.panelStartImage.AutoScroll = true;
             this.panelStartImage.Controls.Add(this.pictureBoxStartImage);
-            this.panelStartImage.Location = new System.Drawing.Point(46, 161);
+            this.panelStartImage.Location = new System.Drawing.Point(46, 200);
             this.panelStartImage.Name = "panelStartImage";
             this.panelStartImage.Size = new System.Drawing.Size(338, 400);
             this.panelStartImage.TabIndex = 2;
@@ -253,7 +256,7 @@
             // 
             this.panelEndImage.AutoScroll = true;
             this.panelEndImage.Controls.Add(this.pictureBoxEndImage);
-            this.panelEndImage.Location = new System.Drawing.Point(467, 161);
+            this.panelEndImage.Location = new System.Drawing.Point(467, 200);
             this.panelEndImage.Name = "panelEndImage";
             this.panelEndImage.Size = new System.Drawing.Size(338, 400);
             this.panelEndImage.TabIndex = 3;
@@ -269,7 +272,7 @@
             // 
             // textBoxTest
             // 
-            this.textBoxTest.Location = new System.Drawing.Point(261, 602);
+            this.textBoxTest.Location = new System.Drawing.Point(251, 625);
             this.textBoxTest.Multiline = true;
             this.textBoxTest.Name = "textBoxTest";
             this.textBoxTest.Size = new System.Drawing.Size(353, 41);
@@ -282,7 +285,7 @@
             // labelCompressCharacteristic
             // 
             this.labelCompressCharacteristic.AutoSize = true;
-            this.labelCompressCharacteristic.Location = new System.Drawing.Point(46, 592);
+            this.labelCompressCharacteristic.Location = new System.Drawing.Point(36, 615);
             this.labelCompressCharacteristic.Name = "labelCompressCharacteristic";
             this.labelCompressCharacteristic.Size = new System.Drawing.Size(35, 13);
             this.labelCompressCharacteristic.TabIndex = 4;
@@ -291,7 +294,7 @@
             // labelDecompressCharacteristic
             // 
             this.labelDecompressCharacteristic.AutoSize = true;
-            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(655, 592);
+            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(645, 615);
             this.labelDecompressCharacteristic.Name = "labelDecompressCharacteristic";
             this.labelDecompressCharacteristic.Size = new System.Drawing.Size(35, 13);
             this.labelDecompressCharacteristic.TabIndex = 5;
@@ -299,7 +302,7 @@
             // 
             // buttonTest
             // 
-            this.buttonTest.Location = new System.Drawing.Point(134, 619);
+            this.buttonTest.Location = new System.Drawing.Point(124, 642);
             this.buttonTest.Name = "buttonTest";
             this.buttonTest.Size = new System.Drawing.Size(75, 23);
             this.buttonTest.TabIndex = 6;
@@ -307,11 +310,45 @@
             this.buttonTest.UseVisualStyleBackColor = true;
             this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(116, 13);
+            this.label5.TabIndex = 7;
+            this.label5.Text = "Алгоритм разбиения:";
+            // 
+            // radioButtonBase
+            // 
+            this.radioButtonBase.AutoSize = true;
+            this.radioButtonBase.Checked = true;
+            this.radioButtonBase.Location = new System.Drawing.Point(136, 24);
+            this.radioButtonBase.Name = "radioButtonBase";
+            this.radioButtonBase.Size = new System.Drawing.Size(70, 17);
+            this.radioButtonBase.TabIndex = 8;
+            this.radioButtonBase.TabStop = true;
+            this.radioButtonBase.Text = "Базовый";
+            this.radioButtonBase.UseVisualStyleBackColor = true;
+            // 
+            // radioButtonQuadro
+            // 
+            this.radioButtonQuadro.AutoSize = true;
+            this.radioButtonQuadro.Location = new System.Drawing.Point(299, 24);
+            this.radioButtonQuadro.Name = "radioButtonQuadro";
+            this.radioButtonQuadro.Size = new System.Drawing.Size(106, 17);
+            this.radioButtonQuadro.TabIndex = 8;
+            this.radioButtonQuadro.Text = "Квадродеревом";
+            this.radioButtonQuadro.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 678);
+            this.Controls.Add(this.radioButtonQuadro);
+            this.Controls.Add(this.radioButtonBase);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.labelDecompressCharacteristic);
             this.Controls.Add(this.labelCompressCharacteristic);
@@ -366,6 +403,9 @@
         private System.Windows.Forms.Label labelCompressCharacteristic;
         private System.Windows.Forms.Label labelDecompressCharacteristic;
         private System.Windows.Forms.Button buttonTest;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.RadioButton radioButtonBase;
+        private System.Windows.Forms.RadioButton radioButtonQuadro;
     }
 }
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fract
 {
-    public class Compress
+    public class CompressQuadro
     {
         private List<Rang> rangList = new List<Rang>();
         private int r;//размер рангового блока
@@ -23,7 +23,7 @@ namespace Fract
         private String sss;
         private int jhgjhg = 0;
 
-        public Compress(int[,] pix, int r, double epsilon)
+        public CompressQuadro(int[,] pix, int r, double epsilon)
         {
             this.pix = pix;
             this.r = r;
@@ -73,7 +73,7 @@ namespace Fract
             //int f = r * 2 / z;//кол-во усредняемых пикселей
             int[,] domen = new int[z,z];
             int[,] domenAfin = new int[z, z];
-            int[,] domenBig = new int[r * 2,r * 2];
+            int[,] domenBig = new int[z * 2, z * 2];//int[,] domenBig = new int[r * 2,r * 2];
 
             bool b = false;
             int id = 0;
@@ -86,8 +86,8 @@ namespace Fract
                 {
                     int sum = 0;
                     //выделяем доменный блок
-                    for (int i = 0; i < r * 2; i++)
-                        for (int j = 0; j < r * 2; j++)
+                    for (int i = 0; i < z * 2; i++)
+                        for (int j = 0; j < z * 2; j++)
                             domenBig[i,j] = pix[r * id + i, r * jd + j];
 
                     int d = 0;
@@ -95,12 +95,12 @@ namespace Fract
                     //
                     Color color;// = new Color(domen[i][j]);
                     //
-                    for (int i = 0; i < z*2; i = i+2* k)//i++)z
-                        for (int j = 0; j < z*2; j = j+2* k)//j++)z
+                    for (int i = 0; i < z*2; i = i+2)//i++)z
+                        for (int j = 0; j < z*2; j = j+2)//j++)z
                         {
                             sum = 0;
-                            for (int ii = 0; ii < 2 * k; ii++)
-                                for (int jj = 0; jj < 2 * k; jj++)
+                            for (int ii = 0; ii < 2; ii++)
+                                for (int jj = 0; jj < 2; jj++)
                                 {
                                     color = Color.FromArgb(domenBig[i + ii, j + jj]);
                                     sum += color.R;
@@ -154,7 +154,7 @@ namespace Fract
             {
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
-                if (r / k >= 2)//(r / k >= 4)
+                if (r / k >= 2)
                     //while (ran == null)
                     {
                         int[,] rangDop = new int[z / 2, z / 2];

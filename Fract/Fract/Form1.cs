@@ -77,7 +77,15 @@ namespace Fract
 
         public void DecompressFunc()
         {
-            int r = Convert.ToInt32(numberRangSize.Value);
+            int r;// = Convert.ToInt32(numberRangSize.Value);
+            if (radioButtonBase.Checked)
+                r = Convert.ToInt32(numberRangSize.Value);
+            else {
+                r = 8;
+                numberRangSize.Value = 8;
+            }
+
+
             decompress = new Decompress(rangList, bitEnd, r);
 
             int col = Convert.ToInt32(numberIteracDecompr.Value);
@@ -130,6 +138,19 @@ namespace Fract
 
         public void CompressFunc()
         {
+
+            int r;// = Convert.ToInt32(numberRangSize.Value);
+            int eps = Convert.ToInt32(numberCoefCompress.Value);
+
+            if (radioButtonBase.Checked)
+            {
+                r = Convert.ToInt32(numberRangSize.Value);                
+            }
+            else {
+                r = 8;
+                numberRangSize.Value = 8;
+            }
+
             //
             int argb = 0;
             Color color;
@@ -137,7 +158,7 @@ namespace Fract
 
             m = bitStart.Width;
             n = bitStart.Height;
-            pixels = new int[n,m];
+            pixels = new int[n, m];
 
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
@@ -147,19 +168,21 @@ namespace Fract
                     //f = color.getRed();
                     //pixels[i][j] = f;
                     //pixels[i][j] = getRGBValue(bi, j, i);
-                    pixels[i,j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                    pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
 
                 }
 
-            int r = Convert.ToInt32(numberRangSize.Value);
-            int eps = Convert.ToInt32(numberCoefCompress.Value);
+
 
             String s = "";
 
             compress = new Compress(pixels, r, eps);
+            //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
+            //compr.compressImage();
             compress.compressImage();
+            //rangList = compr.getRangList();
             rangList = compress.getRangList();
             DateTime t2 = DateTime.Now;//System.currentTimeMillis();
             String ss = "compress time :" + (t2 - t1);
@@ -167,6 +190,7 @@ namespace Fract
 
             String str = "!!!";
             labelCompressCharacteristic.Text = s;
+
 
             ///
             long[] longList = new long[rangList.Count];
@@ -205,8 +229,9 @@ namespace Fract
             }
 
             //
+
             compress.SaveSumCompare();
-            
+
         }
 
 

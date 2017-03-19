@@ -30,7 +30,7 @@ namespace Fract
 
         public Bitmap decompressImage(int k)
         {
-            int[,] domen = new int[r, r];
+            int[,] domen;// = new int[r, r];
             int[,] domenBig = new int[r * 2, r * 2];
 
             Color color;
@@ -39,9 +39,12 @@ namespace Fract
             {
                 foreach (Rang rang in rangList)
                 {
+                    //domen = new int[r, r];
+                    domen = new int[r / rang.getK(), r / rang.getK()];
+
                     //выделяем доменный блок
                     for (int i = 0; i < r * 2; i++)
-                        for (int j = 0; j < r * 2; j++)
+                      for (int j = 0; j < r * 2; j++)
                         {
                             //color = new Color(bi.getRGB(rang.getX() + j, rang.getY() + i));
                             //int f = color.getRed();
@@ -81,11 +84,11 @@ namespace Fract
                     domen = setAfinnInt(domen, rang.getAfinn());
 
                     //преобразование яркости
-                    domen = changeBright(domen, rang.getBright());
+                    //domen = changeBright(domen, rang.getBright());
 
                     //;
-                    for (int i = 0; i < r; i++)
-                        for (int j = 0; j < r; j++)
+                    for (int i = 0; i < r/rang.getK(); i++)
+                        for (int j = 0; j < r / rang.getK(); j++)
                         {
                             //bi.setRGB(rang.getX0() + j, rang.getY0() + i, domen[i, j] + (domen[i, j] << 8) + (domen[i, j] << 16));
                             color = Color.FromArgb(domen[i, j]);
