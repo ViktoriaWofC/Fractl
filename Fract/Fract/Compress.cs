@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Fract
 {
-    public class Compress
+    public class Compress : Compression
     {
         private List<Rang> rangList = new List<Rang>();
         private int r;//размер рангового блока

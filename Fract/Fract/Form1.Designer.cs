@@ -53,6 +53,8 @@
             this.label5 = new System.Windows.Forms.Label();
             this.radioButtonBase = new System.Windows.Forms.RadioButton();
             this.radioButtonQuadro = new System.Windows.Forms.RadioButton();
+            this.label6 = new System.Windows.Forms.Label();
+            this.comboBoxClassif = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).BeginInit();
@@ -72,7 +74,7 @@
             this.groupBox1.Controls.Add(this.numberRangSize);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 59);
+            this.groupBox1.Location = new System.Drawing.Point(12, 78);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(423, 116);
             this.groupBox1.TabIndex = 0;
@@ -163,7 +165,7 @@
             this.groupBox2.Controls.Add(this.numberIteracDecompr);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(454, 59);
+            this.groupBox2.Location = new System.Drawing.Point(454, 78);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(447, 116);
             this.groupBox2.TabIndex = 1;
@@ -341,11 +343,34 @@
             this.radioButtonQuadro.Text = "Квадродеревом";
             this.radioButtonQuadro.UseVisualStyleBackColor = true;
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(38, 49);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(91, 13);
+            this.label6.TabIndex = 9;
+            this.label6.Text = "Классификация:";
+            // 
+            // comboBoxClassif
+            // 
+            this.comboBoxClassif.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxClassif.FormattingEnabled = true;
+            this.comboBoxClassif.Items.AddRange(new object[] {
+            "Без классификации",
+            "на основе нахождения центра масс"});
+            this.comboBoxClassif.Location = new System.Drawing.Point(135, 46);
+            this.comboBoxClassif.Name = "comboBoxClassif";
+            this.comboBoxClassif.Size = new System.Drawing.Size(177, 21);
+            this.comboBoxClassif.TabIndex = 10;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 678);
+            this.Controls.Add(this.comboBoxClassif);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.radioButtonQuadro);
             this.Controls.Add(this.radioButtonBase);
             this.Controls.Add(this.label5);
@@ -406,6 +431,8 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.RadioButton radioButtonBase;
         private System.Windows.Forms.RadioButton radioButtonQuadro;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ComboBox comboBoxClassif;
     }
 }
 

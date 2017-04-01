@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classification.cs" />
+    <Compile Include="ClassificationCentrMass.cs" />
+    <Compile Include="CompressClassification.cs" />
+    <Compile Include="Compression.cs" />
     <Compile Include="CompressQuadro.cs" />
     <Compile Include="Compress.cs" />
     <Compile Include="Decompress.cs" />

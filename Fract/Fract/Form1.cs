@@ -17,13 +17,16 @@ namespace Fract
 
         int[,] pixels;
         int n, m;
-        Compress compress;
+        //Compress compress;
+        Classification classification;
+        Compression compress;
         List<Rang> rangList;
         Decompress decompress;
 
         public Form1()
         {
             InitializeComponent();
+            comboBoxClassif.SelectedIndex = 0;
         }
 
         private void buttonDecompress_Click(object sender, EventArgs e)
@@ -151,6 +154,8 @@ namespace Fract
                 numberRangSize.Value = 8;
             }
 
+            //if Classification
+
             //
             int argb = 0;
             Color color;
@@ -176,7 +181,13 @@ namespace Fract
 
             String s = "";
 
-            compress = new Compress(pixels, r, eps);
+            if (comboBoxClassif.SelectedIndex == 0)
+                compress = new Compress(pixels, r, eps);
+            else if (comboBoxClassif.SelectedIndex == 1)
+            {
+                classification = classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
+                compress = new CompressClassification(pixels, r, eps, classification);
+            }
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
@@ -239,79 +250,67 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            String test = "";
 
-            String fileName = "D:/университет/диплом/fractImage/baseClet2.jpg";
+            string test = "";
+            m = bitStart.Width;
+            n = bitStart.Height;
+            pixels = new int[n, m];
 
-            //тест сжатия домен блока до рангового
-            Bitmap bitTest = new Bitmap(Image.FromFile(fileName));
-            //int hh = 32, z = hh / 2;
-            int hh = 64;//bitTest.Width;
-            int z = hh / 2;
-
-            //int hh = 16;
-            //int z = hh / 2;
-
-            int[,] domenBig = new int[hh, hh];
-            int[,] domen = new int[z, z];
-            int[,] domenBr = new int[z, z];
-            int[,] rang = new int[z, z];
-            Color color;
-
-            //for (int i = 0; i < hh; i++)
-            //    for (int j = 0; j < hh; j++)
-            //    {
-            //        domenBig[i, j] = bitStart.GetPixel(j, 32+i).ToArgb();
-            //    }
-
-            for (int i = 0; i < z; i++)
-                for (int j = 0; j < z; j++)
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
                 {
-                    domen[i, j] = bitStart.GetPixel(j, bitStart.Height - z + i).ToArgb();
+                    //argb = bi.getRGB(j,i);
+                    //color = new Color(argb);
+                    //f = color.getRed();
+                    //pixels[i][j] = f;
+                    //pixels[i][j] = getRGBValue(bi, j, i);
+                    pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+
                 }
 
-            //for (int i = 0; i < z; i++)
-            //    for (int j = 0; j < z; j++)
-            //    {
-            //        rang[i, j] = bitStart.GetPixel(j,i+16).ToArgb();
-            //    }
+            int r;// = Convert.ToInt32(numberRangSize.Value);
+            int eps = Convert.ToInt32(numberCoefCompress.Value);
 
+            r = Convert.ToInt32(numberRangSize.Value);
+            int nDom = n / r - 1;
+            int mDom = m / r - 1;
 
-            pictureBoxEndImage.Image = bitTest;
-            int x = 0;// bitTest.Width - z;
-            int y = 0;// bitTest.Height - z;
+            int[,] rang = new int[r, r];
+            int[,] domen = new int[r*2, r*2];
+            int[,] classRang = new int[n / r, m / r];
+            int[,] classDomen = new int[nDom, mDom];
 
+            if (comboBoxClassif.SelectedIndex == 1)
+                classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
 
-            //////////////////////////////test change bright
-            bool b = false;
-            int kk = 0;
-            double bright = 4;
-            while ((bright >= 0.25) && (b == false))
-            {
-
-                domenBr = changeBright(domen, bright);
-
-                //if (compareBlocs(rang, changeBright(domen, bright)))
+            //перебор ранговых блоков
+            for (int i = 0; i < n / r; i++)
+                for (int j = 0; j < m / r; j++)
                 {
-                    //b = true;
-                    //ran = new Rang(jd * r, id * r, h, k, x, y, bright);
-                }
-                //else 
-                {
-                    if (bright / 2 == 1)
-                        bright = bright / 4;
-                    else 
-                    bright = bright / 2;
+                    //выделяем ранговый блок
+                    for (int ii = 0; ii < r; ii++)
+                        for (int jj = 0; jj < r; jj++)
+                            rang[ii, jj] = pixels[r * i + ii, r * j + jj];
+
+                    classRang[i, j] = classification.getClass(rang);
                 }
 
-                for (int i = 0; i < z; i++)
-                    for (int j = 0; j < z; j++)
-                    {
-                        color = Color.FromArgb(domenBr[i, j]);
-                        bitTest.SetPixel(x + j + 40, y + i+kk*z+15, color);
-                    }
-                kk++;
-            }
+            //перебор доменных блоков
+            for (int i = 0; i < nDom; i++)
+                for (int j = 0; j < mDom; j++)
+                {
+                    //выделяем доменных блок
+                    for (int ii = 0; ii < r*2; ii++)
+                        for (int jj = 0; jj < r*2; jj++)
+                            domen[ii, jj] = pixels[r * i + ii, r * j + jj];
+
+                    classDomen[i, j] = classification.getClass(domen);
+                }
+
+
+            test += classification.getName();
+            //pictureBoxEndImage.Image = bitTest;
+            textBoxTest.Text = test;
             //////////////////////////////////////////
 
 
@@ -336,7 +335,8 @@ namespace Fract
             //        bitTest.SetPixel(x + j+70, y + i, color);
             //    }
 
-            pictureBoxEndImage.Image = bitTest;
+            //pictureBoxEndImage.Image = bitTest;
+            //textBoxTest.Text = test;
             //////////////////////////////////////////////////////////
 
             //bool rf = compareBlocs(rang, domen, 200);
@@ -376,7 +376,7 @@ namespace Fract
             //long i7 = Convert.ToInt32((d - (i1 << 51) - (i2 << 40) - (i3 << 29) - (i4 << 25) - (i5 << 21) - (i6 << 10)));
             //test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
 
-            textBoxTest.Text = test;
+            //textBoxTest.Text = test;
         }
 
         public bool compareBlocs(int[,] rang, int[,] domen, double epsilon)
