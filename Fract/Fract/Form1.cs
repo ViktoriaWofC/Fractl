@@ -185,7 +185,7 @@ namespace Fract
                 compress = new Compress(pixels, r, eps);
             else if (comboBoxClassif.SelectedIndex == 1)
             {
-                classification = classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
+                classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
                 compress = new CompressClassification(pixels, r, eps, classification);
             }
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);

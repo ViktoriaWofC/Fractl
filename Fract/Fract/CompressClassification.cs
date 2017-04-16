@@ -48,7 +48,7 @@ namespace Fract
             int[,] rang = new int[r, r];// ранговый блок
 
             classificationDomen();
-
+            
             //перебор ранговых блоков
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
@@ -83,6 +83,20 @@ namespace Fract
 
                     classDomen[i, j] = classification.getClass(domen);
                 }
+
+            int c0 = 0, c1 = 0, c2 = 0, c3 = 0, c4 = 0;
+            for (int i = 0; i < nDom; i++)
+                for (int j = 0; j < mDom; j++)
+                {
+                    if (classDomen[i, j] == 0) c0++;
+                    else if (classDomen[i, j] == 1) c1++;
+                    else if (classDomen[i, j] == 1) c2++;
+                    else if (classDomen[i, j] == 1) c3++;
+                    else c4++;
+                }
+
+            string tkjhgf = "jhghjk";
+            tkjhgf = "fguhghj";
         }
 
         public void getDomenBloc(int[,] rang, int k, int x, int y)
@@ -101,71 +115,76 @@ namespace Fract
             int id = 0;
             int jd = 0;
 
+            int classRang = classification.getClass(rang);
+
             while ((id < n - 1) && (b == false))
             {
                 jd = 0;
                 while ((jd < m - 1) && (b == false))
                 {
-                    int sum = 0;
-                    //выделяем доменный блок
-                    for (int i = 0; i < r * 2; i++)
-                        for (int j = 0; j < r * 2; j++)
-                            domenBig[i, j] = pix[r * id + i, r * jd + j];
+                    if(classRang==classDomen[id,jd])
+                    { 
+                        int sum = 0;
+                        //выделяем доменный блок
+                        for (int i = 0; i < r * 2; i++)
+                            for (int j = 0; j < r * 2; j++)
+                                domenBig[i, j] = pix[r * id + i, r * jd + j];
 
-                    int d = 0;
-                    //и уменьшаем его усреднением
-                    //
-                    Color color;// = new Color(domen[i][j]);
-                    //
-                    for (int i = 0; i < z * 2; i = i + 2 * k)//i++)z
-                        for (int j = 0; j < z * 2; j = j + 2 * k)//j++)z
-                        {
-                            sum = 0;
-                            for (int ii = 0; ii < 2 * k; ii++)
-                                for (int jj = 0; jj < 2 * k; jj++)
-                                {
-                                    color = Color.FromArgb(domenBig[i + ii, j + jj]);
-                                    sum += color.R;
-                                }
-                            d = (int)(sum / Math.Pow(4, k));
-
-
-                            color = Color.FromArgb(d, d, d);
-                            domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
-                        }
-
-
-                    //сравниваем ранговый и доменный блок
-                    int h = 0;
-                    for (int afi = 0; afi < domen.GetLength(0); afi++)
-                        for (int afj = 0; afj < domen.GetLength(0); afj++)
-                            domenAfin[afi, afj] = domen[afi, afj];
-
-                    while ((h < 6) && (b == false))
-                    {
-                        if (compareBlocs(rang, domenAfin))//if (compareBlocs(rang, domen))
-                        {
-                            b = true;
-                            ran = new Rang(jd * r, id * r, h, k, x, y, 1);
-                        }
-                        else {
-                            /*double bright = 4;
-                            while ((bright >= 0.25) && (b == false))
+                        int d = 0;
+                        //и уменьшаем его усреднением
+                        //
+                        Color color;// = new Color(domen[i][j]);
+                        //
+                        for (int i = 0; i < z * 2; i = i + 2 * k)//i++)z
+                            for (int j = 0; j < z * 2; j = j + 2 * k)//j++)z
                             {
-                                if (compareBlocs(rang, changeBright(domenAfin, bright)))
+                                sum = 0;
+                                for (int ii = 0; ii < 2 * k; ii++)
+                                    for (int jj = 0; jj < 2 * k; jj++)
+                                    {
+                                        color = Color.FromArgb(domenBig[i + ii, j + jj]);
+                                        sum += color.R;
+                                    }
+                                d = (int)(sum / Math.Pow(4, k));
+
+
+                                color = Color.FromArgb(d, d, d);
+                                domen[i / (2 * k), j / (2 * k)] = color.ToArgb();
+                            }
+
+
+                        //сравниваем ранговый и доменный блок
+                        int h = 0;
+                        for (int afi = 0; afi < domen.GetLength(0); afi++)
+                            for (int afj = 0; afj < domen.GetLength(0); afj++)
+                                domenAfin[afi, afj] = domen[afi, afj];
+
+                        while ((h < 6) && (b == false))
+                        {
+                            if (compareBlocs(rang, domenAfin))//if (compareBlocs(rang, domen))
+                            {
+                                b = true;
+                                ran = new Rang(jd * r, id * r, h, k, x, y, 1);
+                            }
+                            else {
+                                /*double bright = 4;
+                                while ((bright >= 0.25) && (b == false))
                                 {
-                                    b = true;
-                                    ran = new Rang(jd * r, id * r, h, k, x, y, bright);
-                                }
-                                else {
-                                    if (bright / 2 == 1)
-                                        bright = bright / 4;
-                                    else bright = bright / 2;
-                                }
-                            }*/
-                            h++;
-                            domenAfin = setAfinnInt(domen, h);
-                        }
+                                    if (compareBlocs(rang, changeBright(domenAfin, bright)))
+                                    {
+                                        b = true;
+                                        ran = new Rang(jd * r, id * r, h, k, x, y, bright);
+                                    }
+                                    else {
+                                        if (bright / 2 == 1)
+                                            bright = bright / 4;
+                                        else bright = bright / 2;
+                                    }
+                                }*/
+                                h++;
+                                domenAfin = setAfinnInt(domen, h);
+                            }
+                        }                        
                     }
                     jd++;
                 }

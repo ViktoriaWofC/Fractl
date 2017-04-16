@@ -36,12 +36,12 @@ namespace Fract
                     sum += color.R;
                 }
                     
-
             res = sum / count;
-            if (sum < 50) k = 0;
-            else if(sum < 100) k = 1;
-            else if (sum < 150) k = 2;
-            else if (sum < 200) k = 3;
+
+            if (res < 50) k = 0;
+            else if(res < 100) k = 1;
+            else if (res < 150) k = 2;
+            else if (res < 200) k = 3;
             else k = 4;
 
             return k;
