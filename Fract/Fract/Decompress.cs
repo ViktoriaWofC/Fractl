@@ -81,10 +81,11 @@ namespace Fract
                             domen[i / (2 * rang.getK()), j / (2 * rang.getK())] = color.ToArgb();
                         }
 
+                    //афинное преобразование
                     domen = setAfinnInt(domen, rang.getAfinn());
 
                     //преобразование яркости
-                    //domen = changeBright(domen, rang.getBright());
+                    domen = changeBright(domen, rang.getBright());
 
                     //;
                     for (int i = 0; i < r/rang.getK(); i++)

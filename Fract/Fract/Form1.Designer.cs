@@ -31,7 +31,6 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonCompress = new System.Windows.Forms.Button();
             this.buttonOpenImage = new System.Windows.Forms.Button();
-            this.numberCoefCompress = new System.Windows.Forms.NumericUpDown();
             this.numberRangSize = new System.Windows.Forms.NumericUpDown();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,8 +54,9 @@
             this.radioButtonQuadro = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxClassif = new System.Windows.Forms.ComboBox();
+            this.numberCoefCompressBar = new System.Windows.Forms.TrackBar();
+            this.numberCoefCompress = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberIteracDecompr)).BeginInit();
@@ -64,26 +64,29 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStartImage)).BeginInit();
             this.panelEndImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.numberCoefCompress);
+            this.groupBox1.Controls.Add(this.numberCoefCompressBar);
             this.groupBox1.Controls.Add(this.buttonCompress);
             this.groupBox1.Controls.Add(this.buttonOpenImage);
-            this.groupBox1.Controls.Add(this.numberCoefCompress);
             this.groupBox1.Controls.Add(this.numberRangSize);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 78);
+            this.groupBox1.Location = new System.Drawing.Point(12, 54);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(423, 116);
+            this.groupBox1.Size = new System.Drawing.Size(423, 140);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настройки компрессии";
             // 
             // buttonCompress
             // 
-            this.buttonCompress.Location = new System.Drawing.Point(207, 85);
+            this.buttonCompress.Location = new System.Drawing.Point(207, 109);
             this.buttonCompress.Name = "buttonCompress";
             this.buttonCompress.Size = new System.Drawing.Size(165, 23);
             this.buttonCompress.TabIndex = 5;
@@ -93,7 +96,7 @@
             // 
             // buttonOpenImage
             // 
-            this.buttonOpenImage.Location = new System.Drawing.Point(19, 85);
+            this.buttonOpenImage.Location = new System.Drawing.Point(19, 109);
             this.buttonOpenImage.Name = "buttonOpenImage";
             this.buttonOpenImage.Size = new System.Drawing.Size(142, 23);
             this.buttonOpenImage.TabIndex = 4;
@@ -101,26 +104,9 @@
             this.buttonOpenImage.UseVisualStyleBackColor = true;
             this.buttonOpenImage.Click += new System.EventHandler(this.buttonOpenImage_Click);
             // 
-            // numberCoefCompress
-            // 
-            this.numberCoefCompress.Location = new System.Drawing.Point(160, 56);
-            this.numberCoefCompress.Maximum = new decimal(new int[] {
-            4000000,
-            0,
-            0,
-            0});
-            this.numberCoefCompress.Name = "numberCoefCompress";
-            this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
-            this.numberCoefCompress.TabIndex = 3;
-            this.numberCoefCompress.Value = new decimal(new int[] {
-            20000,
-            0,
-            0,
-            0});
-            // 
             // numberRangSize
             // 
-            this.numberRangSize.Location = new System.Drawing.Point(160, 27);
+            this.numberRangSize.Location = new System.Drawing.Point(156, 19);
             this.numberRangSize.Maximum = new decimal(new int[] {
             32,
             0,
@@ -143,7 +129,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(16, 56);
+            this.label2.Location = new System.Drawing.Point(12, 48);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(145, 13);
             this.label2.TabIndex = 1;
@@ -152,7 +138,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 27);
+            this.label1.Location = new System.Drawing.Point(12, 19);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(137, 13);
             this.label1.TabIndex = 0;
@@ -165,16 +151,16 @@
             this.groupBox2.Controls.Add(this.numberIteracDecompr);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(454, 78);
+            this.groupBox2.Location = new System.Drawing.Point(454, 54);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(447, 116);
+            this.groupBox2.Size = new System.Drawing.Size(447, 140);
             this.groupBox2.TabIndex = 1;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Настройки декомпрессии";
             // 
             // buttonDecompress
             // 
-            this.buttonDecompress.Location = new System.Drawing.Point(82, 87);
+            this.buttonDecompress.Location = new System.Drawing.Point(78, 109);
             this.buttonDecompress.Name = "buttonDecompress";
             this.buttonDecompress.Size = new System.Drawing.Size(165, 23);
             this.buttonDecompress.TabIndex = 6;
@@ -315,7 +301,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 24);
+            this.label5.Location = new System.Drawing.Point(13, 3);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(116, 13);
             this.label5.TabIndex = 7;
@@ -325,7 +311,7 @@
             // 
             this.radioButtonBase.AutoSize = true;
             this.radioButtonBase.Checked = true;
-            this.radioButtonBase.Location = new System.Drawing.Point(136, 24);
+            this.radioButtonBase.Location = new System.Drawing.Point(136, 3);
             this.radioButtonBase.Name = "radioButtonBase";
             this.radioButtonBase.Size = new System.Drawing.Size(70, 17);
             this.radioButtonBase.TabIndex = 8;
@@ -336,7 +322,7 @@
             // radioButtonQuadro
             // 
             this.radioButtonQuadro.AutoSize = true;
-            this.radioButtonQuadro.Location = new System.Drawing.Point(299, 24);
+            this.radioButtonQuadro.Location = new System.Drawing.Point(299, 3);
             this.radioButtonQuadro.Name = "radioButtonQuadro";
             this.radioButtonQuadro.Size = new System.Drawing.Size(106, 17);
             this.radioButtonQuadro.TabIndex = 8;
@@ -346,7 +332,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(38, 49);
+            this.label6.Location = new System.Drawing.Point(38, 28);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 13);
             this.label6.TabIndex = 9;
@@ -358,11 +344,40 @@
             this.comboBoxClassif.FormattingEnabled = true;
             this.comboBoxClassif.Items.AddRange(new object[] {
             "Без классификации",
-            "на основе нахождения центра масс"});
-            this.comboBoxClassif.Location = new System.Drawing.Point(135, 46);
+            "на основе нахождения центра масс",
+            "на основе разницы граничных значений"});
+            this.comboBoxClassif.Location = new System.Drawing.Point(135, 25);
             this.comboBoxClassif.Name = "comboBoxClassif";
-            this.comboBoxClassif.Size = new System.Drawing.Size(177, 21);
+            this.comboBoxClassif.Size = new System.Drawing.Size(201, 21);
             this.comboBoxClassif.TabIndex = 10;
+            // 
+            // numberCoefCompressBar
+            // 
+            this.numberCoefCompressBar.Location = new System.Drawing.Point(19, 64);
+            this.numberCoefCompressBar.Maximum = 4000;
+            this.numberCoefCompressBar.Name = "numberCoefCompressBar";
+            this.numberCoefCompressBar.Size = new System.Drawing.Size(389, 45);
+            this.numberCoefCompressBar.TabIndex = 6;
+            this.numberCoefCompressBar.Value = 2000;
+            this.numberCoefCompressBar.ValueChanged += new System.EventHandler(this.numberCoefCompressBar_ValueChanged);
+            // 
+            // numberCoefCompress
+            // 
+            this.numberCoefCompress.Location = new System.Drawing.Point(156, 46);
+            this.numberCoefCompress.Maximum = new decimal(new int[] {
+            4000,
+            0,
+            0,
+            0});
+            this.numberCoefCompress.Name = "numberCoefCompress";
+            this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
+            this.numberCoefCompress.TabIndex = 7;
+            this.numberCoefCompress.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numberCoefCompress.ValueChanged += new System.EventHandler(this.numberCoefCompress_ValueChanged);
             // 
             // Form1
             // 
@@ -388,7 +403,6 @@
             this.Text = "Фрактальное сжатие";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -399,6 +413,8 @@
             this.panelEndImage.ResumeLayout(false);
             this.panelEndImage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -413,7 +429,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown numberRangSize;
-        private System.Windows.Forms.NumericUpDown numberCoefCompress;
         private System.Windows.Forms.NumericUpDown numberIteracDecompr;
         private System.Windows.Forms.ComboBox comboBoxBaseImage;
         private System.Windows.Forms.Button buttonOpenImage;
@@ -433,6 +448,8 @@
         private System.Windows.Forms.RadioButton radioButtonQuadro;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxClassif;
+        private System.Windows.Forms.NumericUpDown numberCoefCompress;
+        private System.Windows.Forms.TrackBar numberCoefCompressBar;
     }
 }
 

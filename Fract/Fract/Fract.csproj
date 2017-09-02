@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Classification.cs" />
     <Compile Include="ClassificationCentrMass.cs" />
+    <Compile Include="ClassificationDifference.cs" />
     <Compile Include="CompressClassification.cs" />
     <Compile Include="Compression.cs" />
     <Compile Include="CompressQuadro.cs" />

@@ -165,6 +165,7 @@ namespace Fract
             n = bitStart.Height;
             pixels = new int[n, m];
 
+            //получаем массив интовых чисел из изображения
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
                 {
@@ -181,11 +182,17 @@ namespace Fract
 
             String s = "";
 
+            //проверем, использовать классификацию или нет
             if (comboBoxClassif.SelectedIndex == 0)
                 compress = new Compress(pixels, r, eps);
             else if (comboBoxClassif.SelectedIndex == 1)
             {
                 classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
+                compress = new CompressClassification(pixels, r, eps, classification);
+            }
+            else if (comboBoxClassif.SelectedIndex == 2)
+            {
+                classification = new ClassificationDifference(Convert.ToString(comboBoxClassif.SelectedItem));
                 compress = new CompressClassification(pixels, r, eps, classification);
             }
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
@@ -245,6 +252,15 @@ namespace Fract
 
         }
 
+        private void numberCoefCompress_ValueChanged(object sender, EventArgs e)
+        {
+            numberCoefCompressBar.Value = Convert.ToInt32(numberCoefCompress.Value);
+        }
+
+        private void numberCoefCompressBar_ValueChanged(object sender, EventArgs e)
+        {
+            numberCoefCompress.Value = Convert.ToDecimal(numberCoefCompressBar.Value);
+        }
 
         /// ////////////////////////////////
 
@@ -507,6 +523,8 @@ namespace Fract
             return p;
         }
 
+        
+
 
         /// //////////////////////////////////////////////////////////////
 
@@ -593,6 +611,7 @@ namespace Fract
             }
         }
 
+        //получение изображение в оттенках серого
         public Bitmap getGrey(Bitmap bit)
         {
             int grey;
