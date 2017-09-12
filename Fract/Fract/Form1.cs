@@ -266,8 +266,11 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
+            
+            
+            //Image image = Bitmap.
 
-            string test = "";
+            /*string test = "";
             m = bitStart.Width;
             n = bitStart.Height;
             pixels = new int[n, m];
@@ -327,6 +330,7 @@ namespace Fract
             test += classification.getName();
             //pictureBoxEndImage.Image = bitTest;
             textBoxTest.Text = test;
+            */
             //////////////////////////////////////////
 
 

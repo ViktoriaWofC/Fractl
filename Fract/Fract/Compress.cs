@@ -19,6 +19,8 @@ namespace Fract
         private int m;//количество блоков по ширине
         private double epsilon;//коэффициент компрессии?
 
+        // 
+
         //
         private String sss;
         private int jhgjhg = 0;
@@ -139,26 +141,30 @@ namespace Fract
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
                 if (r / k >= 2)//(r / k >= 4)
-                    //while (ran == null)
-                    {
-                        int[,] rangDop = new int[z / 2, z / 2];
-                        for (int ir = 0; ir < 2; ir++)
-                            for (int jr = 0; jr < 2; jr++)
-                            {
-                                //выделяем ранговый блок
-                                for (int i = 0; i < z / 2; i++)
-                                    for (int j = 0; j < z / 2; j++)
-                                        rangDop[i,j] = pix[x + ir * z / 2 + i, y + jr * z / 2 + j];
+                               //while (ran == null)
+                {
+                    int[,] rangDop = new int[z / 2, z / 2];
+                    for (int ir = 0; ir < 2; ir++)
+                        for (int jr = 0; jr < 2; jr++)
+                        {
+                            //выделяем ранговый блок
+                            for (int i = 0; i < z / 2; i++)
+                                for (int j = 0; j < z / 2; j++)
+                                    rangDop[i, j] = pix[x + ir * z / 2 + i, y + jr * z / 2 + j];
 
-                                getDomenBloc(rangDop, k, x + ir * z / 2, y + jr * z / 2);//x*r,y*r
-                            }
+                            getDomenBloc(rangDop, k, x + ir * z / 2, y + jr * z / 2);//x*r,y*r
+                        }
 
-                    }
+                }
                 //ran = new Rang(0, 0, 0,k,x,y);
                 //rangList.add(ran);
 
             }
-            else rangList.Add(ran);
+            else
+            {
+                rangList.Add(ran);
+                printBlock(ran, rangList.Count-1);
+            }
 
             //return ran;
         }
@@ -330,6 +336,43 @@ namespace Fract
             return block;
         }
 
+        public void printBlock(Rang rang, int k)
+        {
+            Bitmap bitmap = new Bitmap(pix.GetLength(1), pix.GetLength(0));
+            Color color;// = Color.White;
+            //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
 
+            for(int i = 0; i < bitmap.Width; i++)
+                for (int j = 0; j < bitmap.Height; j++)
+                {
+                    if (i % r != 0 && j % r != 0)
+                        bitmap.SetPixel(i, j, Color.White);
+                    else bitmap.SetPixel(i, j, Color.Black);
+                }
+
+            for (int i = 0; i < r; i++)
+                for (int j = 0; j < r; j++)
+                {
+                    bitmap.SetPixel(rang.getX0()+i, rang.getY0()+j, Color.FromArgb(pix[rang.getX0() + i, rang.getY0() + j]));
+                }
+
+            for (int i = 0; i < r*2; i++)
+                for (int j = 0; j < r*2; j++)
+                {
+                    bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getX() + i, rang.getY() + j]));
+                }
+
+            try
+            {
+
+                bitmap.Save("D:\\университет\\диплом\\bloks\\"+k+".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                    //"Check the file permissions.");
+            }
+        }
     }
 }
