@@ -15,7 +15,7 @@ namespace Fract
         private int width;//ширина картинки
         private int height;//высота картинки
                            //private int n;//количество блоков по высоте
-                           //private int m;//количество блоков по ширине
+                           //private int m;//количество блоков по ширине        
 
         public Decompress(List<Rang> rangList, Bitmap bi, int r)//Decompress(List<Rang> rangList, BufferedImage bi, int r)
         {
@@ -32,6 +32,7 @@ namespace Fract
         {
             int[,] domen;// = new int[r, r];
             int[,] domenBig = new int[r * 2, r * 2];
+            int R, D;
 
             Color color;
 
@@ -40,11 +41,13 @@ namespace Fract
                 foreach (Rang rang in rangList)
                 {
                     //domen = new int[r, r];
-                    domen = new int[r / rang.getK(), r / rang.getK()];
+                    R = r / rang.getK();
+                    D = R * 2;
+                    domen = new int[R,R];
 
                     //выделяем доменный блок
-                    for (int i = 0; i < r * 2; i++)
-                      for (int j = 0; j < r * 2; j++)
+                    for (int i = 0; i < D; i++)
+                      for (int j = 0; j < D; j++)
                         {
                             //color = new Color(bi.getRGB(rang.getX() + j, rang.getY() + i));
                             //int f = color.getRed();
@@ -56,40 +59,18 @@ namespace Fract
 
                     int d = 0, sum = 0;
                     //и уменьшаем его усреднением
-                    for (int i = 0; i < r*2; i = i + 2 * rang.getK()) //i++)r
-                        for (int j = 0; j < r*2; j = j + 2 * rang.getK()) //j++)r
-                        {
-                            sum = 0;
-                            for (int ii = 0; ii < 2 * rang.getK(); ii++)
-                                for (int jj = 0; jj < 2 * rang.getK(); jj++)
-                                {
-                                    //color = new Color(domenBig[i * 2 * rang.getK() + ii][j * 2 * rang.getK() + jj]);
-                                    //sum += color.getRed();
-                                    //sum += domenBig[i * 2 * rang.getK() + ii, j * 2 * rang.getK() + jj];
-                                    color = Color.FromArgb(domenBig[i + ii, j + jj]);
-                                    sum += color.R;
-                                }
-
-
-                            d = (int)(sum / Math.Pow(4, rang.getK()));
-
-                            //color = new Color(d,d,d);
-                            //domen[i][j] = color.getRGB();
-                            //domen[i, j] = d;
-
-                            color = Color.FromArgb(d, d, d);
-                            domen[i / (2 * rang.getK()), j / (2 * rang.getK())] = color.ToArgb();
-                        }
+                    domen = reduceBlock(domenBig);
 
                     //афинное преобразование
                     domen = setAfinnInt(domen, rang.getAfinn());
 
                     //преобразование яркости
-                    domen = changeBright(domen, rang.getBright());
+                    //domen = changeBright(domen, rang.getBright());
+                    domen = changeBright(domen, rang.getS(), rang.getO());
 
                     //;
-                    for (int i = 0; i < r/rang.getK(); i++)
-                        for (int j = 0; j < r / rang.getK(); j++)
+                    for (int i = 0; i < R; i++)
+                        for (int j = 0; j < R; j++)
                         {
                             //bi.setRGB(rang.getX0() + j, rang.getY0() + i, domen[i, j] + (domen[i, j] << 8) + (domen[i, j] << 16));
                             color = Color.FromArgb(domen[i, j]);
@@ -97,6 +78,7 @@ namespace Fract
 
                         }
                 }
+                printDecompression(g);
             }
             //
             //Color color = new Color(domen[0][0]);
@@ -175,6 +157,51 @@ namespace Fract
                             p[y, x] = pix[i, j];
                         }
                 }
+                else if (k == 6)//k=1 + k=4
+                {
+                    int[,] p2 = new int[n, n];
+
+                    //поворот на 90(k=1)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - i;
+                            y = j;
+                            p2[y, x] = pix[i, j];
+                        }
+
+
+                    //отражение по вертикали (k=4)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - j;
+                            y = i;
+                            p[y, x] = p2[i, j];
+                        }
+
+                }
+                else if (k == 7)//k=3 + k=4
+                {
+                    int[,] p2 = new int[n, n];
+                    //поворот на 270 (k=3)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = i;
+                            y = n - 1 - j;
+                            p2[y, x] = pix[i, j];
+                        }
+
+                    //отражение по вертикали (k=4)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - j;
+                            y = i;
+                            p[y, x] = p2[i, j];
+                        }
+                }
             }
 
             if (k == 0)
@@ -201,6 +228,74 @@ namespace Fract
                     p[i, j] = color.ToArgb();
                 }
             return p;
+        }
+
+        public int[,] changeBright(int[,] pix, double s, double o)
+        {
+            int n = pix.GetLength(0);
+            double x;
+            int[,] p = new int[n, n];
+            Color color;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
+                    //x = (color.R-o) / s;
+                    x = s * color.R + o;
+                    /*x = color.R;//color.getRed();
+                    x = (int)(x * k);*/
+                    if (x > 255)
+                        x = 255;
+                    if (x < 0)
+                        x = 0;
+                    color = Color.FromArgb((int)x, (int)x, (int)x);
+                    p[i, j] = color.ToArgb();
+                }
+            return p;
+        }
+
+        public int[,] reduceBlock(int[,] blockBig)
+        {
+            int n = blockBig.GetLength(0);
+            int[,] block = new int[n / 2, n / 2];
+            Color color;// = new Color(domen[i][j]);
+            int d = 0, sum;
+            for (int i = 0; i < n; i = i + 2)
+                for (int j = 0; j < n; j = j + 2)
+                {
+                    sum = 0;
+
+                    //color = Color.FromArgb(blockBig[i + ii, j + jj]);
+                    sum += Color.FromArgb(blockBig[i, j]).R;
+                    sum += Color.FromArgb(blockBig[i + 1, j]).R;
+                    sum += Color.FromArgb(blockBig[i, j + 1]).R;
+                    sum += Color.FromArgb(blockBig[i + 1, j + 1]).R;
+
+                    //d = (int)(sum / Math.Pow(4, k));
+                    d = (int)(sum / 4);
+
+
+                    color = Color.FromArgb(d, d, d);
+                    block[i / 2, j / 2] = color.ToArgb();
+                    //block[i / (2 * k), j / (2 * k)] = color.ToArgb();
+                }
+            return block;
+        }
+
+        public void printDecompression(int k)
+        { 
+            try
+            {
+
+                bi.Save("D:\\университет\\диплом\\bloks\\Decompression_" + (k+1) + ".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                //"Check the file permissions.");
+            }
         }
     }
 }

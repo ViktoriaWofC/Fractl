@@ -17,8 +17,11 @@ namespace Fract
         private int x0;
         private int y0;
         private double bright;
+        private double s;
+        private double o;
 
-        public Rang(int x, int y, int afinn, int k, int x0, int y0, double bright)
+        //public Rang(int x, int y, int afinn, int k, int x0, int y0, double bright)
+        public Rang(int x, int y, int afinn, int k, int x0, int y0, double s, double o)
         {
             this.x = x;
             this.y = y;
@@ -28,7 +31,9 @@ namespace Fract
             this.x0 = x0;
             this.y0 = y0;
 
-            this.bright = bright;
+            //this.bright = bright;
+            this.s = s;
+            this.o = o;
         }
 
         public int getX()
@@ -64,6 +69,16 @@ namespace Fract
         public double getBright()
         {
             return bright;
+        }
+
+        public double getS()
+        {
+            return s;
+        }
+
+        public double getO()
+        {
+            return o;
         }
 
     }

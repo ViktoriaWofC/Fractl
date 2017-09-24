@@ -183,7 +183,8 @@ namespace Fract
             String s = "";
 
             //проверем, использовать классификацию или нет
-            if (comboBoxClassif.SelectedIndex == 0)
+            compress = new Compress(pixels, r, eps);
+            /*if (comboBoxClassif.SelectedIndex == 0)
                 compress = new Compress(pixels, r, eps);
             else if (comboBoxClassif.SelectedIndex == 1)
             {
@@ -194,7 +195,7 @@ namespace Fract
             {
                 classification = new ClassificationDifference(Convert.ToString(comboBoxClassif.SelectedItem));
                 compress = new CompressClassification(pixels, r, eps, classification);
-            }
+            }*/
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();

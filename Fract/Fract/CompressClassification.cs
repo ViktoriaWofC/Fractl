@@ -147,7 +147,7 @@ namespace Fract
                             if (compareBlocs(rang, domen))//if (compareBlocs(rang, domenAfin))
                             {
                                 b = true;
-                                ran = new Rang(jd * r, id * r, h, k, x, y, 1);
+                                //ran = new Rang(jd * r, id * r, h, k, x, y, 1);
                             }
                             else {
                                 double bright = 4;
@@ -156,7 +156,7 @@ namespace Fract
                                     if (compareBlocs(rang, changeBright(domen, bright)))//changeBright(domenAfin, bright))
                                     {
                                         b = true;
-                                        ran = new Rang(jd * r, id * r, h, k, x, y, bright);
+                                        //ran = new Rang(jd * r, id * r, h, k, x, y, bright);
                                     }
                                     else {
                                         if (bright / 2 == 1)
