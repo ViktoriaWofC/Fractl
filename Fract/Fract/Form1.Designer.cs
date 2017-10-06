@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.numberCoefCompress = new System.Windows.Forms.NumericUpDown();
+            this.numberCoefCompressBar = new System.Windows.Forms.TrackBar();
             this.buttonCompress = new System.Windows.Forms.Button();
             this.buttonOpenImage = new System.Windows.Forms.Button();
             this.numberRangSize = new System.Windows.Forms.NumericUpDown();
@@ -54,9 +57,13 @@
             this.radioButtonQuadro = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxClassif = new System.Windows.Forms.ComboBox();
-            this.numberCoefCompressBar = new System.Windows.Forms.TrackBar();
-            this.numberCoefCompress = new System.Windows.Forms.NumericUpDown();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.button1 = new System.Windows.Forms.Button();
+            this.textBoxRangNumber = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).BeginInit();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberIteracDecompr)).BeginInit();
@@ -64,8 +71,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStartImage)).BeginInit();
             this.panelEndImage.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -83,6 +88,34 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Настройки компрессии";
+            // 
+            // numberCoefCompress
+            // 
+            this.numberCoefCompress.Location = new System.Drawing.Point(156, 46);
+            this.numberCoefCompress.Maximum = new decimal(new int[] {
+            4000,
+            0,
+            0,
+            0});
+            this.numberCoefCompress.Name = "numberCoefCompress";
+            this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
+            this.numberCoefCompress.TabIndex = 7;
+            this.numberCoefCompress.Value = new decimal(new int[] {
+            2000,
+            0,
+            0,
+            0});
+            this.numberCoefCompress.ValueChanged += new System.EventHandler(this.numberCoefCompress_ValueChanged);
+            // 
+            // numberCoefCompressBar
+            // 
+            this.numberCoefCompressBar.Location = new System.Drawing.Point(19, 64);
+            this.numberCoefCompressBar.Maximum = 4000;
+            this.numberCoefCompressBar.Name = "numberCoefCompressBar";
+            this.numberCoefCompressBar.Size = new System.Drawing.Size(389, 45);
+            this.numberCoefCompressBar.TabIndex = 6;
+            this.numberCoefCompressBar.Value = 2000;
+            this.numberCoefCompressBar.ValueChanged += new System.EventHandler(this.numberCoefCompressBar_ValueChanged);
             // 
             // buttonCompress
             // 
@@ -351,39 +384,45 @@
             this.comboBoxClassif.Size = new System.Drawing.Size(201, 21);
             this.comboBoxClassif.TabIndex = 10;
             // 
-            // numberCoefCompressBar
+            // notifyIcon1
             // 
-            this.numberCoefCompressBar.Location = new System.Drawing.Point(19, 64);
-            this.numberCoefCompressBar.Maximum = 4000;
-            this.numberCoefCompressBar.Name = "numberCoefCompressBar";
-            this.numberCoefCompressBar.Size = new System.Drawing.Size(389, 45);
-            this.numberCoefCompressBar.TabIndex = 6;
-            this.numberCoefCompressBar.Value = 2000;
-            this.numberCoefCompressBar.ValueChanged += new System.EventHandler(this.numberCoefCompressBar_ValueChanged);
+            this.notifyIcon1.Text = "notifyIcon1";
+            this.notifyIcon1.Visible = true;
             // 
-            // numberCoefCompress
+            // button1
             // 
-            this.numberCoefCompress.Location = new System.Drawing.Point(156, 46);
-            this.numberCoefCompress.Maximum = new decimal(new int[] {
-            4000,
-            0,
-            0,
-            0});
-            this.numberCoefCompress.Name = "numberCoefCompress";
-            this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
-            this.numberCoefCompress.TabIndex = 7;
-            this.numberCoefCompress.Value = new decimal(new int[] {
-            2000,
-            0,
-            0,
-            0});
-            this.numberCoefCompress.ValueChanged += new System.EventHandler(this.numberCoefCompress_ValueChanged);
+            this.button1.Location = new System.Drawing.Point(826, 617);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 49);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "Показать\r\nдетали";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // textBoxRangNumber
+            // 
+            this.textBoxRangNumber.Location = new System.Drawing.Point(705, 644);
+            this.textBoxRangNumber.Name = "textBoxRangNumber";
+            this.textBoxRangNumber.Size = new System.Drawing.Size(100, 20);
+            this.textBoxRangNumber.TabIndex = 12;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(620, 647);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(77, 13);
+            this.label7.TabIndex = 13;
+            this.label7.Text = "Номер блока:";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 678);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.textBoxRangNumber);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBoxClassif);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.radioButtonQuadro);
@@ -403,6 +442,8 @@
             this.Text = "Фрактальное сжатие";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberRangSize)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -413,8 +454,6 @@
             this.panelEndImage.ResumeLayout(false);
             this.panelEndImage.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxEndImage)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -450,6 +489,10 @@
         private System.Windows.Forms.ComboBox comboBoxClassif;
         private System.Windows.Forms.NumericUpDown numberCoefCompress;
         private System.Windows.Forms.TrackBar numberCoefCompressBar;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBoxRangNumber;
+        private System.Windows.Forms.Label label7;
     }
 }
 

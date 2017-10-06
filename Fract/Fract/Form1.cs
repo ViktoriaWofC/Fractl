@@ -58,7 +58,14 @@ namespace Fract
             }
 
             try {
-                bitEnd = new Bitmap(Image.FromFile(fileName));
+                Bitmap bEnd = new Bitmap(Image.FromFile(fileName));
+                //bitEnd = new Bitmap(Image.FromFile(fileName));
+                bitEnd = new Bitmap(bitStart.Width, bitStart.Height);
+                int width = bitStart.Width, height = bitStart.Height;
+                for (int i = 0; i < width; i++)
+                    for (int j = 0; j < height; j++)
+                        bitEnd.SetPixel(i, j, bEnd.GetPixel(i, j));
+
                 pictureBoxEndImage.Image = bitEnd;
 
                 DecompressFunc();
@@ -155,7 +162,7 @@ namespace Fract
             }
 
             //if Classification
-
+            
             //
             int argb = 0;
             Color color;
@@ -198,17 +205,23 @@ namespace Fract
             }
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
 
+
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
             //compr.compressImage();
             compress.compressImage();
             //rangList = compr.getRangList();
             rangList = compress.getRangList();
             DateTime t2 = DateTime.Now;//System.currentTimeMillis();
+
+
             String ss = "compress time :" + (t2 - t1);
+            s += "Размер изображения: "+bitStart.Width+" x "+bitStart.Height+"\n";
             s += ss + " ";
 
             String str = "!!!";
             labelCompressCharacteristic.Text = s;
+
+            
 
 
             ///
@@ -528,7 +541,25 @@ namespace Fract
             return p;
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int number = Convert.ToInt32(textBoxRangNumber.Text);
+            int r;// = Convert.ToInt32(numberRangSize.Value);
+            int eps = Convert.ToInt32(numberCoefCompress.Value);
+
+            if (radioButtonBase.Checked)
+            {
+                r = Convert.ToInt32(numberRangSize.Value);
+            }
+            else {
+                r = 8;
+                numberRangSize.Value = 8;
+            }
+            FormRandDetails formRandDetails = new FormRandDetails(rangList[number], pixels, r, eps);
+            formRandDetails.Show();
+        }
+
+
 
 
         /// //////////////////////////////////////////////////////////////

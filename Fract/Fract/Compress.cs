@@ -45,11 +45,11 @@ namespace Fract
         {
             return rangList;
         }
-
+                
         public void compressImage()
         {
             bool b = false;
-            int[,] rang = new int[r,r];// ранговый блок
+            int[,] rang = new int[r, r];// ранговый блок
 
             //перебор ранговых блоков
             for (int i = 0; i < n; i++)
@@ -58,11 +58,12 @@ namespace Fract
                     //выделяем ранговый блок
                     for (int ii = 0; ii < r; ii++)
                         for (int jj = 0; jj < r; jj++)
-                            rang[ii,jj] = pix[r * i + ii, r * j + jj];
+                            rang[ii, jj] = pix[r * i + ii, r * j + jj];
 
                     //пербор доменных блоков
                     getDomenBloc(rang, 1, j * r, i * r);
                     //rangsList.add(ran);
+
                 }
 
             //
@@ -85,7 +86,7 @@ namespace Fract
             int[,] domenBig = new int[D, D];//доменный блок
 
             double minSKO = 10000000;
-            Rang minRang = new Rang(0,0,0,0,0,0,0,0);
+            Rang minRang = new Rang(0,0,0,0,0,0,0,0, epsilon);
 
             bool b = false;
             int id = 0;
@@ -126,12 +127,18 @@ namespace Fract
                         s = so[0];
                         o = so[1];
 
+                        ///
+                        if (s == 0.0432511133949983 && o == 29.784600890716)
+                            s = so[0];
+                        ///
+
                         for (int i = 0; i < R; i++)
                             for (int j = 0; j < R; j++)
                             {
                                 colorDomen = Color.FromArgb(domen[i, j]);
                                 colorRang = Color.FromArgb(rang[i, j]);
-                                sko = sko + ((s * colorDomen.R + o) - colorRang.R) * ((s * colorDomen.R + o) - colorRang.R);
+                                double per = (s * colorDomen.R + o) - colorRang.R;
+                                sko = sko + (per) * (per);
                                 //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
                             }
 
@@ -163,7 +170,7 @@ namespace Fract
                         s = so[0];
                         o = so[1];
 
-                        ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o);
+                        ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
                     }
                     else
                     {
@@ -176,7 +183,7 @@ namespace Fract
                             o = so[1];
 
                             minSKO = min;
-                            minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o);
+                            minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
                         }
                     }
                     jd++;
@@ -271,6 +278,18 @@ namespace Fract
         public void SaveSumCompare()
         {
             File.WriteAllText(@"sum_compare.txt", sss);
+        }
+
+        public void printRang(int z)
+        {
+            Rang rang = rangList[z];
+            String text = ""
+                + "Afin = "+ rang.getAfinn()+ "\r\n"
+                + "k = " + rang.getK() + "\r\n"
+                + "s = " + rang.getS() + "\r\n"
+                + "o = " + rang.getO() + "\r\n"
+                + "epsilon = " + rang.getEpsilon();
+            File.WriteAllText(@"Rang_"+z+".txt", text);
         }
 
         public int[,] changeBright(int[,] pix, double k)
@@ -476,6 +495,7 @@ namespace Fract
             Color color;// = Color.White;
             int R = r / rang.getK();//размер рангового блока
             int D = R*2;//размер доменного блока
+            int[,] rangMatr = new int[R, R];
             //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
 
             for (int i = 0; i < bitmap.Width-otst; i++)
@@ -490,6 +510,7 @@ namespace Fract
                 for (int j = 0; j < R; j++)
                 {
                     bitmap.SetPixel(rang.getX0()+i, rang.getY0()+j, Color.FromArgb(pix[rang.getX0() + i, rang.getY0() + j]));
+                    rangMatr[i,j] = pix[rang.getX0() + i, rang.getY0() + j];
                 }
 
             for (int i = 0; i < D; i++)
@@ -508,30 +529,47 @@ namespace Fract
                     domen[i,j] = pix[rang.getX() + i, rang.getY() + j];
                 }
 
-            domenAfin = setAfinnInt(domen, rang.getAfinn());
-            for (int i = 0; i < D; i++)
-                for (int j = 0; j < D; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5+R*2+10) + j, Color.FromArgb(domenAfin[i,j]));
-                }
-            //domenBright = changeBright(domenAfin,rang.getBright());
-            domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
-            for (int i = 0; i < D; i++)
-                for (int j = 0; j < D; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 4 + 20) + j, Color.FromArgb(domenBright[i, j]));
-                }
-            domenMin = reduceBlock(domenBright);
+            domenMin = reduceBlock(domen);            
             for (int i = 0; i < R; i++)
                 for (int j = 0; j < R; j++)
                 {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 30) + j, Color.FromArgb(domenMin[i, j]));
+                    bitmap.SetPixel(width + 5 + i, (5+R*2+10) + j, Color.FromArgb(domenMin[i,j]));
                 }
 
+            domenAfin = setAfinnInt(domenMin, rang.getAfinn());            
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenAfin[i, j]));
+                }
+
+            domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[i, j]));
+                }
+
+            //rang block
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 40) + j, Color.FromArgb(rangMatr[i, j]));
+                }
+
+            //difference
+            int argbcolor;
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    //argbcolor = Math.Abs(Color.FromArgb(rangMatr[i, j]).R - Color.FromArgb(domenBright[i, j]).R);
+                    argbcolor = Math.Abs(Color.FromArgb(domenBright[i, j]).R - Color.FromArgb(rangMatr[i, j]).R);
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 7 + 50) + j, Color.FromArgb(argbcolor, argbcolor, argbcolor));
+                }
 
             try
             {
-                String name = k + "___k="+rang.getK()+"__";
+                String name = k + "___k="+rang.getK()+"__" + "E="+epsilon + "____e=" + rang.getEpsilon() + "__";
                 bitmap.Save("D:\\университет\\диплом\\bloks\\"+name+".jpg");
                 //Button5.Text = "Saved file.";
             }
@@ -540,6 +578,9 @@ namespace Fract
                 //MessageBox.Show("There was a problem saving the file." +
                     //"Check the file permissions.");
             }
+
+            if (k == 0)
+                printRang(k);
         }
 
         public double[] getSO(int[,] rang, int[,] domen)

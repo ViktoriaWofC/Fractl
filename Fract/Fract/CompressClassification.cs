@@ -65,7 +65,7 @@ namespace Fract
             //SaveSumCompare();
             //return rangsList;
         }
-
+        
         public List<Rang> getRangList()
         {
             return rangList;
@@ -86,7 +86,7 @@ namespace Fract
             int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
             int[,] domenBig = new int[D, D];//доменный блок
 
-            double minSKO = 10000000;
+            double minSKO = 1000000000;
             Rang minRang = new Rang(0, 0, 0, 0, 0, 0, 0, 0);
 
             bool b = false;
@@ -529,15 +529,14 @@ namespace Fract
             for (int i = 0; i < D; i++)
                 for (int j = 0; j < D; j++)
                 {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 4 + 20) + j, Color.FromArgb(domenBright[i, j]));
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenBright[i, j]));
                 }
             domenMin = reduceBlock(domenBright);
             for (int i = 0; i < R; i++)
                 for (int j = 0; j < R; j++)
                 {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 30) + j, Color.FromArgb(domenMin[i, j]));
-                }
-
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 4 + 30) + j, Color.FromArgb(domenMin[i, j]));
+                }            
 
             try
             {
