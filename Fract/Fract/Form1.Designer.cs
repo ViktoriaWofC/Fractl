@@ -154,7 +154,7 @@
             this.numberRangSize.Size = new System.Drawing.Size(120, 20);
             this.numberRangSize.TabIndex = 2;
             this.numberRangSize.Value = new decimal(new int[] {
-            2,
+            8,
             0,
             0,
             0});

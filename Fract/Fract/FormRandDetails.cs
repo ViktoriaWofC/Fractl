@@ -105,11 +105,18 @@ namespace Fract
 
             label7.Text = "Епсилон = " + epsilon;
             label8.Text = "СКО = " + rang.getEpsilon();
-            label9.Text = "k = " + rang.getK();
+            label9.Text = "k = " + rang.getK()+ "   s = "+rang.getS()+"   o = "+rang.getO();
 
             label10.Text = "";
             label10.Text = "СКО = " + getSKO(rangMatr, domenMin);
-            label11.Text = "СКО = " + getSKO(rangMatr, domenAfin);
+
+            double[] so = getSO(rangMatr, domenAfin);
+            double s = so[0];
+            double o = so[1];
+
+            label11.Text = "СКО = " + getSKO(rangMatr, domenAfin)+"    s = "+s+"   o = "+o;
+
+            ///
             label12.Text = "СКО = " + getSKO(rangMatr, domenBright);
         }
 

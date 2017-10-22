@@ -160,18 +160,18 @@ namespace Fract
                     }
 
                     //сравниваем с коэффициентом компрессии
-                    if (min < epsilon)
-                    {
-                        b = true;
+                    //if (min < epsilon)
+                    //{
+                    //    b = true;
 
-                        int afin = skoMass.IndexOf(min);
-                        domenAfin = setAfinnInt(domen, afin);
-                        so = getSO(rang, domenAfin);
-                        s = so[0];
-                        o = so[1];
+                    //    int afin = skoMass.IndexOf(min);
+                    //    domenAfin = setAfinnInt(domen, afin);
+                    //    so = getSO(rang, domenAfin);
+                    //    s = so[0];
+                    //    o = so[1];
 
-                        ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
-                    }
+                    //    ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                    //}
                     else
                     {
                         if(min<minSKO)
@@ -190,12 +190,21 @@ namespace Fract
                 }
                 id++;
             }
+            //test
+            if (minSKO < epsilon)
+            {
+                b = true;
+                
+                ran = new Rang(minRang.getX(), minRang.getY(), minRang.getAfinn(), minRang.getK(), minRang.getX0(), minRang.getY0(), minRang.getS(), minRang.getO(), minSKO);
+            }
+            //////////////////////
+
             //если для рангового блока не нашли доменного
             if (ran == null)
             {
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
-                if (r / k >= 4)//(r / k >= 4)  //while (ran == null)
+                if (r / k >= 2)//(r / k >= 2)  //while (ran == null)
                 {
                     int newR = r / k;
                     int[,] rangDop = new int[newR, newR];
