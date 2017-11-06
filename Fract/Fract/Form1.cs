@@ -172,8 +172,8 @@ namespace Fract
             pixels = new int[n, m];
 
             //получаем массив интовых чисел из изображения
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < m; j++)
+            for (int i = 0; i < n; i++)//строки
+                for (int j = 0; j < m; j++)//столбцы
                 {
                     //argb = bi.getRGB(j,i);
                     //color = new Color(argb);
@@ -307,7 +307,7 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            
+            ShortCompressFunc();
             
             //Image image = Bitmap.
 
@@ -471,6 +471,31 @@ namespace Fract
             return b;
         }
 
+        public int[,] changeBright(int[,] pix, double s, double o)
+        {
+            int n = pix.GetLength(0);
+            double x;
+            int[,] p = new int[n, n];
+            Color color;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
+                    //x = (color.R - o) / s;
+                    x = s * color.R + o;
+                    /*x = color.R;//color.getRed();
+                    x = (int)(x * k);*/
+                    if (x > 255)
+                        x = 255;
+                    if (x < 0)
+                        x = 0;
+                    color = Color.FromArgb((int)x, (int)x, (int)x);
+                    p[i, j] = color.ToArgb();
+                }
+            return p;
+        }
+
         public int[,] setAfinnInt(int[,] pix, int k)
         {
             //int argb;
@@ -540,6 +565,51 @@ namespace Fract
                             p[y, x] = pix[i, j];
                         }
                 }
+                else if (k == 6)//k=1 + k=4
+                {
+                    int[,] p2 = new int[n, n];
+
+                    //поворот на 90(k=1)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - i;
+                            y = j;
+                            p2[y, x] = pix[i, j];
+                        }
+
+
+                    //отражение по вертикали (k=4)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - j;
+                            y = i;
+                            p[y, x] = p2[i, j];
+                        }
+
+                }
+                else if (k == 7)//k=3 + k=4
+                {
+                    int[,] p2 = new int[n, n];
+                    //поворот на 270 (k=3)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = i;
+                            y = n - 1 - j;
+                            p2[y, x] = pix[i, j];
+                        }
+
+                    //отражение по вертикали (k=4)
+                    for (int i = 0; i < n; i++)
+                        for (int j = 0; j < n; j++)
+                        {
+                            x = n - 1 - j;
+                            y = i;
+                            p[y, x] = p2[i, j];
+                        }
+                }
             }
 
             if (k == 0)
@@ -547,25 +617,163 @@ namespace Fract
             else return p;
         }
 
-        public int[,] changeBright(int[,] pix, double k)
+        public int[,] reduceBlock(int[,] blockBig)
         {
-            int n = pix.GetLength(0);
-            int x;
-            int[,] p = new int[n, n];
-            Color color;
-
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < n; j++)
+            int n = blockBig.GetLength(0);
+            int[,] block = new int[n / 2, n / 2];
+            Color color;// = new Color(domen[i][j]);
+            int d = 0, sum;
+            for (int i = 0; i < n; i = i + 2)
+                for (int j = 0; j < n; j = j + 2)
                 {
-                    color = Color.FromArgb(pix[i, j]);//new Color(pix[i,j]);
-                    x = color.R;//color.getRed();
-                    x = (int)(x * k);
-                    if (x > 255)
-                        x = 255;
-                    color = Color.FromArgb(x, x, x);
-                    p[i, j] = color.ToArgb();
+                    sum = 0;
+
+                    //color = Color.FromArgb(blockBig[i + ii, j + jj]);
+                    sum += Color.FromArgb(blockBig[i, j]).R;
+                    sum += Color.FromArgb(blockBig[i + 1, j]).R;
+                    sum += Color.FromArgb(blockBig[i, j + 1]).R;
+                    sum += Color.FromArgb(blockBig[i + 1, j + 1]).R;
+
+                    //d = (int)(sum / Math.Pow(4, k));
+                    d = (int)(sum / 4);
+
+
+                    color = Color.FromArgb(d, d, d);
+                    block[i / 2, j / 2] = color.ToArgb();
+                    //block[i / (2 * k), j / (2 * k)] = color.ToArgb();
                 }
-            return p;
+            return block;
+        }
+
+        /*public void printBlock(Rang rang, int k)
+        {
+            int otst = r * 2 + 10;
+            int width = pix.GetLength(1);
+            Bitmap bitmap = new Bitmap(width + otst, pix.GetLength(0));
+            Color color;// = Color.White;
+            int R = r / rang.getK();//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int[,] rangMatr = new int[R, R];
+            //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
+
+            for (int i = 0; i < bitmap.Width - otst; i++)
+                for (int j = 0; j < bitmap.Height; j++)
+                {
+                    if (i % r != 0 && j % r != 0)
+                        bitmap.SetPixel(i, j, Color.White);
+                    else bitmap.SetPixel(i, j, Color.Black);
+                }
+
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(rang.getX0() + i, rang.getY0() + j, Color.FromArgb(pix[rang.getX0() + i, rang.getY0() + j]));
+                    rangMatr[i, j] = pix[rang.getX0() + i, rang.getY0() + j];
+                }
+
+            for (int i = 0; i < D; i++)
+                for (int j = 0; j < D; j++)
+                {
+                    bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getX() + i, rang.getY() + j]));
+                }
+
+            //////////////////////////////////////////
+            int[,] domen = new int[D, D], domenAfin, domenBright;
+            int[,] domenMin = new int[R, R];
+            for (int i = 0; i < D; i++)
+                for (int j = 0; j < D; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, 5 + j, Color.FromArgb(pix[rang.getX() + i, rang.getY() + j]));
+                    domen[i, j] = pix[rang.getX() + i, rang.getY() + j];
+                }
+
+            domenMin = reduceBlock(domen);
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 2 + 10) + j, Color.FromArgb(domenMin[i, j]));
+                }
+
+            domenAfin = setAfinnInt(domenMin, rang.getAfinn());
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenAfin[i, j]));
+                }
+
+            domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[i, j]));
+                }
+
+            //rang block
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 40) + j, Color.FromArgb(rangMatr[i, j]));
+                }
+
+            //difference
+            int argbcolor;
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    //argbcolor = Math.Abs(Color.FromArgb(rangMatr[i, j]).R - Color.FromArgb(domenBright[i, j]).R);
+                    argbcolor = Math.Abs(Color.FromArgb(domenBright[i, j]).R - Color.FromArgb(rangMatr[i, j]).R);
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 7 + 50) + j, Color.FromArgb(argbcolor, argbcolor, argbcolor));
+                }
+
+            try
+            {
+                String name = k + "___k=" + rang.getK() + "__" + "E=" + epsilon + "____e=" + rang.getEpsilon() + "__";
+                bitmap.Save("D:\\университет\\диплом\\bloks\\" + name + ".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                //"Check the file permissions.");
+            }
+
+            if (k == 0)
+                printRang(k);
+        }*/
+
+        public double[] getSO(int[,] rang, int[,] domen)
+        {
+            int N = rang.GetLength(0);
+            double s = 0, o = 0, D = 0, R = 0, a = 0, b = 0;
+            Color colorDomen, colorRang;
+
+            for (int i = 0; i < N; i++)
+                for (int j = 0; j < N; j++)
+                {
+                    colorDomen = Color.FromArgb(domen[i, j]);
+                    colorRang = Color.FromArgb(rang[i, j]);
+                    R = R + colorRang.R;
+                    D = D + colorDomen.R;
+                }
+
+            R = R / (N * N);
+            D = D / (N * N);
+
+            for (int i = 0; i < N; i++)
+                for (int j = 0; j < N; j++)
+                {
+                    colorDomen = Color.FromArgb(domen[i, j]);
+                    colorRang = Color.FromArgb(rang[i, j]);
+                    a = a + (colorDomen.R - D) * (colorRang.R - R);
+                    b = b + (colorDomen.R - D) * (colorDomen.R - D);
+                }
+
+            s = a / b;
+            if (b == 0 && a == 0)
+                s = 0;
+            o = R - s * D;
+
+            return new double[] { s, o };
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -587,7 +795,74 @@ namespace Fract
         }
 
 
+        public void ShortCompressFunc()
+        {
+            int number = Convert.ToInt32(textBoxTest.Text);
 
+            Rang rang = rangList[number];
+
+            double[] so;
+            double s, o, sko;
+            List<double> skoMass = new List<double>();
+            int R = compress.getR() / rang.getK();//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] rangMatr = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
+            int[,] domenBig = new int[D, D];//доменный блок
+            Color colorRang, colorDomen;
+            String test = "";
+
+            for (int i = 0; i < D; i++)
+                for (int j = 0; j < D; j++)
+                {
+                    domenBig[i, j] = pixels[rang.getX() + i, rang.getY() + j];
+                }
+
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    rangMatr[i, j] = pixels[rang.getX0() + i, rang.getY0() + j];
+                }
+
+            //уменьшаем его усреднением
+            domen = reduceBlock(domenBig);
+
+            //вычисляемм все СКО
+            for (int h = 0; h < 8; h++)
+            {
+                sko = 0;
+                //skoMass.Clear();// = new double[8];
+
+                domenAfin = setAfinnInt(domen, h);
+                so = getSO(rangMatr, domenAfin);
+                s = so[0];
+                o = so[1];
+
+
+                for (int i = 0; i < R; i++)
+                    for (int j = 0; j < R; j++)
+                    {
+                        colorDomen = Color.FromArgb(domen[i, j]);
+                        colorRang = Color.FromArgb(rangMatr[i, j]);
+                        double per = (s * colorDomen.R + o) - colorRang.R;
+                        sko = sko + (per) * (per);
+                        //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                    }
+
+                skoMass.Add(sko);//skoMass[h] = sko;
+
+                test += "afin = " + h
+                + "\r\n s = " + s
+                + "\r\n o = " + o
+                + "\r\n eps = " + sko
+                + "\r\n ------------------------------------- \r\n";
+            }
+
+
+            textBoxTest.Text = test;
+
+        }
 
         /// //////////////////////////////////////////////////////////////
 

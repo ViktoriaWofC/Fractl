@@ -71,7 +71,11 @@ namespace Fract
             return rangList;
         }
 
-       
+        public int getR()
+        {
+            return r;
+        }
+
         public void getDomenBloc(int[,] rang, int k, int x0, int y0)
         {
             //x - начальная координата блока

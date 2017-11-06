@@ -51,6 +51,10 @@ namespace Fract
                 }
             pictureBoxDomen.Image = bitmap;
 
+            label7.Text = "Епсилон = " + epsilon;
+            label8.Text = "СКО = " + rang.getEpsilon();
+            label9.Text = "k = " + rang.getK() + "   s = " + rang.getS() + "   o = " + rang.getO();
+
             //////////////////////////////////////////            
 
             bitmap = new Bitmap(35, 35);
@@ -62,6 +66,12 @@ namespace Fract
                 }
             pictureBoxDomenReduce.Image = bitmap;
 
+            label10.Text = "";
+            label10.Text = "СКО = " + getSKO(rangMatr, domenMin);
+
+
+            //////////////////////////////////////////   
+
             bitmap = new Bitmap(35, 35);
             domenAfin = setAfinnInt(domenMin, rang.getAfinn());
             for (int i = 0; i < R; i++)
@@ -71,6 +81,15 @@ namespace Fract
                 }
             pictureBoxDomenAfin.Image = bitmap;
 
+            double[] so = getSO(rangMatr, domenAfin);
+            double s = so[0];
+            double o = so[1];
+
+            label11.Text = "СКО = " + getSKO(rangMatr, domenAfin) + "    s = " + s + "   o = " + o;
+
+
+            //////////////////////////////////////////   
+
             bitmap = new Bitmap(35, 35);
             domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
             for (int i = 0; i < R; i++)
@@ -79,6 +98,11 @@ namespace Fract
                     bitmap.SetPixel(i, j, Color.FromArgb(domenBright[i, j]));
                 }
             pictureBoxDomenBright.Image = bitmap;
+
+            ///
+            label12.Text = "СКО = " + getSKO(rangMatr, domenBright);
+
+            //////////////////////////////////////////   
 
             //rang
             bitmap = new Bitmap(35, 35);
@@ -103,21 +127,7 @@ namespace Fract
 
             /////////////////////////////////////////////////////////////////
 
-            label7.Text = "Епсилон = " + epsilon;
-            label8.Text = "СКО = " + rang.getEpsilon();
-            label9.Text = "k = " + rang.getK()+ "   s = "+rang.getS()+"   o = "+rang.getO();
-
-            label10.Text = "";
-            label10.Text = "СКО = " + getSKO(rangMatr, domenMin);
-
-            double[] so = getSO(rangMatr, domenAfin);
-            double s = so[0];
-            double o = so[1];
-
-            label11.Text = "СКО = " + getSKO(rangMatr, domenAfin)+"    s = "+s+"   o = "+o;
-
-            ///
-            label12.Text = "СКО = " + getSKO(rangMatr, domenBright);
+            
         }
 
         public double getSKO(int[,] ran, int[,] domen)

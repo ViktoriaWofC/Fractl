@@ -15,6 +15,8 @@ namespace Fract
         int[,] setAfinnInt(int[,] pix, int k);
         List<Rang> getRangList();
 
+        int getR();
+
         ///test function
         void SaveSumCompare();
     }

@@ -38,6 +38,18 @@ namespace Fract
 
             for (int g = 0; g < k; g++)
             {
+                int m = bi.Width;
+                int n = bi.Height;
+                int[,] pixels = new int[n, m];
+
+                //получаем массив интовых чисел из изображения
+                for (int i = 0; i < n; i++)//строки
+                    for (int j = 0; j < m; j++)//столбцы
+                    {
+                        pixels[i, j] = bi.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+
+                    }
+
                 foreach (Rang rang in rangList)
                 {
                     //domen = new int[r, r];
@@ -54,8 +66,18 @@ namespace Fract
                             //domenBig[i][j] = f;//bi.getRGB(rang.getX() + j, rang.getY() + i);
                             //domenBig[i][j] = bi.getRGB(rang.getX() + j, rang.getY() + i);
                             //domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
-                            domenBig[i, j] = bi.GetPixel(rang.getX() + j, rang.getY() + i).ToArgb(); 
+
+                            domenBig[i, j] = bi.GetPixel(rang.getX() + j, rang.getY() + i).ToArgb();
+                            //domenBig[i, j] = bi.GetPixel(rang.getX() + i, rang.getY() + j).ToArgb();
+                            //domenBig[j, i] = pixels[rang.getY() + j, rang.getX() + i];
+
+                            //bitmap.SetPixel(width + 5 + i, 5 + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
+                            //domen[j, i] = pix[rang.getY() + j, rang.getX() + i];
                         }
+
+                    //pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();
+                    //domen[j, i] = pix[rang.getY() + j, rang.getX() + i];
+                    //bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
 
                     int d = 0, sum = 0;
                     //и уменьшаем его усреднением
@@ -75,6 +97,12 @@ namespace Fract
                             //bi.setRGB(rang.getX0() + j, rang.getY0() + i, domen[i, j] + (domen[i, j] << 8) + (domen[i, j] << 16));
                             color = Color.FromArgb(domen[i, j]);
                             bi.SetPixel(rang.getX0() + j, rang.getY0() + i,color);
+                            //color = Color.FromArgb(domen[j, i]);
+                            //bi.SetPixel(rang.getX0() + i, rang.getY0() + j, color);
+                            //pixels[i, j] = bi.GetPixel(j, i).ToArgb();
+
+                            //bitmap.SetPixel(rang.getX0() + i, rang.getY0() + j, Color.FromArgb(pix[rang.getY0() + j, rang.getX0() + i]));
+                            //rangMatr[j, i] = pix[rang.getY0() + j, rang.getX0() + i];
 
                         }
                 }
