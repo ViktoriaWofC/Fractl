@@ -86,6 +86,8 @@ namespace Fract
             int D = R * 2;//размер доменного блока
             int N = height / R ;//количество блоков по высоте
             int M = width / R;//количество блоков по ширине
+            //int N = height - D + 1;//количество блоков по высоте
+            //int M = width  - D + 1;//количество блоков по ширине
 
             //int domenSize = rang.GetLength(0);//размер доменного блока = размер рангового
             //int f = r * 2 / z;//кол-во усредняемых пикселей
@@ -100,16 +102,22 @@ namespace Fract
             int id = 0;
             int jd = 0;
 
-            while ((id < N - 1) && (b == false))
+            //while ((id < N) && (b == false))
+            while ((id < N - 1) && (b == false))             
             {
                 jd = 0;
+                //while ((jd < M) && (b == false))
                 while ((jd < M - 1) && (b == false))
                 {
                     int sum = 0;
                     //выделяем доменный блок
                     for (int i = 0; i < D; i++)
                         for (int j = 0; j < D; j++)
-                            domenBig[i,j] = pix[R * id + i, R * jd + j];
+                        {
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+                            //domenBig[i, j] = pix[id + i, jd + j];
+                        }
+                            
 
                     //уменьшаем его усреднением
                     domen = reduceBlock(domenBig);
@@ -179,46 +187,47 @@ namespace Fract
                     }
 
                     //сравниваем с коэффициентом компрессии
-                    if (min < epsilon)
-                    {
-                        b = true;
+                    //if (min < epsilon)
+                    //{
+                    //    //b = true;
 
-                        int afin = skoMass.IndexOf(min);
-                        domenAfin = setAfinnInt(domen, afin);
-                        so = getSO(rang, domenAfin);
-                        s = so[0];
-                        o = so[1];
+                    //    int afin = skoMass.IndexOf(min);
+                    //    domenAfin = setAfinnInt(domen, afin);
+                    //    so = getSO(rang, domenAfin);
+                    //    s = so[0];
+                    //    o = so[1];
 
-                        ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                    //    ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                    //    //ran = new Rang(jd, id, afin, k, x0, y0, s, o, min);
 
-                        ///
+                    //    ///
 
-                        //String dom = "";
-                        //dom += "\r\n\r\n rang \r\n";
+                    //    //String dom = "";
+                    //    //dom += "\r\n\r\n rang \r\n";
 
-                        //for (int i = 0; i < R; i++)
-                        //    for (int j = 0; j < R; j++)
-                        //        dom += rang[i,j]+"\r\n";
+                    //    //for (int i = 0; i < R; i++)
+                    //    //    for (int j = 0; j < R; j++)
+                    //    //        dom += rang[i,j]+"\r\n";
 
-                        //dom += "\r\n\r\n domen \r\n";
+                    //    //dom += "\r\n\r\n domen \r\n";
 
-                        //for (int i = 0; i < R; i++)
-                        //    for (int j = 0; j < R; j++)
-                        //        dom += domen[i, j] + "\r\n";
+                    //    //for (int i = 0; i < R; i++)
+                    //    //    for (int j = 0; j < R; j++)
+                    //    //        dom += domen[i, j] + "\r\n";
 
 
-                        //test += "\r\n x0 = " + ran.getX0()+ "    y0 = " + ran.getY0() + "    x = " + ran.getX()+ "    y = " + ran.getY()
-                        //    +"   afin = "+afin
-                        //    + "\r\ns = " + s+ "\r\no = " + o
-                        //    + "\r\n ------------------------------------- \r\n";
-                        //test += dom;
-                        //String name = rangList.Count + "___k=" + ran.getK() + "__" + "E=" + epsilon + "____e=" + ran.getEpsilon() + "__";
+                    //    //test += "\r\n x0 = " + ran.getX0()+ "    y0 = " + ran.getY0() + "    x = " + ran.getX()+ "    y = " + ran.getY()
+                    //    //    +"   afin = "+afin
+                    //    //    + "\r\ns = " + s+ "\r\no = " + o
+                    //    //    + "\r\n ------------------------------------- \r\n";
+                    //    //test += dom;
+                    //    //String name = rangList.Count + "___k=" + ran.getK() + "__" + "E=" + epsilon + "____e=" + ran.getEpsilon() + "__";
 
-                        //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_txt\\" + name + ".txt", test);
+                    //    //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_txt\\" + name + ".txt", test);
 
-                        //printBlock(ran, rang, domenBig, domen, domenAfin, rangList.Count);
-                    }
-                    else
+                    //    //printBlock(ran, rang, domenBig, domen, domenAfin, rangList.Count);
+                    //}
+                    //else
                     {
                         if(min<minSKO)
                         {
@@ -230,6 +239,7 @@ namespace Fract
 
                             minSKO = min;
                             minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                            //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
                         }
                     }
                     jd++;
