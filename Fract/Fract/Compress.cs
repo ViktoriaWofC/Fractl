@@ -50,8 +50,18 @@ namespace Fract
         {
             return r;
         }
-                
-        public void compressImage()
+
+        public void compressImage(string searchDomen)
+        {
+            if (searchDomen.Equals("first<eps"))
+                compressImageFirst();
+            else if (searchDomen.Equals("min"))
+                compressImageMin();
+            else if (searchDomen.Equals("min and <eps"))
+                compressImageDivide();
+        }
+
+        public void compressImageMin()
         {
             bool b = false;
             int[,] rang = new int[r, r];// ранговый блок
@@ -66,7 +76,7 @@ namespace Fract
                             rang[ii, jj] = pix[r * i + ii, r * j + jj];
 
                     //пербор доменных блоков
-                    getDomenBloc(rang, 1, j * r, i * r);
+                    getDomenBlocMin(rang, 1, j * r, i * r);
                     //rangsList.add(ran);
 
                 }
@@ -76,7 +86,57 @@ namespace Fract
             //return rangsList;
         }
 
-        public void getDomenBloc(int[,] rang, int k, int x0, int y0)
+        public void compressImageFirst()
+        {
+            bool b = false;
+            int[,] rang = new int[r, r];// ранговый блок
+
+            //перебор ранговых блоков
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                {
+                    //выделяем ранговый блок
+                    for (int ii = 0; ii < r; ii++)
+                        for (int jj = 0; jj < r; jj++)
+                            rang[ii, jj] = pix[r * i + ii, r * j + jj];
+
+                    //пербор доменных блоков
+                    getDomenBlocFirst(rang, 1, j * r, i * r);
+                    //rangsList.add(ran);
+
+                }
+
+            //
+            //SaveSumCompare();
+            //return rangsList;
+        }
+
+        public void compressImageDivide()
+        {
+            bool b = false;
+            int[,] rang = new int[r, r];// ранговый блок
+
+            //перебор ранговых блоков
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                {
+                    //выделяем ранговый блок
+                    for (int ii = 0; ii < r; ii++)
+                        for (int jj = 0; jj < r; jj++)
+                            rang[ii, jj] = pix[r * i + ii, r * j + jj];
+
+                    //пербор доменных блоков
+                    getDomenBlocDivide(rang, 1, j * r, i * r);
+                    //rangsList.add(ran);
+
+                }
+
+            //
+            //SaveSumCompare();
+            //return rangsList;
+        }
+
+        public void getDomenBlocMin(int[,] rang, int k, int x0, int y0)
         {
             //x - начальная координата блока
             //y - начальная координата блока
@@ -254,9 +314,11 @@ namespace Fract
                 ran = new Rang(minRang.getX(), minRang.getY(), minRang.getAfinn(), minRang.getK(), minRang.getX0(), minRang.getY0(), minRang.getS(), minRang.getO(), minSKO);
             }*/
             //////////////////////
+            rangList.Add(minRang);
+            printBlock(minRang, rangList.Count - 1);
 
             //если для рангового блока не нашли доменного
-            if (ran == null)
+            /*if (ran == null)
             {
                 k = k * 2;
                 //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
@@ -276,12 +338,12 @@ namespace Fract
                                     rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
                                     //rangDop[j, i] = rang[ir * newR + i, jr * newR + j];
                                 }
-                            /*for (int i = 0; i < domenSize / 2; i++)
-                                for (int j = 0; j < domenSize / 2; j++)
-                                    rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
-                                    */
+                            //for (int i = 0; i < domenSize / 2; i++)
+                             //   for (int j = 0; j < domenSize / 2; j++)
+                             //       rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
+                                    
 
-                            getDomenBloc(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
+                            //getDomenBloc(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
                             //getDomenBloc(rangDop, k, x0 + jr * newR, y0 + ir * newR);
                         }
 
@@ -304,6 +366,478 @@ namespace Fract
             {
                 rangList.Add(ran);
                 printBlock(ran, rangList.Count-1);
+                //printAfinSO(ran, rangList.Count - 1);
+            }*/
+
+            //return ran;
+        }
+
+        public void getDomenBlocFirst(int[,] rang, int k, int x0, int y0)
+        {
+            //x - начальная координата блока
+            //y - начальная координата блока
+            //пербор доменных блоков
+            Rang ran = null;
+            int R = r / k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            //int N = height - D + 1;//количество блоков по высоте
+            //int M = width  - D + 1;//количество блоков по ширине
+
+            //int domenSize = rang.GetLength(0);//размер доменного блока = размер рангового
+            //int f = r * 2 / z;//кол-во усредняемых пикселей
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
+            int[,] domenBig = new int[D, D];//доменный блок
+
+            double minSKO = 10000000;
+            Rang minRang = new Rang(0, 0, 0, 1, x0, y0, 1, 1, epsilon);
+
+            bool b = false;
+            int id = 0;
+            int jd = 0;
+
+            //while ((id < N) && (b == false))
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                //while ((jd < M) && (b == false))
+                while ((jd < M - 1) && (b == false))
+                {
+                    int sum = 0;
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+                            //domenBig[i, j] = pix[id + i, jd + j];
+                        }
+
+
+                    //уменьшаем его усреднением
+                    domen = reduceBlock(domenBig);
+
+                    //for (int afi = 0; afi < domenBig.GetLength(0); afi++)
+                    //    for (int afj = 0; afj < domenBig.GetLength(0); afj++)
+                    //        domenAfin[afi, afj] = domenBig[afi, afj];
+
+                    double[] so;
+                    double s, o, sko;
+                    List<double> skoMass = new List<double>();
+
+                    Color colorDomen, colorRang;
+                    String test = "";
+
+                    //вычисляемм все СКО
+                    for (int h = 0; h < 8; h++)
+                    {
+                        sko = 0;
+                        //skoMass.Clear();// = new double[8];
+                        String dpr = "";
+
+                        domenAfin = setAfinnInt(domen, h);
+                        so = getSO(rang, domenAfin);
+                        s = so[0];
+                        o = so[1];
+
+                        ///
+                        if (s == 0.0432511133949983 && o == 29.784600890716)
+                            s = so[0];
+                        ///
+
+                        for (int i = 0; i < R; i++)
+                            for (int j = 0; j < R; j++)
+                            {
+                                colorDomen = Color.FromArgb(domenAfin[i, j]);
+                                colorRang = Color.FromArgb(rang[i, j]);
+                                double per = (s * colorDomen.R + o) - colorRang.R;
+                                sko = sko + (per) * (per);
+                                //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                            }
+
+                        skoMass.Add(sko);//skoMass[h] = sko;
+
+                        test += "afin = " + h
+                                + "\r\n s = " + s
+                                + "\r\n o = " + o
+                                + "\r\n eps = " + sko
+                                + "\r\n ------------------------------------- \r\n";
+
+
+                    }
+
+
+                    //ищем минимальное СКО
+                    double min = skoMass.Min();
+
+                    if (jhgjhg < 150)
+                    {
+                        jhgjhg++;
+                        sss += " " + min + "\r\n";
+                    }
+                    else if (jhgjhg == 150)
+                    {
+                        SaveSumCompare();
+                        jhgjhg++;
+                    }
+
+                    //сравниваем с коэффициентом компрессии
+                    if (min < epsilon)
+                    {
+                        b = true;
+
+                        int afin = skoMass.IndexOf(min);
+                        domenAfin = setAfinnInt(domen, afin);
+                        so = getSO(rang, domenAfin);
+                        s = so[0];
+                        o = so[1];
+
+                        ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                        //ran = new Rang(jd, id, afin, k, x0, y0, s, o, min);
+
+                        ///
+
+                        //String dom = "";
+                        //dom += "\r\n\r\n rang \r\n";
+
+                        //for (int i = 0; i < R; i++)
+                        //    for (int j = 0; j < R; j++)
+                        //        dom += rang[i,j]+"\r\n";
+
+                        //dom += "\r\n\r\n domen \r\n";
+
+                        //for (int i = 0; i < R; i++)
+                        //    for (int j = 0; j < R; j++)
+                        //        dom += domen[i, j] + "\r\n";
+
+
+                        //test += "\r\n x0 = " + ran.getX0()+ "    y0 = " + ran.getY0() + "    x = " + ran.getX()+ "    y = " + ran.getY()
+                        //    +"   afin = "+afin
+                        //    + "\r\ns = " + s+ "\r\no = " + o
+                        //    + "\r\n ------------------------------------- \r\n";
+                        //test += dom;
+                        //String name = rangList.Count + "___k=" + ran.getK() + "__" + "E=" + epsilon + "____e=" + ran.getEpsilon() + "__";
+
+                        //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_txt\\" + name + ".txt", test);
+
+                        //printBlock(ran, rang, domenBig, domen, domenAfin, rangList.Count);
+                    }
+                    else
+                    {
+                        if (min < minSKO)
+                        {
+                            int afin = skoMass.IndexOf(min);
+                            domenAfin = setAfinnInt(domen, afin);
+                            so = getSO(rang, domenAfin);
+                            s = so[0];
+                            o = so[1];
+
+                            minSKO = min;
+                            minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                            //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
+                        }
+                    }
+                    jd++;
+                }
+                id++;
+            }
+            //test
+            /*if (minSKO < epsilon)
+            {
+                b = true;
+                
+                ran = new Rang(minRang.getX(), minRang.getY(), minRang.getAfinn(), minRang.getK(), minRang.getX0(), minRang.getY0(), minRang.getS(), minRang.getO(), minSKO);
+            }*/
+            //////////////////////
+
+            //если для рангового блока не нашли доменного
+            if (ran == null)
+            {
+                //k = k * 2;
+                ////уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
+                //if (r / k >= 4)//(r / k >= 2)  //while (ran == null)
+                //{
+                //    printDevide(rang, rangList.Count);
+
+                //    int newR = r / k;
+                //    int[,] rangDop = new int[newR, newR];
+                //    for (int ir = 0; ir < 2; ir++)
+                //        for (int jr = 0; jr < 2; jr++)
+                //        {
+                //            //выделяем ранговый блок
+                //            for (int i = 0; i < newR; i++)
+                //                for (int j = 0; j < newR; j++)
+                //                {
+                //                    rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
+                //                    //rangDop[j, i] = rang[ir * newR + i, jr * newR + j];
+                //                }
+                //            /*for (int i = 0; i < domenSize / 2; i++)
+                //                for (int j = 0; j < domenSize / 2; j++)
+                //                    rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
+                //                    */
+
+                //            //getDomenBloc(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
+                //            //getDomenBloc(rangDop, k, x0 + jr * newR, y0 + ir * newR);
+                //        }
+
+                //}
+                //else
+                {
+                    if (minSKO == 10000000)
+                    {
+                        minSKO = 10000000;
+                    }
+                    rangList.Add(minRang);
+                    printBlock(minRang, rangList.Count - 1);
+                    //printAfinSO(minRang, rangList.Count - 1);
+                }
+                //ran = new Rang(0, 0, 0,k,x,y);
+                //rangList.add(ran);
+
+            }
+            else
+            {
+                rangList.Add(ran);
+                printBlock(ran, rangList.Count - 1);
+                //printAfinSO(ran, rangList.Count - 1);
+            }
+
+            //return ran;
+        }
+
+        public void getDomenBlocDivide(int[,] rang, int k, int x0, int y0)
+        {
+            //x - начальная координата блока
+            //y - начальная координата блока
+            //пербор доменных блоков
+            Rang ran = null;
+            int R = r / k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            //int N = height - D + 1;//количество блоков по высоте
+            //int M = width  - D + 1;//количество блоков по ширине
+
+            //int domenSize = rang.GetLength(0);//размер доменного блока = размер рангового
+            //int f = r * 2 / z;//кол-во усредняемых пикселей
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
+            int[,] domenBig = new int[D, D];//доменный блок
+
+            double minSKO = 10000000;
+            Rang minRang = new Rang(0, 0, 0, k, x0, y0, 1, 1, epsilon);
+
+            bool b = false;
+            int id = 0;
+            int jd = 0;
+
+            //while ((id < N) && (b == false))
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                //while ((jd < M) && (b == false))
+                while ((jd < M - 1) && (b == false))
+                {
+                    int sum = 0;
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+                            //domenBig[i, j] = pix[id + i, jd + j];
+                        }
+
+
+                    //уменьшаем его усреднением
+                    domen = reduceBlock(domenBig);
+
+                    //for (int afi = 0; afi < domenBig.GetLength(0); afi++)
+                    //    for (int afj = 0; afj < domenBig.GetLength(0); afj++)
+                    //        domenAfin[afi, afj] = domenBig[afi, afj];
+
+                    double[] so;
+                    double s, o, sko;
+                    List<double> skoMass = new List<double>();
+
+                    Color colorDomen, colorRang;
+                    String test = "";
+
+                    //вычисляемм все СКО
+                    for (int h = 0; h < 8; h++)
+                    {
+                        sko = 0;
+                        //skoMass.Clear();// = new double[8];
+                        String dpr = "";
+
+                        domenAfin = setAfinnInt(domen, h);
+                        so = getSO(rang, domenAfin);
+                        s = so[0];
+                        o = so[1];
+
+                        ///
+                        if (s == 0.0432511133949983 && o == 29.784600890716)
+                            s = so[0];
+                        ///
+
+                        for (int i = 0; i < R; i++)
+                            for (int j = 0; j < R; j++)
+                            {
+                                colorDomen = Color.FromArgb(domenAfin[i, j]);
+                                colorRang = Color.FromArgb(rang[i, j]);
+                                double per = (s * colorDomen.R + o) - colorRang.R;
+                                sko = sko + (per) * (per);
+                                //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                            }
+
+                        skoMass.Add(sko);//skoMass[h] = sko;
+
+                        test += "afin = " + h
+                                + "\r\n s = " + s
+                                + "\r\n o = " + o
+                                + "\r\n eps = " + sko
+                                + "\r\n ------------------------------------- \r\n";
+
+
+                    }
+
+
+                    //ищем минимальное СКО
+                    double min = skoMass.Min();
+
+                    if (jhgjhg < 150)
+                    {
+                        jhgjhg++;
+                        sss += " " + min + "\r\n";
+                    }
+                    else if (jhgjhg == 150)
+                    {
+                        SaveSumCompare();
+                        jhgjhg++;
+                    }
+
+                    //сравниваем с коэффициентом компрессии
+                    //if (min < epsilon)
+                    //{
+                    //    //b = true;
+
+                    //    int afin = skoMass.IndexOf(min);
+                    //    domenAfin = setAfinnInt(domen, afin);
+                    //    so = getSO(rang, domenAfin);
+                    //    s = so[0];
+                    //    o = so[1];
+
+                    //    ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                    //    //ran = new Rang(jd, id, afin, k, x0, y0, s, o, min);
+
+                    //    ///
+
+                    //    //String dom = "";
+                    //    //dom += "\r\n\r\n rang \r\n";
+
+                    //    //for (int i = 0; i < R; i++)
+                    //    //    for (int j = 0; j < R; j++)
+                    //    //        dom += rang[i,j]+"\r\n";
+
+                    //    //dom += "\r\n\r\n domen \r\n";
+
+                    //    //for (int i = 0; i < R; i++)
+                    //    //    for (int j = 0; j < R; j++)
+                    //    //        dom += domen[i, j] + "\r\n";
+
+
+                    //    //test += "\r\n x0 = " + ran.getX0()+ "    y0 = " + ran.getY0() + "    x = " + ran.getX()+ "    y = " + ran.getY()
+                    //    //    +"   afin = "+afin
+                    //    //    + "\r\ns = " + s+ "\r\no = " + o
+                    //    //    + "\r\n ------------------------------------- \r\n";
+                    //    //test += dom;
+                    //    //String name = rangList.Count + "___k=" + ran.getK() + "__" + "E=" + epsilon + "____e=" + ran.getEpsilon() + "__";
+
+                    //    //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_txt\\" + name + ".txt", test);
+
+                    //    //printBlock(ran, rang, domenBig, domen, domenAfin, rangList.Count);
+                    //}
+                    //else
+                    {
+                        if (min < minSKO)
+                        {
+                            int afin = skoMass.IndexOf(min);
+                            domenAfin = setAfinnInt(domen, afin);
+                            so = getSO(rang, domenAfin);
+                            s = so[0];
+                            o = so[1];
+
+                            minSKO = min;
+                            minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                            //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
+                        }
+                    }
+                    jd++;
+                }
+                id++;
+            }
+            //test
+            /*if (minSKO < epsilon)
+            {
+                b = true;
+                
+                ran = new Rang(minRang.getX(), minRang.getY(), minRang.getAfinn(), minRang.getK(), minRang.getX0(), minRang.getY0(), minRang.getS(), minRang.getO(), minSKO);
+            }*/
+            //////////////////////
+
+            //если для рангового блока не нашли доменного
+            if(minSKO>epsilon)//if (ran == null)
+            {
+                k = k * 2;
+                //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
+                if (r / k >= 4)//(r / k >= 2)  //while (ran == null)
+                {
+                    printDevide(rang, rangList.Count);
+
+                    int newR = r / k;
+                    int[,] rangDop = new int[newR, newR];
+                    for (int ir = 0; ir < 2; ir++)
+                        for (int jr = 0; jr < 2; jr++)
+                        {
+                            //выделяем ранговый блок
+                            for (int i = 0; i < newR; i++)
+                                for (int j = 0; j < newR; j++)
+                                {
+                                    rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
+                                    //rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
+                                    //rangDop[j, i] = rang[ir * newR + i, jr * newR + j];
+                                }
+                            /*for (int i = 0; i < domenSize / 2; i++)
+                                for (int j = 0; j < domenSize / 2; j++)
+                                    rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
+                                    */
+
+                            getDomenBlocDivide(rangDop, k, x0 + jr * newR, y0 + ir * newR);//x*r,y*r
+                            //getDomenBlocDivide(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
+                            //getDomenBloc(rangDop, k, x0 + jr * newR, y0 + ir * newR);
+                        }
+
+                }
+                else
+                {
+                    if (minSKO == 10000000)
+                    {
+                        minSKO = 10000000;
+                    }
+                    rangList.Add(minRang);
+                    printBlock(minRang, rangList.Count - 1);
+                    //printAfinSO(minRang, rangList.Count - 1);
+                }
+                //ran = new Rang(0, 0, 0,k,x,y);
+                //rangList.add(ran);
+
+            }
+            else
+            {
+                //rangList.Add(ran);
+                //printBlock(ran, rangList.Count - 1);
+                rangList.Add(minRang);
+                printBlock(minRang, rangList.Count - 1);
                 //printAfinSO(ran, rangList.Count - 1);
             }
 
@@ -566,7 +1100,7 @@ namespace Fract
         {
             int otst = r * 2 + 10;
             int width = pix.GetLength(1);
-            Bitmap bitmap = new Bitmap(width+otst, pix.GetLength(0));
+            Bitmap bitmap = new Bitmap(width+otst, pix.GetLength(0)+5);
             Color color;// = Color.White;
             int R = r / rang.getK();//размер рангового блока
             int D = R*2;//размер доменного блока
@@ -574,25 +1108,53 @@ namespace Fract
             //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
 
             for (int i = 0; i < bitmap.Width-otst; i++)
-                for (int j = 0; j < bitmap.Height; j++)
+                //for (int j = 0; j < bitmap.Height; j++)
+                for (int j = 0; j < pix.GetLength(1); j++)
                 {
-                    if (i % r != 0 && j % r != 0)
-                        bitmap.SetPixel(i, j, Color.White);
-                    else bitmap.SetPixel(i, j, Color.Black);
+                    //if (i % r != 0 && j % r != 0)
+                    //    bitmap.SetPixel(i, j, Color.White);                       
+                    //else bitmap.SetPixel(i, j, Color.Black);
+                    bitmap.SetPixel(i, j, Color.FromArgb(pix[j, i]));
                 }
 
             for (int i = 0; i < R; i++)
                 for (int j = 0; j < R; j++)
                 {
-                    bitmap.SetPixel(rang.getX0()+i, rang.getY0()+j, Color.FromArgb(pix[rang.getY0() + j, rang.getX0() + i]));
+                    //bitmap.SetPixel(rang.getX0()+i, rang.getY0()+j, Color.FromArgb(pix[rang.getY0() + j, rang.getX0() + i]));
                     rangMatr[j,i] = pix[rang.getY0() + j, rang.getX0() + i];
                 }
+
+            for (int i = -1; i < R+1; i++)
+                if ((rang.getX0() + i >= 0) && (rang.getY0() - 1 >= 0))
+                    bitmap.SetPixel(rang.getX0() + i, rang.getY0()-1, Color.Yellow);
+            for (int i = -1; i < R + 1; i++)
+                if (rang.getX0() + i >= 0)
+                    bitmap.SetPixel(rang.getX0() + i, rang.getY0()+R, Color.Yellow);
+            for (int j = -1; j < R + 1; j++)
+                if ((rang.getY0() + j >= 0) && (rang.getX0() - 1 >= 0))
+                    bitmap.SetPixel(rang.getX0()-1, rang.getY0() + j, Color.Yellow);
+            for (int j = -1; j < R + 1; j++)
+                if (rang.getY0() + j >= 0)
+                    bitmap.SetPixel(rang.getX0() + R, rang.getY0() + j, Color.Yellow);
 
             for (int i = 0; i < D; i++)
                 for (int j = 0; j < D; j++)
                 {
-                    bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
+                    //bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
                 }
+
+            for (int i = -1; i < D + 1; i++)
+                if ((rang.getX() + i >= 0) && (rang.getY() - 1 >= 0))
+                    bitmap.SetPixel(rang.getX() + i, rang.getY() - 1, Color.Yellow);
+            for (int i = -1; i < D + 1; i++)
+                if (rang.getX() + i >= 0)
+                    bitmap.SetPixel(rang.getX() + i, rang.getY() + D, Color.Yellow);
+            for (int j = -1; j < D + 1; j++)
+                if ((rang.getY() + j >= 0) && (rang.getX() - 1 >= 0))
+                    bitmap.SetPixel(rang.getX() - 1, rang.getY() + j, Color.Yellow);
+            for (int j = -1; j < D + 1; j++)
+                if (rang.getY() + j >= 0)
+                    bitmap.SetPixel(rang.getX() + D, rang.getY() + j, Color.Yellow);
 
             //////////////////////////////////////////
             int[,] domen = new int[D, D], domenAfin, domenBright;
@@ -978,4 +1540,238 @@ namespace Fract
                         }
                     }*/
 
+
+    /*public void getDomenBloc(int[,] rang, int k, int x0, int y0)
+    {
+        //x - начальная координата блока
+        //y - начальная координата блока
+        //пербор доменных блоков
+        Rang ran = null;
+        int R = r / k;//размер рангового блока
+        int D = R * 2;//размер доменного блока
+        int N = height / R;//количество блоков по высоте
+        int M = width / R;//количество блоков по ширине
+                          //int N = height - D + 1;//количество блоков по высоте
+                          //int M = width  - D + 1;//количество блоков по ширине
+
+        //int domenSize = rang.GetLength(0);//размер доменного блока = размер рангового
+        //int f = r * 2 / z;//кол-во усредняемых пикселей
+        int[,] domen = new int[R, R];//уменьшенный доменный блок
+        int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
+        int[,] domenBig = new int[D, D];//доменный блок
+
+        double minSKO = 10000000;
+        Rang minRang = new Rang(0, 0, 0, 1, x0, y0, 1, 1, epsilon);
+
+        bool b = false;
+        int id = 0;
+        int jd = 0;
+
+        //while ((id < N) && (b == false))
+        while ((id < N - 1) && (b == false))
+        {
+            jd = 0;
+            //while ((jd < M) && (b == false))
+            while ((jd < M - 1) && (b == false))
+            {
+                int sum = 0;
+                //выделяем доменный блок
+                for (int i = 0; i < D; i++)
+                    for (int j = 0; j < D; j++)
+                    {
+                        domenBig[i, j] = pix[R * id + i, R * jd + j];
+                        //domenBig[i, j] = pix[id + i, jd + j];
+                    }
+
+
+                //уменьшаем его усреднением
+                domen = reduceBlock(domenBig);
+
+                //for (int afi = 0; afi < domenBig.GetLength(0); afi++)
+                //    for (int afj = 0; afj < domenBig.GetLength(0); afj++)
+                //        domenAfin[afi, afj] = domenBig[afi, afj];
+
+                double[] so;
+                double s, o, sko;
+                List<double> skoMass = new List<double>();
+
+                Color colorDomen, colorRang;
+                String test = "";
+
+                //вычисляемм все СКО
+                for (int h = 0; h < 8; h++)
+                {
+                    sko = 0;
+                    //skoMass.Clear();// = new double[8];
+                    String dpr = "";
+
+                    domenAfin = setAfinnInt(domen, h);
+                    so = getSO(rang, domenAfin);
+                    s = so[0];
+                    o = so[1];
+
+                    ///
+                    if (s == 0.0432511133949983 && o == 29.784600890716)
+                        s = so[0];
+                    ///
+
+                    for (int i = 0; i < R; i++)
+                        for (int j = 0; j < R; j++)
+                        {
+                            colorDomen = Color.FromArgb(domenAfin[i, j]);
+                            colorRang = Color.FromArgb(rang[i, j]);
+                            double per = (s * colorDomen.R + o) - colorRang.R;
+                            sko = sko + (per) * (per);
+                            //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                        }
+
+                    skoMass.Add(sko);//skoMass[h] = sko;
+
+                    test += "afin = " + h
+                            + "\r\n s = " + s
+                            + "\r\n o = " + o
+                            + "\r\n eps = " + sko
+                            + "\r\n ------------------------------------- \r\n";
+
+
+                }
+
+
+                //ищем минимальное СКО
+                double min = skoMass.Min();
+
+                if (jhgjhg < 150)
+                {
+                    jhgjhg++;
+                    sss += " " + min + "\r\n";
+                }
+                else if (jhgjhg == 150)
+                {
+                    SaveSumCompare();
+                    jhgjhg++;
+                }
+
+                //сравниваем с коэффициентом компрессии
+                //if (min < epsilon)
+                //{
+                //    //b = true;
+
+                //    int afin = skoMass.IndexOf(min);
+                //    domenAfin = setAfinnInt(domen, afin);
+                //    so = getSO(rang, domenAfin);
+                //    s = so[0];
+                //    o = so[1];
+
+                //    ran = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, min);
+                //    //ran = new Rang(jd, id, afin, k, x0, y0, s, o, min);
+
+                //    ///
+
+                //    //String dom = "";
+                //    //dom += "\r\n\r\n rang \r\n";
+
+                //    //for (int i = 0; i < R; i++)
+                //    //    for (int j = 0; j < R; j++)
+                //    //        dom += rang[i,j]+"\r\n";
+
+                //    //dom += "\r\n\r\n domen \r\n";
+
+                //    //for (int i = 0; i < R; i++)
+                //    //    for (int j = 0; j < R; j++)
+                //    //        dom += domen[i, j] + "\r\n";
+
+
+                //    //test += "\r\n x0 = " + ran.getX0()+ "    y0 = " + ran.getY0() + "    x = " + ran.getX()+ "    y = " + ran.getY()
+                //    //    +"   afin = "+afin
+                //    //    + "\r\ns = " + s+ "\r\no = " + o
+                //    //    + "\r\n ------------------------------------- \r\n";
+                //    //test += dom;
+                //    //String name = rangList.Count + "___k=" + ran.getK() + "__" + "E=" + epsilon + "____e=" + ran.getEpsilon() + "__";
+
+                //    //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_txt\\" + name + ".txt", test);
+
+                //    //printBlock(ran, rang, domenBig, domen, domenAfin, rangList.Count);
+                //}
+                //else
+                {
+                    if (min < minSKO)
+                    {
+                        int afin = skoMass.IndexOf(min);
+                        domenAfin = setAfinnInt(domen, afin);
+                        so = getSO(rang, domenAfin);
+                        s = so[0];
+                        o = so[1];
+
+                        minSKO = min;
+                        minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                        //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
+                    }
+                }
+                jd++;
+            }
+            id++;
+        }
+        //test
+        //if (minSKO < epsilon)
+        //{
+        //    b = true;
+
+        //    ran = new Rang(minRang.getX(), minRang.getY(), minRang.getAfinn(), minRang.getK(), minRang.getX0(), minRang.getY0(), minRang.getS(), minRang.getO(), minSKO);
+        //}
+        //////////////////////
+
+        //если для рангового блока не нашли доменного
+        if (ran == null)
+        {
+            k = k * 2;
+            //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
+            if (r / k >= 4)//(r / k >= 2)  //while (ran == null)
+            {
+                printDevide(rang, rangList.Count);
+
+                int newR = r / k;
+                int[,] rangDop = new int[newR, newR];
+                for (int ir = 0; ir < 2; ir++)
+                    for (int jr = 0; jr < 2; jr++)
+                    {
+                        //выделяем ранговый блок
+                        for (int i = 0; i < newR; i++)
+                            for (int j = 0; j < newR; j++)
+                            {
+                                rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
+                                //rangDop[j, i] = rang[ir * newR + i, jr * newR + j];
+                            }
+                        //for (int i = 0; i < domenSize / 2; i++)
+                         //   for (int j = 0; j < domenSize / 2; j++)
+                         //       rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
+                                
+
+                        getDomenBloc(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
+                                                                                 //getDomenBloc(rangDop, k, x0 + jr * newR, y0 + ir * newR);
+                    }
+
+            }
+            else
+            {
+                if (minSKO == 10000000)
+                {
+                    minSKO = 10000000;
+                }
+                rangList.Add(minRang);
+                printBlock(minRang, rangList.Count - 1);
+                //printAfinSO(minRang, rangList.Count - 1);
+            }
+            //ran = new Rang(0, 0, 0,k,x,y);
+            //rangList.add(ran);
+
+        }
+        else
+        {
+            rangList.Add(ran);
+            printBlock(ran, rangList.Count - 1);
+            //printAfinSO(ran, rangList.Count - 1);
+        }
+
+        //return ran;
+    }*/
 }

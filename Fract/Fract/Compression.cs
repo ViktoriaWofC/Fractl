@@ -8,8 +8,8 @@ namespace Fract
 {
     interface Compression
     {
-        void compressImage();
-        void getDomenBloc(int[,] rang, int k, int x, int y);
+        void compressImage(string searchDomen);
+        //void getDomenBloc(int[,] rang, int k, int x, int y);
         bool compareBlocs(int[,] rang, int[,] domen);
         int[,] changeBright(int[,] pix, double k);
         int[,] setAfinnInt(int[,] pix, int k);

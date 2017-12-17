@@ -27,6 +27,7 @@ namespace Fract
         {
             InitializeComponent();
             comboBoxClassif.SelectedIndex = 0;
+            comboBoxSearchDomen.SelectedIndex = 0;
         }
 
         private void buttonDecompress_Click(object sender, EventArgs e)
@@ -204,10 +205,19 @@ namespace Fract
             }
             //CompressQuadro compr = new CompressQuadro(pixels, r, eps);
 
+            //проверем способ поиска доменного блока
+            string searcDomen = "";
+            if (comboBoxSearchDomen.SelectedIndex == 0)
+                searcDomen = "first<eps";
+            else if (comboBoxSearchDomen.SelectedIndex == 1)
+                searcDomen = "min";
+            else if (comboBoxSearchDomen.SelectedIndex == 2)
+                searcDomen = "min and <eps";
+
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
             //compr.compressImage();
-            compress.compressImage();
+            compress.compressImage(searcDomen);
             //rangList = compr.getRangList();
             rangList = compress.getRangList();
             DateTime t2 = DateTime.Now;//System.currentTimeMillis();
@@ -862,6 +872,13 @@ namespace Fract
 
             textBoxTest.Text = test;
 
+        }
+
+        private void comboBoxSearchDomen_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBoxSearchDomen.SelectedIndex == 1)
+                numberCoefCompress.Enabled = false;
+            else numberCoefCompress.Enabled = true;
         }
 
         /// //////////////////////////////////////////////////////////////

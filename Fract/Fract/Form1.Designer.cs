@@ -61,6 +61,8 @@
             this.button1 = new System.Windows.Forms.Button();
             this.textBoxRangNumber = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.comboBoxSearchDomen = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).BeginInit();
@@ -82,7 +84,7 @@
             this.groupBox1.Controls.Add(this.numberRangSize);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 54);
+            this.groupBox1.Location = new System.Drawing.Point(12, 58);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(423, 140);
             this.groupBox1.TabIndex = 0;
@@ -184,7 +186,7 @@
             this.groupBox2.Controls.Add(this.numberIteracDecompr);
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Location = new System.Drawing.Point(454, 54);
+            this.groupBox2.Location = new System.Drawing.Point(454, 58);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(447, 140);
             this.groupBox2.TabIndex = 1;
@@ -259,7 +261,7 @@
             // 
             this.panelStartImage.AutoScroll = true;
             this.panelStartImage.Controls.Add(this.pictureBoxStartImage);
-            this.panelStartImage.Location = new System.Drawing.Point(46, 200);
+            this.panelStartImage.Location = new System.Drawing.Point(46, 204);
             this.panelStartImage.Name = "panelStartImage";
             this.panelStartImage.Size = new System.Drawing.Size(338, 400);
             this.panelStartImage.TabIndex = 2;
@@ -277,7 +279,7 @@
             // 
             this.panelEndImage.AutoScroll = true;
             this.panelEndImage.Controls.Add(this.pictureBoxEndImage);
-            this.panelEndImage.Location = new System.Drawing.Point(467, 200);
+            this.panelEndImage.Location = new System.Drawing.Point(467, 204);
             this.panelEndImage.Name = "panelEndImage";
             this.panelEndImage.Size = new System.Drawing.Size(338, 400);
             this.panelEndImage.TabIndex = 3;
@@ -355,6 +357,7 @@
             // radioButtonQuadro
             // 
             this.radioButtonQuadro.AutoSize = true;
+            this.radioButtonQuadro.Enabled = false;
             this.radioButtonQuadro.Location = new System.Drawing.Point(299, 3);
             this.radioButtonQuadro.Name = "radioButtonQuadro";
             this.radioButtonQuadro.Size = new System.Drawing.Size(106, 17);
@@ -365,7 +368,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(38, 28);
+            this.label6.Location = new System.Drawing.Point(588, 28);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(91, 13);
             this.label6.TabIndex = 9;
@@ -379,7 +382,7 @@
             "Без классификации",
             "на основе нахождения центра масс",
             "на основе разницы граничных значений"});
-            this.comboBoxClassif.Location = new System.Drawing.Point(135, 25);
+            this.comboBoxClassif.Location = new System.Drawing.Point(685, 25);
             this.comboBoxClassif.Name = "comboBoxClassif";
             this.comboBoxClassif.Size = new System.Drawing.Size(201, 21);
             this.comboBoxClassif.TabIndex = 10;
@@ -415,11 +418,36 @@
             this.label7.TabIndex = 13;
             this.label7.Text = "Номер блока:";
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(13, 28);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(136, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Поиск доменного блока: ";
+            // 
+            // comboBoxSearchDomen
+            // 
+            this.comboBoxSearchDomen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSearchDomen.FormattingEnabled = true;
+            this.comboBoxSearchDomen.Items.AddRange(new object[] {
+            "Первый подходящий (меньше коэффициента компрессии)",
+            "Минимальный",
+            "Минимальный и подходящий (меньше коэффициента компрессии)"});
+            this.comboBoxSearchDomen.Location = new System.Drawing.Point(155, 25);
+            this.comboBoxSearchDomen.Name = "comboBoxSearchDomen";
+            this.comboBoxSearchDomen.Size = new System.Drawing.Size(323, 21);
+            this.comboBoxSearchDomen.TabIndex = 18;
+            this.comboBoxSearchDomen.SelectedIndexChanged += new System.EventHandler(this.comboBoxSearchDomen_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 678);
+            this.Controls.Add(this.comboBoxSearchDomen);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.textBoxRangNumber);
             this.Controls.Add(this.button1);
@@ -493,6 +521,8 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.TextBox textBoxRangNumber;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.ComboBox comboBoxSearchDomen;
     }
 }
 
