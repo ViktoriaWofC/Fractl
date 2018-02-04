@@ -151,6 +151,12 @@ namespace Fract
             int id = 0;
             int jd = 0;
 
+            int[,] testRang = new int[r, r];// ранговый блок
+            //выделяем ранговый блок
+            for (int ii = 0; ii < r; ii++)
+                for (int jj = 0; jj < r; jj++)
+                    testRang[ii, jj] = pix[r * 0 + ii+5, r * 0 + jj+5];
+
             List<List<double>> domenSKOList = new List<List<double>>();
 
             //вычисляем все СКО для доменных блоков
@@ -173,12 +179,17 @@ namespace Fract
                     //уменьшаем его усреднением
                     domen = reduceBlock(domenBig);
 
-                    domenSKOList.Add(getAllSKO(domen));                    
+                    domenSKOList.Add(getAllSKO(testRang, domen));                    
                     
                     jd++;
                 }
                 id++;
             }
+
+
+            double[] so;
+            double s, o, sko;
+            Color colorTest, colorRang;
 
             //перебор ранговых блоков
             for (int i = 0; i < n; i++)
@@ -189,8 +200,22 @@ namespace Fract
                         for (int jj = 0; jj < r; jj++)
                             rang[ii, jj] = pix[r * i + ii, r * j + jj];
 
+                    sko = 0;
+                    so = getSO(testRang, rang);
+                    s = so[0];
+                    o = so[1];
+
+                    for (int iz = 0; iz < R; iz++)
+                        for (int jz = 0; jz < R; jz++)
+                        {
+                            colorRang = Color.FromArgb(rang[iz, jz]);
+                            colorTest = Color.FromArgb(testRang[iz, jz]);
+                            double per = (s * colorRang.R + o) - colorTest.R;
+                            sko = sko + (per) * (per);
+                        }
+
                     //пербор доменных блоков
-                    getDomenBlocTest(rang, 1, j * r, i * r);
+                    getDomenBlocTest(rang, 1, j * r, i * r,sko, domenSKOList);
                     //rangsList.add(ran);
 
                 }
@@ -905,7 +930,7 @@ namespace Fract
             //return ran;
         }
 
-        public void getDomenBlocTest(int[,] rang, int k, int x0, int y0)
+        public void getDomenBlocTest(int[,] rang, int k, int x0, int y0, double rangSKO, List<List<double>> domenSKOList)
         {
             //x - начальная координата блока
             //y - начальная координата блока
@@ -915,14 +940,13 @@ namespace Fract
             int D = R * 2;//размер доменного блока
             int N = height / R;//количество блоков по высоте
             int M = width / R;//количество блоков по ширине
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];
+            int[,] domenBig = new int[D, D];//доменный блок
             //int N = height - D + 1;//количество блоков по высоте
             //int M = width  - D + 1;//количество блоков по ширине
 
-            //int domenSize = rang.GetLength(0);//размер доменного блока = размер рангового
-            //int f = r * 2 / z;//кол-во усредняемых пикселей
-            int[,] domen = new int[R, R];//уменьшенный доменный блок
-            int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
-            int[,] domenBig = new int[D, D];//доменный блок
+
 
             double minSKO = 10000000;
             Rang minRang = new Rang(0, 0, 0, 1, x0, y0, 1, 1, epsilon);
@@ -930,6 +954,7 @@ namespace Fract
             bool b = false;
             int id = 0;
             int jd = 0;
+            int number = 0;
 
             //while ((id < N) && (b == false))
             while ((id < N - 1) && (b == false))
@@ -938,88 +963,38 @@ namespace Fract
                 //while ((jd < M) && (b == false))
                 while ((jd < M - 1) && (b == false))
                 {
-                    int sum = 0;
-                    //выделяем доменный блок
-                    for (int i = 0; i < D; i++)
-                        for (int j = 0; j < D; j++)
-                        {
-                            domenBig[i, j] = pix[R * id + i, R * jd + j];
-                            //domenBig[i, j] = pix[id + i, jd + j];
-                        }
-
-
-                    //уменьшаем его усреднением
-                    domen = reduceBlock(domenBig);
-
-                    //for (int afi = 0; afi < domenBig.GetLength(0); afi++)
-                    //    for (int afj = 0; afj < domenBig.GetLength(0); afj++)
-                    //        domenAfin[afi, afj] = domenBig[afi, afj];
-
                     double[] so;
                     double s, o, sko;
                     List<double> skoMass = new List<double>();
 
-                    Color colorDomen, colorRang;
-                    String test = "";
-
-                    //вычисляемм все СКО
-                    for (int h = 0; h < 8; h++)
-                    {
-                        sko = 0;
-                        //skoMass.Clear();// = new double[8];
-                        String dpr = "";
-
-                        domenAfin = setAfinnInt(domen, h);
-                        so = getSO(rang, domenAfin);
-                        s = so[0];
-                        o = so[1];
-
-                        ///
-                        if (s == 0.0432511133949983 && o == 29.784600890716)
-                            s = so[0];
-                        ///
-
-                        for (int i = 0; i < R; i++)
-                            for (int j = 0; j < R; j++)
-                            {
-                                colorDomen = Color.FromArgb(domenAfin[i, j]);
-                                colorRang = Color.FromArgb(rang[i, j]);
-                                double per = (s * colorDomen.R + o) - colorRang.R;
-                                sko = sko + (per) * (per);
-                                //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
-                            }
-
-                        skoMass.Add(sko);//skoMass[h] = sko;
-
-                        test += "afin = " + h
-                                + "\r\n s = " + s
-                                + "\r\n o = " + o
-                                + "\r\n eps = " + sko
-                                + "\r\n ------------------------------------- \r\n";
-
-
-                    }
-
 
                     //ищем минимальное СКО
+                    
+
+                    for (int h = 0; h < 8; h++)
+                    {
+                        sko = Math.Abs(rangSKO-domenSKOList[number][h]);
+                        skoMass.Add(sko);//skoMass[h] = sko;
+                    }
+
                     double min = skoMass.Min();
 
-                    if (jhgjhg < 150)
-                    {
-                        jhgjhg++;
-                        sss += " " + min + "\r\n";
-                    }
-                    else if (jhgjhg == 150)
-                    {
-                        SaveSumCompare();
-                        jhgjhg++;
-                    }
-
-
-                    
                     if (min < minSKO)
                     {
                         int afin = skoMass.IndexOf(min);
+
+                        //выделяем доменный блок
+                        for (int i = 0; i < D; i++)
+                            for (int j = 0; j < D; j++)
+                            {
+                                domenBig[i, j] = pix[R * id + i, R * jd + j];
+                                //domenBig[i, j] = pix[id + i, jd + j];
+                            }
+
+
+                        //уменьшаем его усреднением
+                        domen = reduceBlock(domenBig);
+
                         domenAfin = setAfinnInt(domen, afin);
                         so = getSO(rang, domenAfin);
                         s = so[0];
@@ -1029,7 +1004,8 @@ namespace Fract
                         minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
                         //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
                     }
-                    
+
+                    number++;
                     jd++;
                 }
                 id++;
@@ -1041,12 +1017,12 @@ namespace Fract
             
         }
 
-        public List<double> getAllSKO(int[,] block)
+        public List<double> getAllSKO(int[,] blockTest, int[,] block)
         {
             int size = block.GetLength(0);
             //int[,] block = new int[size, size];
             int[,] blockAfin = new int[size, size];
-            int[,] blockTest = new int[size, size];
+            //int[,] blockTest = new int[size, size];
 
             double[] so;
             double s, o, sko;
@@ -1058,12 +1034,12 @@ namespace Fract
             int c = col.ToArgb();
             //White = -1,  Black = -16777216
 
-            for (int i = 0; i < size; i++)
-                for (int j = 0; j < size; j++)
-                    blockTest[i, j] = -16777216;
-                
+            //for (int i = 0; i < size; i++)
+            //    for (int j = 0; j < size; j++)
+            //        blockTest[i, j] = -1;//-8421505
 
-                //вычисляемм все СКО
+
+            //вычисляемм все СКО
             for (int h = 0; h < 8; h++)
             {
                 sko = 0;

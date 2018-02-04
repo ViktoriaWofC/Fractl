@@ -326,7 +326,7 @@ namespace Fract
             col = Color.FromArgb(0, 0, 0);
             int c = col.ToArgb();
             text += c;
-            col = Color.FromArgb(100, 100, 100);
+            col = Color.FromArgb(127, 127, 127);
             c = col.ToArgb();
             textBoxTest.Text = text+ " "+c;
 
