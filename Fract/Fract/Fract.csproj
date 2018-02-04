@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BlockSCO.cs" />
     <Compile Include="Classification.cs" />
     <Compile Include="ClassificationCentrMass.cs" />
     <Compile Include="ClassificationDifference.cs" />

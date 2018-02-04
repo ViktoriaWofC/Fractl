@@ -213,6 +213,8 @@ namespace Fract
                 searcDomen = "min";
             else if (comboBoxSearchDomen.SelectedIndex == 2)
                 searcDomen = "min and <eps";
+            else if (comboBoxSearchDomen.SelectedIndex == 3)
+                searcDomen = "test";
 
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
@@ -317,104 +319,16 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            ShortCompressFunc();
-            
-            //Image image = Bitmap.
+            //ShortCompressFunc();
+            Color col;
+            string text = "";
 
-            /*string test = "";
-            m = bitStart.Width;
-            n = bitStart.Height;
-            pixels = new int[n, m];
-
-            for (int i = 0; i < n; i++)
-                for (int j = 0; j < m; j++)
-                {
-                    //argb = bi.getRGB(j,i);
-                    //color = new Color(argb);
-                    //f = color.getRed();
-                    //pixels[i][j] = f;
-                    //pixels[i][j] = getRGBValue(bi, j, i);
-                    pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
-
-                }
-
-            int r;// = Convert.ToInt32(numberRangSize.Value);
-            int eps = Convert.ToInt32(numberCoefCompress.Value);
-
-            r = Convert.ToInt32(numberRangSize.Value);
-            int nDom = n / r - 1;
-            int mDom = m / r - 1;
-
-            int[,] rang = new int[r, r];
-            int[,] domen = new int[r*2, r*2];
-            int[,] classRang = new int[n / r, m / r];
-            int[,] classDomen = new int[nDom, mDom];
-
-            if (comboBoxClassif.SelectedIndex == 1)
-                classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
-
-            //перебор ранговых блоков
-            for (int i = 0; i < n / r; i++)
-                for (int j = 0; j < m / r; j++)
-                {
-                    //выделяем ранговый блок
-                    for (int ii = 0; ii < r; ii++)
-                        for (int jj = 0; jj < r; jj++)
-                            rang[ii, jj] = pixels[r * i + ii, r * j + jj];
-
-                    classRang[i, j] = classification.getClass(rang);
-                }
-
-            //перебор доменных блоков
-            for (int i = 0; i < nDom; i++)
-                for (int j = 0; j < mDom; j++)
-                {
-                    //выделяем доменных блок
-                    for (int ii = 0; ii < r*2; ii++)
-                        for (int jj = 0; jj < r*2; jj++)
-                            domen[ii, jj] = pixels[r * i + ii, r * j + jj];
-
-                    classDomen[i, j] = classification.getClass(domen);
-                }
-
-
-            test += classification.getName();
-            //pictureBoxEndImage.Image = bitTest;
-            textBoxTest.Text = test;
-            */
-            //////////////////////////////////////////
-
-
-            //for (int i = 0; i < hh; i++)
-            //    for (int j = 0; j < hh; j++)
-            //    {
-            //        color = Color.FromArgb(domenBig[i, j]);
-            //        bitTest.SetPixel(x + j, y + i, color);
-            //    }
-
-            //for (int i = 0; i < z; i++)
-            //    for (int j = 0; j < z; j++)
-            //    {
-            //        color = Color.FromArgb(domenBr[i, j]);
-            //        bitTest.SetPixel(x + j + 40, y + i, color);
-            //    }
-
-            //for (int i = 0; i < z; i++)
-            //    for (int j = 0; j < z; j++)
-            //    {
-            //        color = Color.FromArgb(rang[i, j]);
-            //        bitTest.SetPixel(x + j+70, y + i, color);
-            //    }
-
-            //pictureBoxEndImage.Image = bitTest;
-            //textBoxTest.Text = test;
-            //////////////////////////////////////////////////////////
-
-            //bool rf = compareBlocs(rang, domen, 200);
-
-            //domen = setAfinnInt(domen, 2);
-
-            //rf = compareBlocs(rang, domen, 200);
+            col = Color.FromArgb(0, 0, 0);
+            int c = col.ToArgb();
+            text += c;
+            col = Color.FromArgb(100, 100, 100);
+            c = col.ToArgb();
+            textBoxTest.Text = text+ " "+c;
 
 
 
