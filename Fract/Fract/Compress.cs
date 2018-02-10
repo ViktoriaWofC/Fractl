@@ -151,11 +151,13 @@ namespace Fract
             int id = 0;
             int jd = 0;
 
-            int[,] testRang = new int[r, r];// ранговый блок
+            int[,] testRang = new int[r, r];// etalon
             //выделяем ранговый блок
-            for (int ii = 0; ii < r; ii++)
-                for (int jj = 0; jj < r; jj++)
-                    testRang[ii, jj] = pix[r * 0 + ii+5, r * 0 + jj+5];
+            //for (int ii = 0; ii < r; ii++)
+            //    for (int jj = 0; jj < r; jj++)
+            //        testRang[ii, jj] = pix[r * 0 + ii+5, r * 0 + jj+5];
+            testRang = createEtalon(4);
+
 
             List<List<double>> domenSKOList = new List<List<double>>();
 
@@ -973,7 +975,8 @@ namespace Fract
 
                     for (int h = 0; h < 8; h++)
                     {
-                        sko = Math.Abs(rangSKO-domenSKOList[number][h]);
+                        sko = Math.Abs(rangSKO-domenSKOList[number][h]);//min|r-d|
+                        //sko = rangSKO- domenSKOList[number][h];//min(d-r)
                         skoMass.Add(sko);//skoMass[h] = sko;
                     }
 
@@ -1726,6 +1729,79 @@ namespace Fract
             o = R - s * D;
 
             return new double[] {s,o};
+        }
+
+        public int[,] createEtalon(int k)
+        {
+
+            Bitmap bitmap = new Bitmap(r, r);
+            Color color;// = Color.White;
+
+            if (k == 1)
+            { 
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    {
+                        if (i % 2 != 0 && j % 2 != 0)
+                            bitmap.SetPixel(i, j, Color.White);
+                        else bitmap.SetPixel(i, j, Color.Black);
+                    }
+            }
+            else if (k == 2)
+            {
+                int h = 256 / r;
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    { 
+                        bitmap.SetPixel(i, j, Color.FromArgb(h * j, h * j, h * j));
+                    }
+            }
+            else if (k == 3)
+            {
+                int h = 256 / (2*r);
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    {
+                        if(j<r/2)
+                            bitmap.SetPixel(i, j, Color.FromArgb(h * j, h * j, h * j));
+                        else bitmap.SetPixel(i, j, Color.FromArgb(h * (r-j-1), h * (r - j - 1), h * (r - j - 1)));
+                    }
+            }
+            else if (k == 4)
+            {
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    {
+                        if ((i%2+j%2)%2==0)
+                            bitmap.SetPixel(i, j, Color.Black);
+                        else bitmap.SetPixel(i, j, Color.White);
+                    }
+            }
+
+
+            int[,] pixels = new int[r, r];
+
+            //получаем массив интовых чисел из изображения
+            for (int i = 0; i < r; i++)//строки
+                for (int j = 0; j < r; j++)//столбцы
+                {
+                    pixels[i, j] = bitmap.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                }
+
+
+            try
+            {
+                String name = "Etalon " + k;
+                bitmap.Save("D:\\университет\\диплом\\bloks\\" + name + ".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                //"Check the file permissions.");
+            }
+
+            return pixels;
         }
     }
 

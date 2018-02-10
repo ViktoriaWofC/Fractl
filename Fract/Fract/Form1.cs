@@ -319,16 +319,16 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
+            int number = Convert.ToInt32(textBoxRangNumber.Text);
+
             //ShortCompressFunc();
             Color col;
             string text = "";
 
-            col = Color.FromArgb(0, 0, 0);
-            int c = col.ToArgb();
-            text += c;
-            col = Color.FromArgb(127, 127, 127);
-            c = col.ToArgb();
-            textBoxTest.Text = text+ " "+c;
+            Rang rrr = rangList[number];
+            text = textBoxTest.Text+"\n x="+rrr.getX()+" y="+rrr.getY();
+            
+            textBoxTest.Text = text;
 
 
 
