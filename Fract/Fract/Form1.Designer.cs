@@ -53,8 +53,8 @@
             this.labelDecompressCharacteristic = new System.Windows.Forms.Label();
             this.buttonTest = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.radioButtonBase = new System.Windows.Forms.RadioButton();
-            this.radioButtonQuadro = new System.Windows.Forms.RadioButton();
+            this.radioButtonGray = new System.Windows.Forms.RadioButton();
+            this.radioButtonColors = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxClassif = new System.Windows.Forms.ComboBox();
             this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
@@ -63,6 +63,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.comboBoxSearchDomen = new System.Windows.Forms.ComboBox();
+            this.comboBoxColor = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompress)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numberCoefCompressBar)).BeginInit();
@@ -338,32 +339,33 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(13, 3);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(116, 13);
+            this.label5.Size = new System.Drawing.Size(80, 13);
             this.label5.TabIndex = 7;
-            this.label5.Text = "Алгоритм разбиения:";
+            this.label5.Text = "Изображение:";
             // 
-            // radioButtonBase
+            // radioButtonGray
             // 
-            this.radioButtonBase.AutoSize = true;
-            this.radioButtonBase.Checked = true;
-            this.radioButtonBase.Location = new System.Drawing.Point(136, 3);
-            this.radioButtonBase.Name = "radioButtonBase";
-            this.radioButtonBase.Size = new System.Drawing.Size(70, 17);
-            this.radioButtonBase.TabIndex = 8;
-            this.radioButtonBase.TabStop = true;
-            this.radioButtonBase.Text = "Базовый";
-            this.radioButtonBase.UseVisualStyleBackColor = true;
+            this.radioButtonGray.AutoSize = true;
+            this.radioButtonGray.Checked = true;
+            this.radioButtonGray.Location = new System.Drawing.Point(136, 3);
+            this.radioButtonGray.Name = "radioButtonGray";
+            this.radioButtonGray.Size = new System.Drawing.Size(118, 17);
+            this.radioButtonGray.TabIndex = 8;
+            this.radioButtonGray.TabStop = true;
+            this.radioButtonGray.Text = "В оттенках серого";
+            this.radioButtonGray.UseVisualStyleBackColor = true;
+            this.radioButtonGray.CheckedChanged += new System.EventHandler(this.radioButtonGray_CheckedChanged);
             // 
-            // radioButtonQuadro
+            // radioButtonColors
             // 
-            this.radioButtonQuadro.AutoSize = true;
-            this.radioButtonQuadro.Enabled = false;
-            this.radioButtonQuadro.Location = new System.Drawing.Point(299, 3);
-            this.radioButtonQuadro.Name = "radioButtonQuadro";
-            this.radioButtonQuadro.Size = new System.Drawing.Size(106, 17);
-            this.radioButtonQuadro.TabIndex = 8;
-            this.radioButtonQuadro.Text = "Квадродеревом";
-            this.radioButtonQuadro.UseVisualStyleBackColor = true;
+            this.radioButtonColors.AutoSize = true;
+            this.radioButtonColors.Location = new System.Drawing.Point(299, 3);
+            this.radioButtonColors.Name = "radioButtonColors";
+            this.radioButtonColors.Size = new System.Drawing.Size(68, 17);
+            this.radioButtonColors.TabIndex = 8;
+            this.radioButtonColors.Text = "Цветное";
+            this.radioButtonColors.UseVisualStyleBackColor = true;
+            this.radioButtonColors.CheckedChanged += new System.EventHandler(this.radioButtonColors_CheckedChanged);
             // 
             // label6
             // 
@@ -442,11 +444,25 @@
             this.comboBoxSearchDomen.TabIndex = 18;
             this.comboBoxSearchDomen.SelectedIndexChanged += new System.EventHandler(this.comboBoxSearchDomen_SelectedIndexChanged);
             // 
+            // comboBoxColor
+            // 
+            this.comboBoxColor.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxColor.Enabled = false;
+            this.comboBoxColor.FormattingEnabled = true;
+            this.comboBoxColor.Items.AddRange(new object[] {
+            "RGB",
+            "YIQ"});
+            this.comboBoxColor.Location = new System.Drawing.Point(366, 2);
+            this.comboBoxColor.Name = "comboBoxColor";
+            this.comboBoxColor.Size = new System.Drawing.Size(112, 21);
+            this.comboBoxColor.TabIndex = 19;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(913, 678);
+            this.Controls.Add(this.comboBoxColor);
             this.Controls.Add(this.comboBoxSearchDomen);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
@@ -454,8 +470,8 @@
             this.Controls.Add(this.button1);
             this.Controls.Add(this.comboBoxClassif);
             this.Controls.Add(this.label6);
-            this.Controls.Add(this.radioButtonQuadro);
-            this.Controls.Add(this.radioButtonBase);
+            this.Controls.Add(this.radioButtonColors);
+            this.Controls.Add(this.radioButtonGray);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.buttonTest);
             this.Controls.Add(this.labelDecompressCharacteristic);
@@ -512,8 +528,8 @@
         private System.Windows.Forms.Label labelDecompressCharacteristic;
         private System.Windows.Forms.Button buttonTest;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.RadioButton radioButtonBase;
-        private System.Windows.Forms.RadioButton radioButtonQuadro;
+        private System.Windows.Forms.RadioButton radioButtonGray;
+        private System.Windows.Forms.RadioButton radioButtonColors;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxClassif;
         private System.Windows.Forms.NumericUpDown numberCoefCompress;
@@ -524,6 +540,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBoxSearchDomen;
+        private System.Windows.Forms.ComboBox comboBoxColor;
     }
 }
 

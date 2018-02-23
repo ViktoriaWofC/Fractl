@@ -15,7 +15,15 @@ namespace Fract
         private int width;//ширина картинки
         private int height;//высота картинки
                            //private int n;//количество блоков по высоте
-                           //private int m;//количество блоков по ширине        
+                           //private int m;//количество блоков по ширине   
+
+        private List<Rang> rangListR = new List<Rang>();
+        private List<Rang> rangListG = new List<Rang>();
+        private List<Rang> rangListB = new List<Rang>();
+
+        private List<Rang> rangListY = new List<Rang>();
+        private List<Rang> rangListI = new List<Rang>();
+        private List<Rang> rangListQ = new List<Rang>();
 
         public Decompress(List<Rang> rangList, Bitmap bi, int r)//Decompress(List<Rang> rangList, BufferedImage bi, int r)
         {
@@ -26,6 +34,33 @@ namespace Fract
             this.height = bi.Height;
             //this.m = width/r;
             //this.n = height/r;
+        }
+
+        public Decompress(List<Rang> rangListR, List<Rang> rangListG, List<Rang> rangListB, List<Rang> rangListY, List<Rang> rangListI, List<Rang> rangListQ, Bitmap bi, int r)//Decompress(List<Rang> rangList, BufferedImage bi, int r)
+        {
+            this.rangListR = rangListR;
+            this.rangListG = rangListG;
+            this.rangListB = rangListB;
+            this.rangListY = rangListY;
+            this.rangListI = rangListI;
+            this.rangListQ = rangListQ;
+            this.r = r;
+            this.bi = bi;
+            this.width = bi.Width;
+            this.height = bi.Height;
+            //this.m = width/r;
+            //this.n = height/r;
+        }
+
+        public Bitmap decompressImage(int k, string imageColor)
+        {
+            if (imageColor.Equals("grey"))
+                return decompressImage(k);
+            else if (imageColor.Equals("rgb"))
+                return decompressImageColorRGB(k);
+            else if (imageColor.Equals("yiq"))
+                return decompressImageColorYIQ(k);
+            else return decompressImage(k);
         }
 
         public Bitmap decompressImage(int k)
@@ -65,28 +100,9 @@ namespace Fract
                     for (int i = 0; i < D; i++)
                       for (int j = 0; j < D; j++)
                         {
-                            //color = new Color(bi.getRGB(rang.getX() + j, rang.getY() + i));
-                            //int f = color.getRed();
-                            //domenBig[i][j] = f;//bi.getRGB(rang.getX() + j, rang.getY() + i);
-                            //domenBig[i][j] = bi.getRGB(rang.getX() + j, rang.getY() + i);
-                            //domenBig[i, j] = bitTest.GetPixel(j, i).ToArgb();
-
                             domenBig[i, j] = bi.GetPixel(rang.getX() + j, rang.getY() + i).ToArgb();
-                            //domenBig[i, j] = bi.GetPixel(rang.getX() + i, rang.getY() + j).ToArgb();
-                            //domenBig[j, i] = pixels[rang.getY() + j, rang.getX() + i];
-
-                            //bitmap.SetPixel(width + 5 + i, 5 + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
-                            //domen[j, i] = pix[rang.getY() + j, rang.getX() + i];
                         }
 
-                    if (tk == 12)
-                    {
-                        //printBlock(rang,domenBig, tk, g, "domenBig");
-                    }
-
-                    //pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();
-                    //domen[j, i] = pix[rang.getY() + j, rang.getX() + i];
-                    //bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getY() + j, rang.getX() + i]));
 
                     int d = 0, sum = 0;
                     //и уменьшаем его усреднением
@@ -103,30 +119,178 @@ namespace Fract
                     for (int i = 0; i < R; i++)
                         for (int j = 0; j < R; j++)
                         {
-                            //bi.setRGB(rang.getX0() + j, rang.getY0() + i, domen[i, j] + (domen[i, j] << 8) + (domen[i, j] << 16));
                             color = Color.FromArgb(domen[i, j]);
                             bi.SetPixel(rang.getX0() + j, rang.getY0() + i,color);
-                            //color = Color.FromArgb(domen[j, i]);
-                            //bi.SetPixel(rang.getX0() + i, rang.getY0() + j, color);
-                            //pixels[i, j] = bi.GetPixel(j, i).ToArgb();
-
-                            //bitmap.SetPixel(rang.getX0() + i, rang.getY0() + j, Color.FromArgb(pix[rang.getY0() + j, rang.getX0() + i]));
-                            //rangMatr[j, i] = pix[rang.getY0() + j, rang.getX0() + i];
-
                         }
-                    //if (tk == 12) printBlock(rang, tk, g);
-                    //if (tk == 4) printBlock(rang, tk, g);
-                    //if (tk == 5) printBlock(rang, tk, g);
-                    //if (tk == 6)   printBlock(rang, tk, g);
 
                     tk++;
                 }
                 printDecompression(g);
             }
-            //
-            //Color color = new Color(domen[0][0]);
-            //System.out.println(""+color.getRed()+" "+color.getGreen()+" "+color.getBlue());
 
+            return bi;
+        }
+
+        public Bitmap decompressImageColorRGB(int k)
+        {
+            int[,] domen_Red, domenBig_Red;
+            int[,] domen_Green, domenBig_Green;
+            int[,] domen_Blue, domenBig_Blue;
+            int R, D;
+
+            Color color;
+            int tk = 0;
+
+            for (int g = 0; g < k; g++)
+            {
+                int m = bi.Width;
+                int n = bi.Height;
+                int[,] pixels = new int[n, m];
+
+                //получаем массив интовых чисел из изображения
+                for (int i = 0; i < n; i++)//строки
+                    for (int j = 0; j < m; j++)//столбцы
+                    {
+                        pixels[i, j] = bi.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+
+                    }
+
+                tk = 0;
+                for(int l = 0; l<rangListR.Count; l++)
+                {
+
+                    //domen = new int[r, r];
+                    R = r / rangListR[l].getK();
+                    D = R * 2;
+                    domen_Red = new int[R, R];
+                    domenBig_Red = new int[D, D];
+                    domen_Green = new int[R, R];
+                    domenBig_Green = new int[D, D];
+                    domen_Blue = new int[R, R];
+                    domenBig_Blue = new int[D, D];
+
+                    int d = 0, sum = 0;
+
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig_Red[i, j] = bi.GetPixel(rangListR[l].getX() + j, rangListR[l].getY() + i).ToArgb();
+                            domenBig_Green[i, j] = bi.GetPixel(rangListG[l].getX() + j, rangListG[l].getY() + i).ToArgb();
+                            domenBig_Blue[i, j] = bi.GetPixel(rangListB[l].getX() + j, rangListB[l].getY() + i).ToArgb();
+                        }
+                    //и уменьшаем его усреднением
+                    domen_Red = reduceBlock(domenBig_Red);
+                    domen_Green = reduceBlock(domenBig_Green);
+                    domen_Blue = reduceBlock(domenBig_Blue);
+
+                    //афинное преобразование
+                    domen_Red = setAfinnInt(domen_Red, rangListR[l].getAfinn());
+                    domen_Green = setAfinnInt(domen_Green, rangListG[l].getAfinn());
+                    domen_Blue = setAfinnInt(domen_Blue, rangListB[l].getAfinn());
+
+                    //преобразование яркости - получаем компоненту одного цвета
+                    //domen = changeBright(domen, rang.getBright());
+                    domen_Red = changeBrightColorRGB(domen_Red, rangListR[l].getS(), rangListR[l].getO(),"R");
+                    domen_Green = changeBrightColorRGB(domen_Green, rangListG[l].getS(), rangListG[l].getO(), "G");
+                    domen_Blue = changeBrightColorRGB(domen_Blue, rangListB[l].getS(), rangListB[l].getO(), "B");
+
+                    //;
+                    for (int i = 0; i < R; i++)
+                        for (int j = 0; j < R; j++)
+                        {                            
+                            color = Color.FromArgb(domen_Red[i, j], domen_Green[i, j], domen_Blue[i, j]);
+                            bi.SetPixel(rangListR[l].getX0() + j, rangListR[l].getY0() + i, color);
+                        }
+
+                    tk++;
+                }
+                printDecompression(g);
+            }
+
+            return bi;
+        }
+
+        public Bitmap decompressImageColorYIQ(int k)
+        {
+            int[,] domen_Y, domenBig_Y;
+            int[,] domen_I, domenBig_I;
+            int[,] domen_Q, domenBig_Q;
+            int R, D;
+
+            Color color;
+            int tk = 0;
+
+            for (int g = 0; g < k; g++)
+            {
+                int m = bi.Width;
+                int n = bi.Height;
+                int[,] pixels = new int[n, m];
+
+                //получаем массив интовых чисел из изображения
+                for (int i = 0; i < n; i++)//строки
+                    for (int j = 0; j < m; j++)//столбцы
+                    {
+                        pixels[i, j] = bi.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+
+                    }
+
+                tk = 0;
+                for (int l = 0; l < rangListY.Count; l++)
+                {
+
+                    //domen = new int[r, r];
+                    R = r / rangListY[l].getK();
+                    D = R * 2;
+                    domen_Y = new int[R, R];
+                    domenBig_Y = new int[D, D];
+                    domen_I = new int[R, R];
+                    domenBig_I = new int[D, D];
+                    domen_Q = new int[R, R];
+                    domenBig_Q = new int[D, D];
+
+                    int d = 0, sum = 0;
+
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig_Y[i, j] = bi.GetPixel(rangListY[l].getX() + j, rangListY[l].getY() + i).ToArgb();
+                            domenBig_I[i, j] = bi.GetPixel(rangListI[l].getX() + j, rangListI[l].getY() + i).ToArgb();
+                            domenBig_Q[i, j] = bi.GetPixel(rangListQ[l].getX() + j, rangListQ[l].getY() + i).ToArgb();
+                        }
+                    //и уменьшаем его усреднением
+                    domen_Y = reduceBlock(domenBig_Y);
+                    domen_I = reduceBlock(domenBig_I);
+                    domen_Q = reduceBlock(domenBig_Q);
+
+                    //афинное преобразование
+                    domen_Y = setAfinnInt(domen_Y, rangListY[l].getAfinn());
+                    domen_I = setAfinnInt(domen_I, rangListI[l].getAfinn());
+                    domen_Q = setAfinnInt(domen_Q, rangListQ[l].getAfinn());
+
+                    //преобразование яркости - получаем компоненту одного цвета
+                    //domen = changeBright(domen, rang.getBright());
+                    double[,] d_domen_Y = changeBrightColorYIQ(domen_Y, rangListY[l].getS(), rangListY[l].getO(), "Y");
+                    double[,] d_domen_I = changeBrightColorYIQ(domen_I, rangListI[l].getS(), rangListI[l].getO(), "I");
+                    double[,] d_domen_Q = changeBrightColorYIQ(domen_Q, rangListQ[l].getS(), rangListQ[l].getO(), "Q");
+
+                    //;
+                    for (int i = 0; i < R; i++)
+                        for (int j = 0; j < R; j++)
+                        {
+                            int Red = Convert.ToInt32(d_domen_Y[i, j] + 0.956 * d_domen_I[i, j] + 0.623 * d_domen_Q[i, j]);
+                            int Green = Convert.ToInt32(d_domen_Y[i, j] - 0.272 * d_domen_I[i, j] - 0.648 * d_domen_Q[i, j]);
+                            int Blue = Convert.ToInt32(d_domen_Y[i, j] - 1.105 * d_domen_I[i, j] + 1.705 * d_domen_Q[i, j]);
+
+                            color = Color.FromArgb(Red, Green, Blue);
+                            bi.SetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i, color);
+                        }
+
+                    tk++;
+                }
+                printDecompression(g);
+            }
 
             return bi;
         }
@@ -298,6 +462,93 @@ namespace Fract
             return p;
         }
 
+        public int[,] changeBrightColorRGB(int[,] pix, double s, double o, string imageColor)
+        {
+            int n = pix.GetLength(0);
+            double x;
+            int[,] p = new int[n, n];
+            Color color;
+            bool red = false;
+            bool green = false;
+            bool blue = false;
+
+            if (imageColor.Equals("R"))
+                red = true;
+            else if (imageColor.Equals("G"))
+                green = true;
+            else if (imageColor.Equals("B"))
+                blue = true;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);
+                    if(red) x = s * color.R + o;
+                    else if(green) x = s * color.G + o;
+                    else if (blue) x = s * color.B + o;
+                    else x = s * color.R + o;
+
+                    if (x > 255)
+                        x = 255;
+                    if (x < 0)
+                        x = 0;
+
+                    //if (red) color = Color.FromArgb((int)x, 0, 0);
+                    //else if (green) color = Color.FromArgb(0, (int)x, 0);
+                    //else if (blue) color = Color.FromArgb(0, 0, (int)x);
+                    //else color = Color.FromArgb((int)x, (int)x, (int)x);
+
+
+                    //p[i, j] = color.ToArgb();
+                    p[i, j] = (int)x;
+                }
+            return p;
+        }
+
+        public double[,] changeBrightColorYIQ(int[,] pix, double s, double o, string imageColor)
+        {
+            int n = pix.GetLength(0);
+            double x;
+            double[,] p = new double[n, n];
+            Color color;
+            bool Y = false;
+            bool I = false;
+            bool Q = false;
+
+            if (imageColor.Equals("Y"))
+                Y = true;
+            else if (imageColor.Equals("I"))
+                I = true;
+            else if (imageColor.Equals("Q"))
+                Q = true;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);
+                    if (Y) x = s * getY(color) + o;
+                    else if (I) x = s * getI(color) + o;
+                    else if (Q) x = s * getQ(color) + o;
+                    else x = s * color.R + o;
+
+                    if (x > 255)
+                        x = 255;
+                    if (x < 0)
+                        x = 0;
+
+                    //if (red) color = Color.FromArgb((int)x, 0, 0);
+                    //else if (green) color = Color.FromArgb(0, (int)x, 0);
+                    //else if (blue) color = Color.FromArgb(0, 0, (int)x);
+                    //else color = Color.FromArgb((int)x, (int)x, (int)x);
+
+
+                    //p[i, j] = color.ToArgb();
+                    p[i, j] = x;
+                }
+            return p;
+        }
+
+
         public int[,] reduceBlock(int[,] blockBig)
         {
             int n = blockBig.GetLength(0);
@@ -339,6 +590,21 @@ namespace Fract
                 //MessageBox.Show("There was a problem saving the file." +
                 //"Check the file permissions.");
             }
+        }
+
+        public double getY(Color color)
+        {
+            return 0.299 * color.R + 0.587 * color.G + 0.114 * color.B;
+        }
+
+        public double getI(Color color)
+        {
+            return 0.596 * color.R - 0.274 * color.G - 0.322 * color.B;
+        }
+
+        public double getQ(Color color)
+        {
+            return 0.211 * color.R - 0.522 * color.G + 0.311 * color.B;
         }
 
         public void printBlock(Rang rang, int k, int g)

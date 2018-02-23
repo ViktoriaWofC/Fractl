@@ -21,13 +21,21 @@ namespace Fract
         Classification classification;
         Compression compress;
         List<Rang> rangList;
+        List<Rang> rangListR;
+        List<Rang> rangListG;
+        List<Rang> rangListB;
+        List<Rang> rangListY;
+        List<Rang> rangListI;
+        List<Rang> rangListQ;
         Decompress decompress;
+        
 
         public Form1()
         {
             InitializeComponent();
             comboBoxClassif.SelectedIndex = 0;
             comboBoxSearchDomen.SelectedIndex = 0;
+            comboBoxColor.SelectedIndex = 0;
         }
 
         private void buttonDecompress_Click(object sender, EventArgs e)
@@ -89,20 +97,26 @@ namespace Fract
         public void DecompressFunc()
         {
             int r;// = Convert.ToInt32(numberRangSize.Value);
-            if (radioButtonBase.Checked)
+            string imageColor = "";
+            if (radioButtonGray.Checked)
+            {
                 r = Convert.ToInt32(numberRangSize.Value);
-            else {
-                r = 8;
-                numberRangSize.Value = 8;
+                decompress = new Decompress(rangList, bitEnd, r);
+                imageColor = "grey";
             }
-
-
-            decompress = new Decompress(rangList, bitEnd, r);
+            else {
+                r = Convert.ToInt32(numberRangSize.Value);
+                decompress = new Decompress(rangListR, rangListG, rangListB, rangListY, rangListI, rangListQ, bitEnd, r);
+                if (comboBoxColor.SelectedIndex == 0)
+                    imageColor = "rgb";
+                else if (comboBoxColor.SelectedIndex == 1)
+                    imageColor = "yiq";
+            }            
 
             int col = Convert.ToInt32(numberIteracDecompr.Value);
 
             DateTime t1 = DateTime.Now;
-            bitEnd = decompress.decompressImage(col);
+            bitEnd = decompress.decompressImage(col,imageColor);
             DateTime t2 = DateTime.Now;
 
             String ss = "decompress time :" + (t2 - t1);
@@ -152,13 +166,19 @@ namespace Fract
             int r;// = Convert.ToInt32(numberRangSize.Value);
             int eps = Convert.ToInt32(numberCoefCompress.Value);
 
-            if (radioButtonBase.Checked)
+            string imageColor = "";            
+
+            if (radioButtonGray.Checked)
             {
-                r = Convert.ToInt32(numberRangSize.Value);                
+                r = Convert.ToInt32(numberRangSize.Value);
+                imageColor = "gray";
             }
             else {
-                r = 8;
-                numberRangSize.Value = 8;
+                r = Convert.ToInt32(numberRangSize.Value);
+                if (comboBoxColor.SelectedIndex == 0)
+                    imageColor = "rgb";
+                else if (comboBoxColor.SelectedIndex == 1)
+                    imageColor = "yiq";
             }
 
             //if Classification
@@ -174,16 +194,9 @@ namespace Fract
 
             //получаем массив интовых чисел из изображения
             for (int i = 0; i < n; i++)//строки
-                for (int j = 0; j < m; j++)//столбцы
-                {
-                    //argb = bi.getRGB(j,i);
-                    //color = new Color(argb);
-                    //f = color.getRed();
-                    //pixels[i][j] = f;
-                    //pixels[i][j] = getRGBValue(bi, j, i);
+                for (int j = 0; j < m; j++)//столбцы   
                     pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
 
-                }
 
 
 
@@ -218,11 +231,15 @@ namespace Fract
 
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();
-            //compr.compressImage();
-            compress.compressImage(searcDomen);
-            //rangList = compr.getRangList();
-            rangList = compress.getRangList();
+            compress.compressImage(searcDomen,imageColor);            
             DateTime t2 = DateTime.Now;//System.currentTimeMillis();
+            rangList = compress.getRangList();
+            rangListR = compress.getRangListComponent("R");
+            rangListG = compress.getRangListComponent("G");
+            rangListB = compress.getRangListComponent("B");
+            rangListY = compress.getRangListComponent("Y");
+            rangListI = compress.getRangListComponent("I");
+            rangListQ = compress.getRangListComponent("Q");
 
 
             String ss = "compress time :" + (t2 - t1);
@@ -706,7 +723,7 @@ namespace Fract
             int r;// = Convert.ToInt32(numberRangSize.Value);
             int eps = Convert.ToInt32(numberCoefCompress.Value);
 
-            if (radioButtonBase.Checked)
+            if (radioButtonGray.Checked)
             {
                 r = Convert.ToInt32(numberRangSize.Value);
             }
@@ -795,6 +812,17 @@ namespace Fract
             else numberCoefCompress.Enabled = true;
         }
 
+        private void radioButtonGray_CheckedChanged(object sender, EventArgs e)
+        {           
+             comboBoxColor.Enabled = false;
+        }
+
+        private void radioButtonColors_CheckedChanged(object sender, EventArgs e)
+        {
+
+            comboBoxColor.Enabled = true;
+        }
+
         /// //////////////////////////////////////////////////////////////
 
         ////преобразование из Rang в число long
@@ -873,8 +901,11 @@ namespace Fract
             {
                 String fileName = openFileDialog.FileName;
                 bitStart = new Bitmap(Image.FromFile(fileName));
-
-                bitStart = getGrey(bitStart);
+                                
+                if (radioButtonGray.Checked)
+                {
+                    bitStart = getGrey(bitStart);
+                }
 
                 pictureBoxStartImage.Image = bitStart;                
             }

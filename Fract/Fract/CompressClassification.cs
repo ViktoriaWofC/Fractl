@@ -42,7 +42,7 @@ namespace Fract
             this.sss = "";
         }
 
-        public void compressImage(string searchDomen)
+        public void compressImage(string searchDomen, string imageColor)
         {
             if (searchDomen.Equals("first<eps"))
                 compressImageFirst();
@@ -56,6 +56,19 @@ namespace Fract
         {
             return rangList;
         }
+
+        public List<Rang> getRangListComponent(string component)
+        {
+            //if (component.Equals("R"))
+            //    return rangListR;
+            //else if (component.Equals("G"))
+            //    return rangListG;
+            //else if (component.Equals("B"))
+            //    return rangListB;
+            //else 
+            return rangList;
+        }
+
 
         public int getR()
         {
