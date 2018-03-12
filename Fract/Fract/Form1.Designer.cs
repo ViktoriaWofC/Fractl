@@ -437,7 +437,8 @@
             "Первый подходящий (меньше коэффициента компрессии)",
             "Минимальный",
             "Минимальный и подходящий (меньше коэффициента компрессии)",
-            "Тестовый (Минимальный)"});
+            "Тестовый (Минимальный)",
+            "Несколько эталонов"});
             this.comboBoxSearchDomen.Location = new System.Drawing.Point(155, 25);
             this.comboBoxSearchDomen.Name = "comboBoxSearchDomen";
             this.comboBoxSearchDomen.Size = new System.Drawing.Size(323, 21);

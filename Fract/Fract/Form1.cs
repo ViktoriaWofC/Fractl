@@ -228,6 +228,8 @@ namespace Fract
                 searcDomen = "min and <eps";
             else if (comboBoxSearchDomen.SelectedIndex == 3)
                 searcDomen = "test";
+            else if (comboBoxSearchDomen.SelectedIndex == 4)
+                searcDomen = "etalons";
 
 
             DateTime t1 = DateTime.Now;//System.currentTimeMillis();

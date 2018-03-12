@@ -88,7 +88,10 @@ namespace Fract
                     compressImageDivide();
                 else if (searchDomen.Equals("test"))
                     compressImageTest();
-            }else
+                else if (searchDomen.Equals("etalons"))
+                    compressImageEtalons();
+             }
+            else
             {
                 //if (searchDomen.Equals("first<eps"))
                 //    compressImageFirst();
@@ -254,6 +257,108 @@ namespace Fract
 
                     //пербор доменных блоков
                     getDomenBlocTest(rang, 1, j * r, i * r,sko, domenSKOList);
+                    //rangsList.add(ran);
+
+                }
+
+        }
+
+        public void compressImageEtalons()
+        {
+            bool b = false;
+            int R = r;/// k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            int[,] rang = new int[r, r];// ранговый блок
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenBig = new int[D, D];//доменный блок
+            int id = 0;
+            int jd = 0;
+
+            int[,] testRang = new int[r, r];// etalon
+
+            
+
+            List<int> etalonsCodesDomens = new List<int>(6);
+            List<int> ids = new List<int>();
+            List<int> jds = new List<int>();
+            List<double> minSKOs = new List<double>();
+            //List<double> domensSKOs = new List<double>();//for etalonsCodes
+
+
+
+            //вычисляем все СКО для доменных блоков
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                //while ((jd < M) && (b == false))
+                while ((jd < M - 1) && (b == false))
+                {
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+
+                    //уменьшаем его усреднением
+                    domen = reduceBlock(domenBig);
+
+                    double minSKO = 1000000000;
+                    int minCode = 0;
+                    for (int h = 0; h < 6; h++)
+                    {
+                        testRang = createEtalon(h);
+
+                        minSKOs = getAllSKO(domen, testRang);
+                        if (minSKO > minSKOs.Min())
+                        {
+                            minSKO = minSKOs.Min();
+                            minCode = h * 10 + minSKOs.IndexOf(minSKO);
+                        }
+                    }
+
+                    etalonsCodesDomens.Add(minCode);
+                    //domensSKOs.Add(minSKO);
+                    jds.Add(jd);
+                    ids.Add(id);
+
+
+                    jd++;
+                }
+                id++;
+            }
+
+
+            List<int> etalonsCodesRangs = new List<int>(6);
+            //List<double> rangsSKOs = new List<double>();//for etalonsCodes
+
+            //перебор ранговых блоков
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                {
+                    //выделяем ранговый блок
+                    for (int ii = 0; ii < r; ii++)
+                        for (int jj = 0; jj < r; jj++)
+                            rang[ii, jj] = pix[r * i + ii, r * j + jj];
+
+                    double minSKO = 1000000000;
+                    int minCode = 0;
+                    for (int h = 0; h < 6; h++)
+                    {
+                        testRang = createEtalon(h);
+
+                        minSKOs = getAllSKO(rang, testRang);
+                        if (minSKO > minSKOs.Min())
+                        {
+                            minSKO = minSKOs.Min();
+                            minCode = h * 10 + minSKOs.IndexOf(minSKO);
+                        }
+                    }
+
+                    etalonsCodesRangs.Add(minCode);
+
+                    //пербор доменных блоков
+                    getDomenBlocEtalons(rang, 1, j * r, i * r, etalonsCodesDomens,domensSKOs, ids, jds, etalonsCodesRangs);
                     //rangsList.add(ran);
 
                 }
@@ -988,6 +1093,99 @@ namespace Fract
 
             
         }
+
+        public void getDomenBlocEtalons(int[,] rang, int k, int x0, int y0, List<int> etalonsCodesDomens, List<double> domenSKOList, List<int> ids, List<int> jds, List<int> etalonsCodesRangs)
+        {
+            //x - начальная координата блока
+            //y - начальная координата блока
+            //пербор доменных блоков
+            Rang ran = null;
+            int R = r / k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];
+            int[,] domenBig = new int[D, D];//доменный блок
+            //int N = height - D + 1;//количество блоков по высоте
+            //int M = width  - D + 1;//количество блоков по ширине
+
+
+
+            double minSKO = 10000000;
+            Rang minRang = new Rang(0, 0, 0, 1, x0, y0, 1, 1, epsilon);
+
+            bool b = false;
+            int id = 0;
+            int jd = 0;
+            int number = 0;
+
+
+            //поиск манимального СКО для каждой комбинации
+            etalonsCodesDomens.RemoveAll()
+
+            //while ((id < N) && (b == false))
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                //while ((jd < M) && (b == false))
+                while ((jd < M - 1) && (b == false))
+                {
+                    double[] so;
+                    double s, o, sko;
+                    List<double> skoMass = new List<double>();
+
+
+                    //ищем минимальное СКО
+
+
+                    for (int h = 0; h < 8; h++)
+                    {
+                        sko = Math.Abs(rangSKO - domenSKOList[number][h]);//min|r-d|
+                        //sko = rangSKO- domenSKOList[number][h];//min(d-r)
+                        skoMass.Add(sko);//skoMass[h] = sko;
+                    }
+
+                    double min = skoMass.Min();
+
+                    if (min < minSKO)
+                    {
+                        int afin = skoMass.IndexOf(min);
+
+                        //выделяем доменный блок
+                        for (int i = 0; i < D; i++)
+                            for (int j = 0; j < D; j++)
+                            {
+                                domenBig[i, j] = pix[R * id + i, R * jd + j];
+                                //domenBig[i, j] = pix[id + i, jd + j];
+                            }
+
+
+                        //уменьшаем его усреднением
+                        domen = reduceBlock(domenBig);
+
+                        domenAfin = setAfinnInt(domen, afin);
+                        so = getSO(rang, domenAfin);
+                        s = so[0];
+                        o = so[1];
+
+                        minSKO = min;
+                        minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                        //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
+                    }
+
+                    number++;
+                    jd++;
+                }
+                id++;
+            }
+
+            rangList.Add(minRang);
+            printBlock(minRang, rangList.Count - 1);
+
+
+        }
+
 
         public void getDomenBlocMinColorRGB(int[,] rang, int k, int x0, int y0)
         {
