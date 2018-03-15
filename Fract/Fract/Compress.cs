@@ -195,7 +195,7 @@ namespace Fract
             //for (int ii = 0; ii < r; ii++)
             //    for (int jj = 0; jj < r; jj++)
             //        testRang[ii, jj] = pix[r * 0 + ii+5, r * 0 + jj+5];
-            testRang = createEtalon(4);
+            testRang = createEtalon(5);
 
 
             List<List<double>> domenSKOList = new List<List<double>>();
@@ -232,6 +232,8 @@ namespace Fract
             double s, o, sko;
             Color colorTest, colorRang;
 
+            List<double> rangSKOList = new List<double>();
+
             //перебор ранговых блоков
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
@@ -255,15 +257,152 @@ namespace Fract
                             sko = sko + (per) * (per);
                         }
 
+                    rangSKOList.Add(sko);
+
                     //пербор доменных блоков
                     getDomenBlocTest(rang, 1, j * r, i * r,sko, domenSKOList);
                     //rangsList.add(ran);
 
                 }
 
+            double tuu = rangSKOList[1];
+
         }
 
         public void compressImageEtalons()
+        {
+            int etalonsCount = 5;
+            bool b = false;
+            int R = r;/// k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            int[,] rang = new int[r, r];// ранговый блок
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenBig = new int[D, D];//доменный блок
+            int id = 0;
+            int jd = 0;
+
+            int[,] testRang = new int[r, r];// etalon
+
+
+
+            List<int> etalonsCodesDomens = new List<int>();
+            for (int i = 0; i < etalonsCount; i++)
+            {
+                etalonsCodesDomens.Add((i + 1));
+            }
+
+
+            List<int> ids = new List<int>();
+            List<int> jds = new List<int>();
+            List<double> minSKOs = new List<double>();
+            List<double> codeSKOs = new List<double>();//for etalonsCodes
+            for (int i = 0; i < etalonsCount; i++)
+            {
+                codeSKOs.Add(1000000000);
+                ids.Add(0);
+                jds.Add(0);
+            }
+
+            //вычисляем все СКО для доменных блоков
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                //while ((jd < M) && (b == false))
+                while ((jd < M - 1) && (b == false))
+                {
+                    //выделяем доменный блок
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+
+                    //уменьшаем его усреднением
+                    domen = reduceBlock(domenBig);
+
+                    double minSKO = 1000000000;
+                    int minCode = 0;
+                    for (int h = 1; h < etalonsCount + 1; h++)
+                    {
+                        testRang = createEtalon(h);
+
+                        //minSKOs = getAllSKO(domen, testRang);
+                        minSKOs = getAllSKO(testRang, domen);
+                        double min = minSKOs.Min();
+
+                        if (min < codeSKOs[(h - 1)])
+                        {
+                            codeSKOs[(h - 1)] = min;
+                            ids[(h - 1)] = id;
+                            jds[(h - 1)] = jd;
+                        }
+
+                        /*if (minSKO > minSKOs.Min())
+                        {
+                            minSKO = minSKOs.Min();
+                            minCode = h * 10 + minSKOs.IndexOf(minSKO);
+                        }*/
+                    }
+
+                    //etalonsCodesDomens.Add(minCode);
+                    //domensSKOs.Add(minSKO);
+                    //jds.Add(jd);
+                    //ids.Add(id);
+
+
+                    jd++;
+                }
+                id++;
+            }
+
+            for (int i = 0; i < etalonsCount; i++)
+            {
+                printBlockForEtalon(etalonsCodesDomens[i], jds[i]*R, ids[i]*R, 1);
+            }
+
+
+
+            List<int> etalonsCodesRangs = new List<int>();
+            //List<double> rangsSKOs = new List<double>();//for etalonsCodes
+
+            //перебор ранговых блоков
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < m; j++)
+                {
+                    //выделяем ранговый блок
+                    for (int ii = 0; ii < r; ii++)
+                        for (int jj = 0; jj < r; jj++)
+                            rang[ii, jj] = pix[r * i + ii, r * j + jj];
+
+                    double minSKO = 1000000000;
+                    int minCode = 0;
+                    double min;
+                    for (int h = 1; h < etalonsCount + 1; h++)
+                    {
+                        testRang = createEtalon(h);
+
+                        minSKOs = getAllSKO(rang, testRang);
+                        min = minSKOs.Min();
+                        if (minSKO > min)
+                        {
+                            minSKO = min;
+                            minCode = h;
+                        }
+                    }
+
+                    etalonsCodesRangs.Add(minCode);
+
+                    //пербор доменных блоков
+                    getDomenBlocEtalons(rang, 1, j * r, i * r, etalonsCodesDomens, codeSKOs, ids, jds, minCode);
+                    //rangsList.add(ran);
+
+                }
+
+            int gg = etalonsCodesRangs[3];
+
+        }
+
+        public void compressImageEtalons2()
         {
             int etalonsCount = 4;
             bool b = false;
@@ -358,10 +497,10 @@ namespace Fract
                 id++;
             }
 
-            for (int i = 0; i < etalonsCount*8; i++)
-            {
-                printBlockForEtalon(etalonsCodesDomens[i], jd, id, 1);
-            }
+            //for (int i = 0; i < etalonsCount*8; i++)
+            //{
+            //    printBlockForEtalon(etalonsCodesDomens[i], jd, id, 1);
+            //}
                 
 
 
@@ -1071,6 +1210,7 @@ namespace Fract
             int id = 0;
             int jd = 0;
             int number = 0;
+            double resSKO = 100000000;
 
             //while ((id < N) && (b == false))
             while ((id < N - 1) && (b == false))
@@ -1117,8 +1257,22 @@ namespace Fract
                         s = so[0];
                         o = so[1];
 
-                        minSKO = min;
-                        minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, minSKO);
+                        Color colorDomen, colorRang;
+                        sko = 0;
+
+                        for (int i = 0; i < R; i++)
+                            for (int j = 0; j < R; j++)
+                            {
+                                colorDomen = Color.FromArgb(domenAfin[i, j]);
+                                colorRang = Color.FromArgb(rang[i, j]);
+                                double per = (s * colorDomen.R + o) - colorRang.R;
+                                sko = sko + (per) * (per);
+                                //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                            }
+
+                        //minSKO = min;
+                        resSKO = sko;
+                        minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, sko);
                         //minRang = new Rang(jd, id, afin, k, x0, y0, s, o, minSKO);
                     }
 
@@ -1128,13 +1282,121 @@ namespace Fract
                 id++;
             }
 
-            rangList.Add(minRang);
-            printBlock(minRang, rangList.Count - 1);
+            if (resSKO < epsilon)
+            {
+                rangList.Add(minRang);
+                printBlock(minRang, rangList.Count - 1);
+            }
+            else
+            {
+                //getDomenBlocTest(rang, 1, j * r, i * r, sko, domenSKOList);
+                //getDomenBlocTest(int[,] rang, int k, int x0, int y0, double rangSKO, List<List<double>> domenSKOList)
+                getDomenBlocMin(rang, k, x0, y0);
+            }
+
+            
 
             
         }
 
         public void getDomenBlocEtalons(int[,] rang, int k, int x0, int y0, List<int> etalonsCodesDomens, List<double> codeSKOList, List<int> ids, List<int> jds, int rangCode)
+        {
+            //x - начальная координата блока
+            //y - начальная координата блока
+            //пербор доменных блоков
+            Rang ran = null;
+            int R = r / k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            int[,] domen = new int[R, R];//уменьшенный доменный блок
+            int[,] domenAfin = new int[R, R];
+            int[,] domenBig = new int[D, D];//доменный блок
+            //int N = height - D + 1;//количество блоков по высоте
+            //int M = width  - D + 1;//количество блоков по ширине
+
+
+
+            double minSKO = 10000000;
+            Rang minRang = new Rang(0, 0, 0, 1, x0, y0, 1, 1, epsilon);
+
+            bool b = false;
+            int id = 0;
+            int jd = 0;
+            int etalonNumber;
+            int afin;
+            int h;
+            Color colorDomen, colorRang;
+
+
+            //while ((id < N) && (b == false))
+
+            etalonNumber = rangCode;
+            h = etalonsCodesDomens.IndexOf(rangCode);
+            id = ids[h];
+            jd = jds[h];
+
+            //выделяем доменный блок
+            for (int i = 0; i < D; i++)
+                for (int j = 0; j < D; j++)
+                {
+                    domenBig[i, j] = pix[R * id + i, R * jd + j];
+                    //domenBig[i, j] = pix[id + i, jd + j];
+                }
+
+
+            //уменьшаем его усреднением
+            domen = reduceBlock(domenBig);
+
+            double[] so;
+            double s, o, sko;
+            List<double> skoMass = new List<double>();
+
+            String test = "";
+
+            //вычисляемм все СКО
+            for (int hh = 0; hh < 8; hh++)
+            {
+                sko = 0;
+                //skoMass.Clear();// = new double[8];
+                String dpr = "";
+
+                domenAfin = setAfinnInt(domen, h);
+                so = getSO(rang, domenAfin);
+                s = so[0];
+                o = so[1];
+
+                for (int i = 0; i < R; i++)
+                    for (int j = 0; j < R; j++)
+                    {
+                        colorDomen = Color.FromArgb(domenAfin[i, j]);
+                        colorRang = Color.FromArgb(rang[i, j]);
+                        double per = (s * colorDomen.R + o) - colorRang.R;
+                        sko = sko + (per) * (per);
+                        //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                    }
+
+                skoMass.Add(sko);//skoMass[h] = sko;
+
+            }
+
+            sko = skoMass.Min();
+            afin = skoMass.IndexOf(sko);
+
+            domenAfin = setAfinnInt(domen, afin);
+            so = getSO(rang, domenAfin);
+            s = so[0];
+            o = so[1];
+
+            minRang = new Rang(jd * R, id * R, afin, k, x0, y0, s, o, sko);
+            rangList.Add(minRang);
+            printBlock(minRang, rangList.Count - 1);
+
+
+        }
+
+
+        public void getDomenBlocEtalons2(int[,] rang, int k, int x0, int y0, List<int> etalonsCodesDomens, List<double> codeSKOList, List<int> ids, List<int> jds, int rangCode)
         {
             //x - начальная координата блока
             //y - начальная координата блока
@@ -2651,8 +2913,8 @@ namespace Fract
                     for (int j = 0; j < bitmap.Height; j++)
                     {
                         if (j < r / 2)
-                            bitmap.SetPixel(i, j, Color.White);
-                        else bitmap.SetPixel(i, j, Color.Black);
+                            bitmap.SetPixel(i, j, Color.LightGray);
+                        else bitmap.SetPixel(i, j, Color.Gray);
                     }
             }
             else if (k == 2)
@@ -2662,8 +2924,8 @@ namespace Fract
                     for (int j = 0; j < bitmap.Height; j++)
                     {
                         if ((i + j) < (r - 1))
-                            bitmap.SetPixel(i, j, Color.White);
-                        else bitmap.SetPixel(i, j, Color.Black);
+                            bitmap.SetPixel(i, j, Color.LightGray);
+                        else bitmap.SetPixel(i, j, Color.Gray);
                     }
             }
             else if (k == 3)
@@ -2673,8 +2935,8 @@ namespace Fract
                     for (int j = 0; j < bitmap.Height; j++)
                     {
                         if (((i + j) < (r - 1)) || ((i + j) > r))
-                            bitmap.SetPixel(i, j, Color.Black);
-                        else bitmap.SetPixel(i, j, Color.White);
+                            bitmap.SetPixel(i, j, Color.Gray);
+                        else bitmap.SetPixel(i, j, Color.LightGray);
                     }
             }
             else if (k == 4)
@@ -2683,10 +2945,30 @@ namespace Fract
                     for (int j = 0; j < bitmap.Height; j++)
                     { 
                         if (((i + j) < (r - 1)) || ((i + j) > r))
-                            bitmap.SetPixel(i, j, Color.White);
-                        else bitmap.SetPixel(i, j, Color.Black);
+                            bitmap.SetPixel(i, j, Color.LightGray);
+                        else bitmap.SetPixel(i, j, Color.Gray);
                     }
-            }           
+            }
+            else if (k == 5)
+            {
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    {
+                        if ((i % 2 + j % 2) % 2 == 0)
+                            bitmap.SetPixel(i, j, Color.Gray);
+                        else bitmap.SetPixel(i, j, Color.LightGray);
+                    }
+            }
+            else if (k == 101)
+            {
+                for (int i = 0; i < bitmap.Width; i++)
+                    for (int j = 0; j < bitmap.Height; j++)
+                    {
+                        if (j < r / 2)
+                            bitmap.SetPixel(i, j, Color.LightGray);
+                        else bitmap.SetPixel(i, j, Color.Gray);
+                    }
+            }
 
 
             int[,] pixels = new int[r, r];
@@ -2715,6 +2997,124 @@ namespace Fract
         }
 
         public void printBlockForEtalon(int code, int x, int y, int k)
+        {
+            int otst = r * 2 + 10;
+            int width = pix.GetLength(1);
+            Bitmap bitmap = new Bitmap(width + otst, pix.GetLength(0) + 5);
+            Color color;// = Color.White;
+            int R = r / k;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
+            int etalonNumber = code;
+            int afin = 1;// code % 10;
+
+            int[,] etalon = createEtalon(etalonNumber);
+
+            for (int i = 0; i < bitmap.Width - otst; i++)
+                //for (int j = 0; j < bitmap.Height; j++)
+                for (int j = 0; j < pix.GetLength(1); j++)
+                {
+                    bitmap.SetPixel(i, j, Color.FromArgb(pix[j, i]));
+                }
+
+            for (int i = -1; i < D + 1; i++)
+                if ((x + i >= 0) && (y - 1 >= 0))
+                    bitmap.SetPixel(x + i, y - 1, Color.Yellow);
+            for (int i = -1; i < D + 1; i++)
+                if (x + i >= 0)
+                    bitmap.SetPixel(x + i, y + D, Color.Yellow);
+            for (int j = -1; j < D + 1; j++)
+                if ((y + j >= 0) && (x - 1 >= 0))
+                    bitmap.SetPixel(x - 1, y + j, Color.Yellow);
+            for (int j = -1; j < D + 1; j++)
+                if (y + j >= 0)
+                    bitmap.SetPixel(x + D, y + j, Color.Yellow);
+
+            //////////////////////////////////////////
+            int[,] domen = new int[D, D], domenAfin, domenBright;
+            int[,] domenMin = new int[R, R];
+            for (int i = 0; i < D; i++)
+                for (int j = 0; j < D; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, 5 + j, Color.FromArgb(pix[y + j, x + i]));
+                    domen[j, i] = pix[y + j, x + i];
+                }
+
+            domenMin = reduceBlock(domen);
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 2 + 10) + j, Color.FromArgb(domenMin[j, i]));
+                }
+
+            /*domenAfin = setAfinnInt(domenMin, afin);
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenAfin[j, i]));
+                }*/
+
+            double[] so = getSO(etalon, domenMin);
+            double s = so[0];
+            double o = so[1];
+
+            domenBright = changeBright(domenMin, s, o);
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[j, i]));
+                }
+
+            int[,] etalonAfin = new int[R, R];
+            etalonAfin = setAfinnInt(etalon, afin);
+            //etalon block
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 40) + j, Color.FromArgb(etalonAfin[j, i]));
+                }
+
+            //difference
+            int argbcolor;
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    //argbcolor = Math.Abs(Color.FromArgb(rangMatr[i, j]).R - Color.FromArgb(domenBright[i, j]).R);
+                    argbcolor = Math.Abs(Color.FromArgb(domenBright[j, i]).R - Color.FromArgb(etalon[j, i]).R);
+                    //bitmap.SetPixel(width + 5 + i, (5 + R * 7 + 50) + j, Color.FromArgb(argbcolor, argbcolor, argbcolor));
+                }
+
+            double sko = 0;
+            Color colorDomen, colorRang;
+
+            for (int i = 0; i < R; i++)
+                for (int j = 0; j < R; j++)
+                {
+                    //colorDomen = Color.FromArgb(domenAfin[i, j]);
+                    colorDomen = Color.FromArgb(domenMin[i, j]);
+                    colorRang = Color.FromArgb(etalon[i, j]);
+                    double per = (s * colorDomen.R + o) - colorRang.R;
+                    sko = sko + (per) * (per);
+                    //sko = sko + ((s*domen[i, j] + o)-rang[i,j]) * ((s * domen[i, j] + o) - rang[i, j]);
+                }
+
+            try
+            {
+                String name = "Etalon___" + code + "___k=" + k + "__" + "E=" + epsilon + "__x="+x + "__y=" + x;
+                bitmap.Save("D:\\университет\\диплом\\bloks\\" + name + ".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                //"Check the file permissions.");
+            }
+
+            if (k == 0)
+                printRang(k);
+        }
+
+        public void printBlockForEtalon2(int code, int x, int y, int k)
         {
             int otst = r * 2 + 10;
             int width = pix.GetLength(1);
