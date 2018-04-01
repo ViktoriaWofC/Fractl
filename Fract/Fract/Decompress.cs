@@ -283,6 +283,13 @@ namespace Fract
                             int Green = Convert.ToInt32(d_domen_Y[i, j] - 0.272 * d_domen_I[i, j] - 0.648 * d_domen_Q[i, j]);
                             int Blue = Convert.ToInt32(d_domen_Y[i, j] - 1.105 * d_domen_I[i, j] + 1.705 * d_domen_Q[i, j]);
 
+                            if (Red < 0) Red = 0;
+                            if (Green < 0) Green = 0;
+                            if (Blue < 0) Blue = 0;
+                            if (Red > 255) Red = 255;
+                            if (Green > 255) Green = 255;
+                            if (Blue > 255) Blue = 255;
+
                             color = Color.FromArgb(Red, Green, Blue);
                             bi.SetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i, color);
                         }

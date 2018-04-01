@@ -292,61 +292,8 @@ namespace Fract
             }*/
             //////////////////////
             rangList.Add(minRang);
-            printBlock(minRang, rangList.Count - 1);
-
-            //если для рангового блока не нашли доменного
-            /*if (ran == null)
-            {
-                k = k * 2;
-                //уменьшаем r/2 и снова ищем доменный пресуя его в 4 раза и т.д пока r>2
-                if (r / k >= 4)//(r / k >= 2)  //while (ran == null)
-                {
-                    printDevide(rang, rangList.Count);
-
-                    int newR = r / k;
-                    int[,] rangDop = new int[newR, newR];
-                    for (int ir = 0; ir < 2; ir++)
-                        for (int jr = 0; jr < 2; jr++)
-                        {
-                            //выделяем ранговый блок
-                            for (int i = 0; i < newR; i++)
-                                for (int j = 0; j < newR; j++)
-                                {
-                                    rangDop[i, j] = rang[ir * newR + i, jr * newR + j];
-                                    //rangDop[j, i] = rang[ir * newR + i, jr * newR + j];
-                                }
-                            //for (int i = 0; i < domenSize / 2; i++)
-                             //   for (int j = 0; j < domenSize / 2; j++)
-                             //       rangDop[i, j] = pix[x0 + ir * domenSize / 2 + i, y0 + jr * domenSize / 2 + j];
-                                    
-
-                            //getDomenBloc(rangDop, k, x0 + ir * newR, y0 + jr * newR);//x*r,y*r
-                            //getDomenBloc(rangDop, k, x0 + jr * newR, y0 + ir * newR);
-                        }
-
-                }
-                else
-                {
-                    if(minSKO== 10000000)
-                    {
-                        minSKO = 10000000;
-                    }
-                    rangList.Add(minRang);
-                    printBlock(minRang, rangList.Count - 1);
-                    //printAfinSO(minRang, rangList.Count - 1);
-                }
-                //ran = new Rang(0, 0, 0,k,x,y);
-                //rangList.add(ran);
-
-            }
-            else
-            {
-                rangList.Add(ran);
-                printBlock(ran, rangList.Count-1);
-                //printAfinSO(ran, rangList.Count - 1);
-            }*/
-
-            //return ran;
+            //printBlock(minRang, rangList.Count - 1);
+            
         }
 
         public void getDomenBlocFirst(int[,] rang, int k, int x0, int y0)
@@ -517,7 +464,7 @@ namespace Fract
                         minSKO = 10000000;
                     }
                     rangList.Add(minRang);
-                    printBlock(minRang, rangList.Count - 1);
+                    //printBlock(minRang, rangList.Count - 1);
                     //printAfinSO(minRang, rangList.Count - 1);
                 }
                 //ran = new Rang(0, 0, 0,k,x,y);
@@ -527,7 +474,7 @@ namespace Fract
             else
             {
                 rangList.Add(ran);
-                printBlock(ran, rangList.Count - 1);
+                //printBlock(ran, rangList.Count - 1);
                 //printAfinSO(ran, rangList.Count - 1);
             }
 
@@ -714,7 +661,7 @@ namespace Fract
                         minSKO = 10000000;
                     }
                     rangList.Add(minRang);
-                    printBlock(minRang, rangList.Count - 1);
+                    //printBlock(minRang, rangList.Count - 1);
                     //printAfinSO(minRang, rangList.Count - 1);
                 }
                 //ran = new Rang(0, 0, 0,k,x,y);
@@ -726,7 +673,7 @@ namespace Fract
                 //rangList.Add(ran);
                 //printBlock(ran, rangList.Count - 1);
                 rangList.Add(minRang);
-                printBlock(minRang, rangList.Count - 1);
+                //printBlock(minRang, rangList.Count - 1);
                 //printAfinSO(ran, rangList.Count - 1);
             }
 
