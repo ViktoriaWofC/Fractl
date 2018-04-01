@@ -82,6 +82,39 @@ namespace Fract
             bool b = false;
             int[,] rang = new int[r, r];// ранговый блок
 
+
+            int id = 0;
+            int jd = 0;
+
+            int R = r / 1;//размер рангового блока
+            int D = R * 2;//размер доменного блока
+            int N = height / R;//количество блоков по высоте
+            int M = width / R;//количество блоков по ширине
+            int[,] domenBig = new int[D, D];//доменный блок
+
+            List<int> domenClasses = new List<int>();
+
+            //while ((id < N) && (b == false))
+            while ((id < N - 1) && (b == false))
+            {
+                jd = 0;
+                while ((jd < M - 1) && (b == false))
+                {
+
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig[i, j] = pix[R * id + i, R * jd + j];
+                            //domenBig[i, j] = pix[id + i, jd + j];
+                        }
+
+                    domenClasses.Add(classification.getClass(domenBig));
+                    jd++;
+                }
+                id++;
+            }
+
+
             //перебор ранговых блоков
             for (int i = 0; i < n; i++)
                 for (int j = 0; j < m; j++)
@@ -92,7 +125,7 @@ namespace Fract
                             rang[ii, jj] = pix[r * i + ii, r * j + jj];
 
                     //пербор доменных блоков
-                    getDomenBlocMin(rang, 1, j * r, i * r);
+                    getDomenBlocMin(rang, 1, j * r, i * r,domenClasses);
                     //rangsList.add(ran);
 
                 }
@@ -152,7 +185,7 @@ namespace Fract
             //return rangsList;
         }
 
-        public void getDomenBlocMin(int[,] rang, int k, int x0, int y0)
+        public void getDomenBlocMin(int[,] rang, int k, int x0, int y0, List<int> domenClasses)
         {
             //x - начальная координата блока
             //y - начальная координата блока
@@ -178,6 +211,8 @@ namespace Fract
             int id = 0;
             int jd = 0;
 
+            int domenIndex = 0;
+
             int rangClass = classification.getClass(rang);
 
             //while ((id < N) && (b == false))
@@ -187,21 +222,21 @@ namespace Fract
                 //while ((jd < M) && (b == false))
                 while ((jd < M - 1) && (b == false))
                 {
-                    int sum = 0;
-                    //выделяем доменный блок
-                    for (int i = 0; i < D; i++)
-                        for (int j = 0; j < D; j++)
-                        {
-                            domenBig[i, j] = pix[R * id + i, R * jd + j];
-                            //domenBig[i, j] = pix[id + i, jd + j];
-                        }
+                    int sum = 0;                    
 
-                    int domenClass = classification.getClass(domenBig);
-                    if (rangClass == domenClass)
-                    { 
+                    //int domenClass = classification.getClass(domenBig);
+                    if (rangClass == domenClasses[domenIndex])
+                    {
+                        //выделяем доменный блок
+                        for (int i = 0; i < D; i++)
+                            for (int j = 0; j < D; j++)
+                            {
+                                domenBig[i, j] = pix[R * id + i, R * jd + j];
+                                //domenBig[i, j] = pix[id + i, jd + j];
+                            }
+
                         //уменьшаем его усреднением
                         domen = reduceBlock(domenBig);
-
 
                         double[] so;
                         double s, o, sko;
@@ -280,6 +315,7 @@ namespace Fract
                         }
                     }
                     jd++;
+                    domenIndex++;
                 }
                 id++;
             }
