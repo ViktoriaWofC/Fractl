@@ -338,16 +338,33 @@ namespace Fract
 
         private void buttonTest_Click(object sender, EventArgs e)
         {
-            int number = Convert.ToInt32(textBoxRangNumber.Text);
+            m = bitStart.Width;
+            n = bitStart.Height;
+            pixels = new int[n, m];
 
-            //ShortCompressFunc();
-            Color col;
-            string text = "";
+            //получаем массив интовых чисел из изображения
+            for (int i = 0; i < n; i++)//строки
+                for (int j = 0; j < m; j++)//столбцы   
+                    pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
 
-            Rang rrr = rangList[number];
-            text = textBoxTest.Text+"\n x="+rrr.getX()+" y="+rrr.getY();
+
+            int[,] pix = new int[pixels.GetLength(0), pixels.GetLength(0)];
+            for (int i = 0; i<8; i++)
+            {
+                pix = setAfinnInt(pixels, i);
+                printBlockExample(pix, i);
+            }
+
+            //int number = Convert.ToInt32(textBoxRangNumber.Text);
+
+            ////ShortCompressFunc();
+            //Color col;
+            //string text = "";
+
+            //Rang rrr = rangList[number];
+            //text = textBoxTest.Text+"\n x="+rrr.getX()+" y="+rrr.getY();
             
-            textBoxTest.Text = text;
+            //textBoxTest.Text = text;
 
 
 
@@ -381,6 +398,33 @@ namespace Fract
             //test += "end " + " " + i1 + " " + i2 + " " + i3 + " " + i4 + " " + i5 + " " + i6 + " " + i7;
 
             //textBoxTest.Text = test;
+        }
+
+        public void printBlockExample(int[,] example, int afin)
+        {
+            int width = example.GetLength(1);
+            Bitmap bitmap = new Bitmap(width, example.GetLength(0));
+            Color color;// = Color.White;
+
+
+            for (int i = 0; i < bitmap.Width; i++)
+                //for (int j = 0; j < bitmap.Height; j++)
+                for (int j = 0; j < example.GetLength(1); j++)
+                {
+                    bitmap.SetPixel(i, j, Color.FromArgb(example[j, i]));
+                }
+
+            try
+            {
+                String name = "Afin___" + afin;
+                bitmap.Save("D:\\университет\\диплом\\bloks\\" + name + ".jpg");
+                //Button5.Text = "Saved file.";
+            }
+            catch (Exception)
+            {
+                //MessageBox.Show("There was a problem saving the file." +
+                //"Check the file permissions.");
+            }
         }
 
         public bool compareBlocs(int[,] rang, int[,] domen, double epsilon)
@@ -588,101 +632,7 @@ namespace Fract
             return block;
         }
 
-        /*public void printBlock(Rang rang, int k)
-        {
-            int otst = r * 2 + 10;
-            int width = pix.GetLength(1);
-            Bitmap bitmap = new Bitmap(width + otst, pix.GetLength(0));
-            Color color;// = Color.White;
-            int R = r / rang.getK();//размер рангового блока
-            int D = R * 2;//размер доменного блока
-            int[,] rangMatr = new int[R, R];
-            //bi.SetPixel(rang.getX0() + j, rang.getY0() + i, color);
-
-            for (int i = 0; i < bitmap.Width - otst; i++)
-                for (int j = 0; j < bitmap.Height; j++)
-                {
-                    if (i % r != 0 && j % r != 0)
-                        bitmap.SetPixel(i, j, Color.White);
-                    else bitmap.SetPixel(i, j, Color.Black);
-                }
-
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    bitmap.SetPixel(rang.getX0() + i, rang.getY0() + j, Color.FromArgb(pix[rang.getX0() + i, rang.getY0() + j]));
-                    rangMatr[i, j] = pix[rang.getX0() + i, rang.getY0() + j];
-                }
-
-            for (int i = 0; i < D; i++)
-                for (int j = 0; j < D; j++)
-                {
-                    bitmap.SetPixel(rang.getX() + i, rang.getY() + j, Color.FromArgb(pix[rang.getX() + i, rang.getY() + j]));
-                }
-
-            //////////////////////////////////////////
-            int[,] domen = new int[D, D], domenAfin, domenBright;
-            int[,] domenMin = new int[R, R];
-            for (int i = 0; i < D; i++)
-                for (int j = 0; j < D; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, 5 + j, Color.FromArgb(pix[rang.getX() + i, rang.getY() + j]));
-                    domen[i, j] = pix[rang.getX() + i, rang.getY() + j];
-                }
-
-            domenMin = reduceBlock(domen);
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 2 + 10) + j, Color.FromArgb(domenMin[i, j]));
-                }
-
-            domenAfin = setAfinnInt(domenMin, rang.getAfinn());
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenAfin[i, j]));
-                }
-
-            domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[i, j]));
-                }
-
-            //rang block
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 6 + 40) + j, Color.FromArgb(rangMatr[i, j]));
-                }
-
-            //difference
-            int argbcolor;
-            for (int i = 0; i < R; i++)
-                for (int j = 0; j < R; j++)
-                {
-                    //argbcolor = Math.Abs(Color.FromArgb(rangMatr[i, j]).R - Color.FromArgb(domenBright[i, j]).R);
-                    argbcolor = Math.Abs(Color.FromArgb(domenBright[i, j]).R - Color.FromArgb(rangMatr[i, j]).R);
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 7 + 50) + j, Color.FromArgb(argbcolor, argbcolor, argbcolor));
-                }
-
-            try
-            {
-                String name = k + "___k=" + rang.getK() + "__" + "E=" + epsilon + "____e=" + rang.getEpsilon() + "__";
-                bitmap.Save("D:\\университет\\диплом\\bloks\\" + name + ".jpg");
-                //Button5.Text = "Saved file.";
-            }
-            catch (Exception)
-            {
-                //MessageBox.Show("There was a problem saving the file." +
-                //"Check the file permissions.");
-            }
-
-            if (k == 0)
-                printRang(k);
-        }*/
+        
 
         public double[] getSO(int[,] rang, int[,] domen)
         {
