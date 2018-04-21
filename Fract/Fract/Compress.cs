@@ -590,7 +590,9 @@ namespace Fract
             int[,] domenAfin = new int[R, R];//доменный блок подвергнутый афинному преобразованию
             int[,] domenBig = new int[D, D];//доменный блок
 
+            //psnr
             double minSKO = 10000000;
+            //double minSKO = 0;
             Rang minRang = new Rang(0,0,0,1,x0,y0,1,1, epsilon);
             int minX = 0, minY = 0, minAfin = 0;
 
@@ -644,14 +646,21 @@ namespace Fract
                                 sko = sko + (per) * (per);
                             }
 
+                        //psnr
+                        //double psnr = 10 * Math.Log10(Math.Pow(Math.Pow(2,24)-1, 2) / sko);
+                        //sko = psnr;
+
                         skoMass.Add(sko);  
                     }
 
                     //ищем минимальное СКО
                     double min = skoMass.Min();
-                                      
-                    
-                    if(min<minSKO)
+                    //psnr
+                    //double min = skoMass.Max();
+
+                    //psnr
+                    if (min<minSKO)
+                    //if(min > minSKO)
                     {
                         minAfin = skoMass.IndexOf(min);
                         minX = jd * R;
