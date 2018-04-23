@@ -318,7 +318,7 @@
             // labelDecompressCharacteristic
             // 
             this.labelDecompressCharacteristic.AutoSize = true;
-            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(645, 615);
+            this.labelDecompressCharacteristic.Location = new System.Drawing.Point(489, 608);
             this.labelDecompressCharacteristic.Name = "labelDecompressCharacteristic";
             this.labelDecompressCharacteristic.Size = new System.Drawing.Size(35, 13);
             this.labelDecompressCharacteristic.TabIndex = 5;

@@ -130,6 +130,9 @@ namespace Fract
             pictureBoxEndImage.Width = bitStart.Width;
             pictureBoxEndImage.Height = bitStart.Height;
 
+            double sko = getSKO();
+            s = s + "  sko: " + sko;
+
             labelDecompressCharacteristic.Text = s;
 
 
@@ -256,6 +259,7 @@ namespace Fract
 
             ///
             saveResult();
+            saveResultRGB();
 
             //
 
@@ -275,6 +279,41 @@ namespace Fract
 
         /// ////////////////////////////////
         /// 
+
+        public double getSKO()
+        {
+            double sko,val;
+
+            m = bitStart.Width;
+            n = bitStart.Height;
+            int[,] pixelsStart = new int[n, m];
+            int[,] pixelsEnd = new int[n, m];
+
+            //получаем массив интовых чисел из изображения
+            for (int i = 0; i < n; i++)//строки
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    pixelsStart[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                    pixelsEnd[i, j] = bitEnd.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                }
+
+            sko = 0;
+            Color colorRang, colorDomen;
+            for (int i = 0; i < n; i++)//строки
+            {
+                val = 0;
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    colorDomen = Color.FromArgb(pixelsEnd[i, j]);
+                    colorRang = Color.FromArgb(pixelsEnd[i, j]);
+                    val = colorDomen.R - colorRang.R;
+                    sko = sko + val * val;
+                }
+            }
+            sko = sko / (n * m);
+
+            return sko;
+        }
 
         public void saveResult()
         {
@@ -331,8 +370,92 @@ namespace Fract
                 writer.Write(lon);
             }
 
+        }
 
+        public void saveResultRGB()
+        {
+            //long[] longList = new long[rangList.Count*3];
+            //string[] stringList = new string[rangList.Count*3];
+            string lon = "", lonTest = "";
+            int ii = 0;
+            long d = 0;
+            int R = Convert.ToInt32(numberRangSize.Value);
+            int epsilon = Convert.ToInt32(numberCoefCompress.Value);
+            foreach (Rang rang in rangListR)
+            {
+                //преобразование из Rang в число long
+                //d = Convert.ToInt32(rang.getBright()) + (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                d = (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                //longList.add(d);
+                //longList[ii] = d;
+                //stringList[ii] = Convert.ToString(d);
+                lon += d + " ";
+                //
+                //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
+                lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
+                ii++;
+            }
 
+            foreach (Rang rang in rangListG)
+            {
+                //преобразование из Rang в число long
+                //d = Convert.ToInt32(rang.getBright()) + (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                d = (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                //longList.add(d);
+                //longList[ii] = d;
+                //stringList[ii] = Convert.ToString(d);
+                lon += d + " ";
+                //
+                //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
+                lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
+                ii++;
+            }
+
+            foreach (Rang rang in rangListB)
+            {
+                //преобразование из Rang в число long
+                //d = Convert.ToInt32(rang.getBright()) + (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                d = (rang.getY0() << 10) + (rang.getX0() << 21) + (rang.getK() << 25) + (rang.getAfinn() << 29) + (rang.getY() << 40) + (rang.getX() << 51);
+                //longList.add(d);
+                //longList[ii] = d;
+                //stringList[ii] = Convert.ToString(d);
+                lon += d + " ";
+                //
+                //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
+                lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
+                ii++;
+            }
+
+            DateTime date = DateTime.Now;
+            string dateString = date.Day.ToString() + "."
+                                + date.Month.ToString() + "."
+                                + date.Year.ToString() + ""
+                                + "   "
+                                + date.Hour.ToString() + "."
+                                + date.Minute.ToString() + "."
+                                + date.Second.ToString() + "";
+
+            String name = dateString + "_RGB___size=" + bitStart.Height + "___R=" + R + "___E=" + epsilon;
+
+            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
+            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
+
+            //запись в файл
+            //File.WriteAllLines(@"bat.txt", stringList);
+            //File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name+".txt", lon);
+            //File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
+            //using (FileStream fstream = new FileStream(@"bat.txt", FileMode.Create))
+            //{
+            //    // преобразуем строку в байты
+            //    byte[] array = System.Text.Encoding.Default.GetBytes(lon);
+            //    // запись массива байтов в файл
+            //    fstream.Write(array, 0, array.Length);
+            //    //Console.WriteLine("Текст записан в файл");
+            //}
+            using (BinaryWriter writer = new BinaryWriter(File.Open(@"D:\\университет\\диплом\\bloks_files\\" + name + ".bat", FileMode.Create)))
+            {
+                writer.Write(lon);
+            }
 
         }
 
