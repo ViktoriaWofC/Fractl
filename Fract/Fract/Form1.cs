@@ -259,7 +259,7 @@ namespace Fract
 
             ///
             saveResult();
-            saveResultRGB();
+            //saveResultRGB();
 
             //
 
