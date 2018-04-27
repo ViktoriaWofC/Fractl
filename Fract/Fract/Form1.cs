@@ -463,8 +463,8 @@ namespace Fract
 
         public int[] getClassesCounts(int R)
         {
-            //classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
-            classification = new ClassificationDifference(Convert.ToString(comboBoxClassif.SelectedItem));
+            classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
+            //classification = new ClassificationDifference(Convert.ToString(comboBoxClassif.SelectedItem));
 
 
             m = bitStart.Width;
