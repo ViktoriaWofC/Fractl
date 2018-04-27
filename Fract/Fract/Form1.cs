@@ -298,13 +298,14 @@ namespace Fract
                 }
 
             sko = 0;
+            int k = 0;
             Color colorRang, colorDomen;
             for (int i = 0; i < n; i++)//строки
             {
                 val = 0;
                 for (int j = 0; j < m; j++)//столбцы  
                 {
-                    colorDomen = Color.FromArgb(pixelsEnd[i, j]);
+                    colorDomen = Color.FromArgb(pixelsStart[i, j]);
                     colorRang = Color.FromArgb(pixelsEnd[i, j]);
                     val = colorDomen.R - colorRang.R;
                     sko = sko + val * val;
@@ -460,24 +461,86 @@ namespace Fract
 
         }
 
-        private void buttonTest_Click(object sender, EventArgs e)
+        public int[] getClassesCounts(int R)
         {
+            //classification = new ClassificationCentrMass(Convert.ToString(comboBoxClassif.SelectedItem));
+            classification = new ClassificationDifference(Convert.ToString(comboBoxClassif.SelectedItem));
+
+
             m = bitStart.Width;
             n = bitStart.Height;
-            pixels = new int[n, m];
+            int[,] pixelsStart = new int[n, m];
 
             //получаем массив интовых чисел из изображения
             for (int i = 0; i < n; i++)//строки
-                for (int j = 0; j < m; j++)//столбцы   
-                    pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    pixelsStart[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                }
+
+            int id = 0;
+            int jd = 0;
 
 
-            int[,] pix = new int[pixels.GetLength(0), pixels.GetLength(0)];
-            for (int i = 0; i<8; i++)
+            int D = R * 2;//размер доменного блока
+            int N = pixelsStart.GetLength(0) / R;//количество блоков по высоте
+            int M = pixelsStart.GetLength(1) / R;//количество блоков по ширине
+            int[,] domenBig = new int[D, D];//доменный блок
+
+            int c1 = 0,c2=0,c3=0,c4=0,c5 = 0;
+            while (id < N - 1)
             {
-                pix = setAfinnInt(pixels, i);
-                printBlockExample(pix, i);
+                jd = 0;
+                while (jd < M - 1) 
+                {
+
+                    for (int i = 0; i < D; i++)
+                        for (int j = 0; j < D; j++)
+                        {
+                            domenBig[i, j] = pixelsStart[R * id + i, R * jd + j];
+                            //domenBig[i, j] = pix[id + i, jd + j];
+                        }
+
+                    int res =classification.getClass(domenBig);
+                    if (res == 0) c1++;
+                    else if (res == 1) c2++;
+                    else if (res == 2) c3++;
+                    else if (res == 3) c4++;
+                    else c5++;
+                    jd++;
+                }
+                id++;
             }
+
+            return new int[] {c1,c2,c3,c4,c5};
+        }
+
+        private void buttonTest_Click(object sender, EventArgs e)
+        {
+            int[] classes = getClassesCounts(Convert.ToInt32(numberRangSize.Value));
+
+            string text = "";
+            for (int i = 0; i < classes.Length; i++)
+                text += classes[i]+ "  \n  ";
+
+            textBoxTest.Text =text;
+
+            //m = bitStart.Width;
+            //n = bitStart.Height;
+            //pixels = new int[n, m];
+
+            ////получаем массив интовых чисел из изображения
+            //for (int i = 0; i < n; i++)//строки
+            //    for (int j = 0; j < m; j++)//столбцы   
+            //        pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+
+
+            //int[,] pix = new int[pixels.GetLength(0), pixels.GetLength(0)];
+            //for (int i = 0; i<8; i++)
+            //{
+            //    pix = setAfinnInt(pixels, i);
+            //    printBlockExample(pix, i);
+            //}
 
             //int number = Convert.ToInt32(textBoxRangNumber.Text);
 
@@ -487,7 +550,7 @@ namespace Fract
 
             //Rang rrr = rangList[number];
             //text = textBoxTest.Text+"\n x="+rrr.getX()+" y="+rrr.getY();
-            
+
             //textBoxTest.Text = text;
 
 
