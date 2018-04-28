@@ -258,8 +258,8 @@ namespace Fract
 
 
             ///
-            saveResult();
-            //saveResultRGB();
+            //saveResult();
+            saveResultRGB();
 
             //
 
@@ -440,7 +440,7 @@ namespace Fract
             String name = dateString + "_RGB___size=" + bitStart.Height + "___R=" + R + "___E=" + epsilon;
 
             System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
-            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
+            //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
 
             //запись в файл
             //File.WriteAllLines(@"bat.txt", stringList);
@@ -454,10 +454,10 @@ namespace Fract
             //    fstream.Write(array, 0, array.Length);
             //    //Console.WriteLine("Текст записан в файл");
             //}
-            using (BinaryWriter writer = new BinaryWriter(File.Open(@"D:\\университет\\диплом\\bloks_files\\" + name + ".bat", FileMode.Create)))
-            {
-                writer.Write(lon);
-            }
+            //using (BinaryWriter writer = new BinaryWriter(File.Open(@"D:\\университет\\диплом\\bloks_files\\" + name + ".bat", FileMode.Create)))
+            //{
+            //    writer.Write(lon);
+            //}
 
         }
 
