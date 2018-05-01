@@ -1560,7 +1560,7 @@ namespace Fract
                         }
                         else if (min_Green < minSKO_Green)
                         {
-                            int afin = skoMass_Red.IndexOf(min_Green);
+                            int afin = skoMass_Green.IndexOf(min_Green);
                             domenAfin = setAfinnInt(domen, afin);
                             so = getSOColors(rang, domenAfin, "rgb");
                             s_Green = so[2];
@@ -1589,7 +1589,7 @@ namespace Fract
                         }
                         else if (min_Blue < minSKO_Blue)
                         {
-                            int afin = skoMass_Red.IndexOf(min_Blue);
+                            int afin = skoMass_Blue.IndexOf(min_Blue);
                             domenAfin = setAfinnInt(domen, afin);
                             so = getSOColors(rang, domenAfin, "rgb");
                             s_Blue = so[4];
@@ -3608,6 +3608,51 @@ namespace Fract
             return block;
         }
 
+        public int[,] changeBrightColorRGB(int[,] pix, double s, double o, string imageColor)
+        {
+            int n = pix.GetLength(0);
+            double x;
+            int[,] p = new int[n, n];
+            Color color;
+            bool red = false;
+            bool green = false;
+            bool blue = false;
+
+            if (imageColor.Equals("R"))
+                red = true;
+            else if (imageColor.Equals("G"))
+                green = true;
+            else if (imageColor.Equals("B"))
+                blue = true;
+
+            for (int i = 0; i < n; i++)
+                for (int j = 0; j < n; j++)
+                {
+                    color = Color.FromArgb(pix[i, j]);
+                    if (red) x = s * color.R + o;
+                    else if (green) x = s * color.G + o;
+                    else if (blue) x = s * color.B + o;
+                    else x = s * color.R + o;
+
+                    if (x > 255)
+                        x = 255;
+                    if (x < 0)
+                        x = 0;
+
+                    //Color newColor;
+                    //if (red) newColor = Color.FromArgb((int)x, color.G, color.B);
+                    //else if (green) newColor = Color.FromArgb(color.R, (int)x, color.B);
+                    //else newColor = Color.FromArgb(color.R, color.G, (int)x);
+                    //else color = Color.FromArgb((int)x, (int)x, (int)x);
+
+
+                    //p[i, j] = newColor.ToArgb();
+                    p[i, j] = (int)x;
+                }
+            return p;
+        }
+
+
         public void printBlock(Rang rang, int k)
         {
             int otst = r * 2 + 10;
@@ -3802,7 +3847,7 @@ namespace Fract
                     domen[j, i] = pix[rang.getY() + j, rang.getX() + i];
                 }
 
-            domenMin = reduceBlock(domen);
+            domenMin = reduceBlockColor(domen);
             for (int i = 0; i < R; i++)
                 for (int j = 0; j < R; j++)
                 {
@@ -3816,11 +3861,11 @@ namespace Fract
                     bitmap.SetPixel(width + 5 + i, (5 + R * 3 + 20) + j, Color.FromArgb(domenAfin[j, i]));
                 }
 
-            domenBright = changeBright(domenAfin, rang.getS(), rang.getO());
+            domenBright = changeBrightColorRGB(domenAfin, rang.getS(), rang.getO(),imageColor);
             for (int i = 0; i < R; i++)
                 for (int j = 0; j < R; j++)
                 {
-                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[j, i]));
+                    bitmap.SetPixel(width + 5 + i, (5 + R * 5 + 30) + j, Color.FromArgb(domenBright[j, i], domenBright[j, i], domenBright[j, i]));
                 }
 
             //rang block
