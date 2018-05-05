@@ -281,7 +281,7 @@ namespace Fract
         {
             int[,] domen_Y, domenBig_Y;
             int[,] domen_I, domenBig_I;
-            int[,] domen_Q, domenBig_Q;
+            int[,] domen_Q, domenBig_Q;            
             int R, D;
 
             Color color;
@@ -292,13 +292,19 @@ namespace Fract
                 int m = bi.Width;
                 int n = bi.Height;
                 int[,] pixels = new int[n, m];
+                //double[,] resultY = new double[n, m];
+                //double[,] resultI = new double[n, m];
+                //double[,] resultQ = new double[n, m];
+
 
                 //получаем массив интовых чисел из изображения
                 for (int i = 0; i < n; i++)//строки
                     for (int j = 0; j < m; j++)//столбцы
                     {
                         pixels[i, j] = bi.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
-
+                        //resultY[i, j] = 0;
+                        //resultI[i, j] = 0;
+                        //resultQ[i, j] = 0;
                     }
 
                 tk = 0;                
@@ -336,10 +342,10 @@ namespace Fract
                             int Red = Convert.ToInt32(d_domen_Y[i, j]
                                 + 0.956 * getI(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i))
                                 + 0.623 * getQ(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i)));
-                            int Green = Convert.ToInt32(d_domen_Y[i, j] 
+                            int Green = Convert.ToInt32(d_domen_Y[i, j]
                                 - 0.272 * getI(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i))
                                 - 0.648 * getQ(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i)));
-                            int Blue = Convert.ToInt32(d_domen_Y[i, j] 
+                            int Blue = Convert.ToInt32(d_domen_Y[i, j]
                                 - 1.105 * getI(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i))
                                 + 1.705 * getQ(bi.GetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i)));
 
@@ -352,6 +358,8 @@ namespace Fract
 
                             color = Color.FromArgb(Red, Green, Blue);
                             bi.SetPixel(rangListY[l].getX0() + j, rangListY[l].getY0() + i, color);
+
+                            //resultY[rangListY[l].getY0() + i, rangListY[l].getX0() + j] = d_domen_Y[i, j];
                         }
 
                     tk++;
@@ -388,13 +396,13 @@ namespace Fract
                         for (int j = 0; j < R; j++)
                         {
                             int Red = Convert.ToInt32(getY(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i))
-                                + 0.956 * d_domen_I[i, j] 
+                                + 0.956 * d_domen_I[i, j]
                                 + 0.623 * getQ(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i)));
                             int Green = Convert.ToInt32(getY(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i))
-                                - 0.272 * d_domen_I[i, j] 
+                                - 0.272 * d_domen_I[i, j]
                                 - 0.648 * getQ(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i)));
                             int Blue = Convert.ToInt32(getY(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i))
-                                - 1.105 * d_domen_I[i, j] 
+                                - 1.105 * d_domen_I[i, j]
                                 + 1.705 * getQ(bi.GetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i)));
 
                             if (Red < 0) Red = 0;
@@ -406,6 +414,8 @@ namespace Fract
 
                             color = Color.FromArgb(Red, Green, Blue);
                             bi.SetPixel(rangListI[l].getX0() + j, rangListI[l].getY0() + i, color);
+
+                            //resultI[rangListI[l].getY0() + i, rangListI[l].getX0() + j] = d_domen_I[i, j];
                         }
 
                     tk++;
@@ -460,7 +470,33 @@ namespace Fract
 
                             color = Color.FromArgb(Red, Green, Blue);
                             bi.SetPixel(rangListQ[l].getX0() + j, rangListQ[l].getY0() + i, color);
+
+                            //resultQ[rangListQ[l].getY0() + i, rangListQ[l].getX0() + j] = d_domen_Q[i, j];
                         }
+
+                    //for (int i = 0; i < n; i++)//строки
+                    //    for (int j = 0; j < m; j++)//столбцы
+                    //    {
+                    //        int Red = Convert.ToInt32(resultY[i, j]
+                    //            + 0.956 * resultI[i, j]
+                    //            + 0.623 * resultQ[i, j]);
+                    //        int Green = Convert.ToInt32(resultY[i, j]
+                    //            - 0.272 * resultI[i, j]
+                    //            - 0.648 * resultQ[i, j]);
+                    //        int Blue = Convert.ToInt32(resultY[i,j]
+                    //            - 1.105 * resultI[i, j]
+                    //            + 1.705 * resultQ[i, j]);
+
+                    //        if (Red < 0) Red = 0;
+                    //        if (Green < 0) Green = 0;
+                    //        if (Blue < 0) Blue = 0;
+                    //        if (Red > 255) Red = 255;
+                    //        if (Green > 255) Green = 255;
+                    //        if (Blue > 255) Blue = 255;
+
+                    //        color = Color.FromArgb(Red, Green, Blue);
+                    //        bi.SetPixel(j, i, color);
+                    //    }
 
                     tk++;
                 }

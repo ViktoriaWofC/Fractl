@@ -191,12 +191,7 @@ namespace Fract
             int jd = 0;
 
             int[,] testRang = new int[r, r];// etalon
-            //выделяем ранговый блок
-            //for (int ii = 0; ii < r; ii++)
-            //    for (int jj = 0; jj < r; jj++)
-            //        testRang[ii, jj] = pix[r * 0 + ii+5, r * 0 + jj+5];
             testRang = createEtalon(5);
-
 
             List<List<double>> domenSKOList = new List<List<double>>();
 
@@ -261,8 +256,6 @@ namespace Fract
 
                     //пербор доменных блоков
                     getDomenBlocTest(rang, 1, j * r, i * r,sko, domenSKOList);
-                    //rangsList.add(ran);
-
                 }
 
             double tuu = rangSKOList[1];
@@ -3651,7 +3644,7 @@ namespace Fract
                 }
             return p;
         }
-
+               
 
         public void printBlock(Rang rang, int k)
         {

@@ -36,6 +36,8 @@ namespace Fract
             comboBoxClassif.SelectedIndex = 0;
             comboBoxSearchDomen.SelectedIndex = 0;
             comboBoxColor.SelectedIndex = 0;
+            labelCompressCharacteristic.Text = "Время компрессии: ";
+            labelDecompressCharacteristic.Text = "Время декомпрессии: ";
         }
 
         private void buttonDecompress_Click(object sender, EventArgs e)
@@ -140,6 +142,10 @@ namespace Fract
 
             s = s + "  sko: " + sko;
 
+            double ssim = getSSIM();
+            s = s + "  SSIM: " + ssim;
+
+
             labelDecompressCharacteristic.Text = s;
 
 
@@ -191,9 +197,6 @@ namespace Fract
                     imageColor = "yiq";
             }
 
-            //if Classification
-            
-            //
             int argb = 0;
             Color color;
             int f;
@@ -206,9 +209,6 @@ namespace Fract
             for (int i = 0; i < n; i++)//строки
                 for (int j = 0; j < m; j++)//столбцы   
                     pixels[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
-
-
-
 
             String s = "";
 
@@ -375,6 +375,93 @@ namespace Fract
             return sko;
         }
 
+        public double getSSIM()
+        {
+            //sigma - ^2
+            double muStart,muEnd,sigmaStart,sigmaEnd,sigma,SSIM,C1,C2,K1,K2,L;
+
+            m = bitStart.Width;
+            n = bitStart.Height;
+            int[,] pixelsStart = new int[n, m];
+            int[,] pixelsEnd = new int[n, m];
+
+            //получаем массив интовых чисел из изображения
+            for (int i = 0; i < n; i++)//строки
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    pixelsStart[i, j] = bitStart.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                    pixelsEnd[i, j] = bitEnd.GetPixel(j, i).ToArgb();//bi.getRGB(j, i);
+                }
+
+            Color colorStart, colorEnd;
+
+            //mu
+            muStart = 0;
+            muEnd = 0;
+
+            for (int i = 0; i < n; i++)//строки            
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    colorStart = Color.FromArgb(pixelsStart[i, j]);
+                    colorEnd = Color.FromArgb(pixelsEnd[i, j]);
+                    muStart = muStart + colorStart.R + colorStart.G + colorStart.B;
+                    muEnd = muEnd + colorEnd.R + colorStart.G + colorStart.B;
+                }
+
+            muStart = muStart / (3 * n * m);
+            muEnd = muEnd / (3 * n * m);
+
+            //sigma
+            sigmaStart = 0;
+            sigmaEnd = 0;
+            double valR,valG,valB;
+
+            for (int i = 0; i < n; i++)//строки            
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    colorStart = Color.FromArgb(pixelsStart[i, j]);
+                    colorEnd = Color.FromArgb(pixelsEnd[i, j]);
+                    valR = colorStart.R - muStart;
+                    valG = colorStart.G - muStart;
+                    valB = colorStart.B - muStart;
+                    sigmaStart = sigmaStart + valR * valR + valG * valG + valB * valB;
+
+                    valR = colorEnd.R - muEnd;
+                    valG = colorEnd.G - muEnd;
+                    valB = colorEnd.B - muEnd;
+                    sigmaEnd = sigmaEnd + valR * valR + valG * valG + valB * valB;
+                }
+
+            sigmaStart = sigmaStart / (3 * (n * m - 1));
+            sigmaEnd = sigmaEnd / (3 * (n * m - 1));
+
+            //sigma xy
+            sigma = 0;
+
+            for (int i = 0; i < n; i++)//строки            
+                for (int j = 0; j < m; j++)//столбцы  
+                {
+                    colorStart = Color.FromArgb(pixelsStart[i, j]);
+                    colorEnd = Color.FromArgb(pixelsEnd[i, j]);
+                    valR = (colorStart.R - muStart)*(colorEnd.R - muEnd);
+                    valG = (colorStart.G - muStart) * (colorEnd.G - muEnd);
+                    valB = (colorStart.B - muStart) * (colorEnd.B - muEnd);
+                    sigma = sigma + valR + valG + valB;
+                }
+
+            sigma = sigma / (3 * (n * m - 1));
+
+            //SSIM
+            K1 = 0.01;
+            K2 = 0.03;
+            L = 255;
+            C1 = (K1 * L) * (K1 * L);
+            C2 = (K2 * L) * (K2 * L);
+            SSIM = ((2*muStart*muEnd + C1) * (2*sigma+C2)) / ((muStart * muStart + muEnd * muEnd + C1) * (sigmaStart+sigmaEnd+C2));
+
+            return SSIM;
+        }
+        
         public void saveResult()
         {
             long[] longList = new long[rangList.Count];

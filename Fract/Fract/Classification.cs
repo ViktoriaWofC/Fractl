@@ -9,6 +9,7 @@ namespace Fract
     interface Classification
     {
         int getClass(int[,] block);
+        int[] getClassColor(int[,] block);
         string getName();
 		/////////////////////////////////
 		
