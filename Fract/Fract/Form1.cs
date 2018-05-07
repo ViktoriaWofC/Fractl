@@ -147,6 +147,8 @@ namespace Fract
 
 
             labelDecompressCharacteristic.Text = s;
+            textBoxTest.Text = ""+ssim;
+
 
 
             // чтение из файла
@@ -196,6 +198,8 @@ namespace Fract
                 else if (comboBoxColor.SelectedIndex == 1)
                     imageColor = "yiq";
             }
+            //epsilon*blockSize
+            eps = eps * r * r;
 
             int argb = 0;
             Color color;

@@ -647,6 +647,7 @@ namespace Fract
 
             //psnr
             double minSKO = 10000000;
+            string lonTest = "";
             //double minSKO = 0;
             Rang minRang = new Rang(0,0,0,1,x0,y0,1,1, epsilon);
             int minX = 0, minY = 0, minAfin = 0;
@@ -705,8 +706,10 @@ namespace Fract
                         //double psnr = 10 * Math.Log10(Math.Pow(Math.Pow(2,24)-1, 2) / sko);
                         //sko = psnr;
 
-                        skoMass.Add(sko);  
+                        skoMass.Add(sko);
+                        //lonTest += sko + "\r\n";
                     }
+                    //lonTest += "\r\n";
 
                     //ищем минимальное СКО
                     double min = skoMass.Min();
@@ -757,7 +760,9 @@ namespace Fract
 
             rangList.Add(minRang);
             //printBlock(minRang, rangList.Count - 1);
-                        
+
+            //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\"+ rangList.Count+".txt", lonTest);
+
         }
 
         public void getDomenBlocFirst(int[,] rang, int k, int x0, int y0)
