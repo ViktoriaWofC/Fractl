@@ -499,7 +499,32 @@ namespace Fract
                                 + date.Minute.ToString() + "."
                                 + date.Second.ToString() + "";
 
-            String name = dateString + "___size=" + bitStart.Height + "___R=" + R + "___E="+epsilon;
+            string searcDomen = "";
+            if (comboBoxSearchDomen.SelectedIndex == 0)
+                searcDomen = "A1";
+            else if (comboBoxSearchDomen.SelectedIndex == 1)
+                searcDomen = "B";
+            else if (comboBoxSearchDomen.SelectedIndex == 2)
+                searcDomen = "A2";
+            else if (comboBoxSearchDomen.SelectedIndex == 3)
+                searcDomen = "Etalon";
+            else if (comboBoxSearchDomen.SelectedIndex == 4)
+                searcDomen = "etalons";
+
+            string className = "";
+            if (comboBoxClassif.SelectedIndex == 0)
+                className="---";
+            else if (comboBoxClassif.SelectedIndex == 1)
+            {
+                className = "CM";
+            }
+            else if (comboBoxClassif.SelectedIndex == 2)
+            {
+                className = "RGZ";
+            }
+
+
+            String name = dateString + "___size=" + bitStart.Height+"__"+ searcDomen+"___"+className + "___R=" + R + "___E="+epsilon;
 
             System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
             //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
