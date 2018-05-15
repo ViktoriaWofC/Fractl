@@ -1231,7 +1231,8 @@ namespace Fract
             {
                 //getDomenBlocTest(rang, 1, j * r, i * r, sko, domenSKOList);
                 //getDomenBlocTest(int[,] rang, int k, int x0, int y0, double rangSKO, List<List<double>> domenSKOList)
-                getDomenBlocMin(rang, k, x0, y0);
+                //getDomenBlocMin(rang, k, x0, y0);
+                getDomenBlocFirst(rang, k, x0, y0);
             }
 
             
