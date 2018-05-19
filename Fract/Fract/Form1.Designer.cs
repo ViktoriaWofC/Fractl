@@ -96,7 +96,12 @@
             // 
             this.numberCoefCompress.Location = new System.Drawing.Point(156, 46);
             this.numberCoefCompress.Maximum = new decimal(new int[] {
-            4000,
+            1000,
+            0,
+            0,
+            0});
+            this.numberCoefCompress.Minimum = new decimal(new int[] {
+            1,
             0,
             0,
             0});
@@ -104,7 +109,7 @@
             this.numberCoefCompress.Size = new System.Drawing.Size(120, 20);
             this.numberCoefCompress.TabIndex = 7;
             this.numberCoefCompress.Value = new decimal(new int[] {
-            2000,
+            200,
             0,
             0,
             0});
@@ -113,11 +118,12 @@
             // numberCoefCompressBar
             // 
             this.numberCoefCompressBar.Location = new System.Drawing.Point(19, 64);
-            this.numberCoefCompressBar.Maximum = 4000;
+            this.numberCoefCompressBar.Maximum = 500;
+            this.numberCoefCompressBar.Minimum = 1;
             this.numberCoefCompressBar.Name = "numberCoefCompressBar";
             this.numberCoefCompressBar.Size = new System.Drawing.Size(389, 45);
             this.numberCoefCompressBar.TabIndex = 6;
-            this.numberCoefCompressBar.Value = 2000;
+            this.numberCoefCompressBar.Value = 200;
             this.numberCoefCompressBar.ValueChanged += new System.EventHandler(this.numberCoefCompressBar_ValueChanged);
             // 
             // buttonCompress
@@ -301,6 +307,7 @@
             this.textBoxTest.Name = "textBoxTest";
             this.textBoxTest.Size = new System.Drawing.Size(353, 41);
             this.textBoxTest.TabIndex = 0;
+            this.textBoxTest.Visible = false;
             // 
             // openFileDialog
             // 
@@ -332,6 +339,7 @@
             this.buttonTest.TabIndex = 6;
             this.buttonTest.Text = "button1";
             this.buttonTest.UseVisualStyleBackColor = true;
+            this.buttonTest.Visible = false;
             this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
             // 
             // label5
@@ -382,8 +390,8 @@
             this.comboBoxClassif.FormattingEnabled = true;
             this.comboBoxClassif.Items.AddRange(new object[] {
             "Без классификации",
-            "на основе нахождения центра масс",
-            "на основе разницы граничных значений"});
+            "Центром масс",
+            "Разницей граничных значений"});
             this.comboBoxClassif.Location = new System.Drawing.Point(685, 25);
             this.comboBoxClassif.Name = "comboBoxClassif";
             this.comboBoxClassif.Size = new System.Drawing.Size(201, 21);
@@ -402,6 +410,7 @@
             this.button1.TabIndex = 11;
             this.button1.Text = "Показать\r\nдетали";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Visible = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBoxRangNumber
@@ -410,6 +419,7 @@
             this.textBoxRangNumber.Name = "textBoxRangNumber";
             this.textBoxRangNumber.Size = new System.Drawing.Size(100, 20);
             this.textBoxRangNumber.TabIndex = 12;
+            this.textBoxRangNumber.Visible = false;
             // 
             // label7
             // 
@@ -419,6 +429,7 @@
             this.label7.Size = new System.Drawing.Size(77, 13);
             this.label7.TabIndex = 13;
             this.label7.Text = "Номер блока:";
+            this.label7.Visible = false;
             // 
             // label8
             // 
@@ -434,11 +445,10 @@
             this.comboBoxSearchDomen.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSearchDomen.FormattingEnabled = true;
             this.comboBoxSearchDomen.Items.AddRange(new object[] {
-            "Первый подходящий (меньше коэффициента компрессии)",
-            "Минимальный",
-            "Первый подходящий (с разбиаением)",
-            "Тестовый (Минимальный)",
-            "Несколько эталонов"});
+            "Первый подходящий (без разбиения)",
+            "Блок с минимальным СКО",
+            "Первый подходящий (с разбиением)",
+            "Метод эталонного блока"});
             this.comboBoxSearchDomen.Location = new System.Drawing.Point(155, 25);
             this.comboBoxSearchDomen.Name = "comboBoxSearchDomen";
             this.comboBoxSearchDomen.Size = new System.Drawing.Size(323, 21);

@@ -121,7 +121,7 @@ namespace Fract
             bitEnd = decompress.decompressImage(col,imageColor);
             DateTime t2 = DateTime.Now;
 
-            String ss = "decompress time :" + (t2 - t1);
+            String ss = "Время декомпрессии :" + (t2 - t1);
 
             String s = ss + " ";
 
@@ -140,7 +140,7 @@ namespace Fract
             else if (imageColor.Equals("yiq"))
                 sko = getSKOColor();
 
-            s = s + "  sko: " + sko;
+            //s = s + "  sko: " + sko;
 
             double ssim = getSSIM();
             s = s + "  SSIM: " + ssim;
@@ -258,8 +258,8 @@ namespace Fract
             rangListQ = compress.getRangListComponent("Q");
 
 
-            String ss = "compress time :" + (t2 - t1);
-            s += "Размер изображения: "+bitStart.Width+" x "+bitStart.Height+"\n";
+            String ss = "Время компрессии :" + (t2 - t1);
+            //s += "Размер изображения: "+bitStart.Width+" x "+bitStart.Height+"\n";
             s += ss + " ";
 
             String str = "!!!";
