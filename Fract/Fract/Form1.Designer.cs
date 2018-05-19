@@ -307,7 +307,6 @@
             this.textBoxTest.Name = "textBoxTest";
             this.textBoxTest.Size = new System.Drawing.Size(353, 41);
             this.textBoxTest.TabIndex = 0;
-            this.textBoxTest.Visible = false;
             // 
             // openFileDialog
             // 
