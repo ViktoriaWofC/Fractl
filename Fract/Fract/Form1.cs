@@ -13,7 +13,7 @@ namespace Fract
 {
     public partial class Form1 : Form
     {
-        Bitmap bitStart, bitEnd;
+        Bitmap bitStart, bitEnd, bitEtalon, bitGray;
 
         int[,] pixels;
         int n, m;
@@ -47,25 +47,24 @@ namespace Fract
             {
                 case "Белое":
                     {
-                        fileName += @"\baseWhite.jpg";
+                        fileName += @"\baseImage\baseWhite.jpg";
                     }
                     break;
                 case "Черное":
                     {
-                        fileName += @"\baseBlack.jpg";
+                        fileName += @"\baseImage\baseBlack.jpg";
                     }
                     break;
                 case "Клеточка большая":
                     {
-                        fileName += @"\baseCletBig.jpg";
+                        fileName += @"\baseImage\baseCletBig.jpg";
                     }
                     break;
                 case "Клеточка маленькая":
                     {
-                        fileName += @"\baseCletLittle.jpg";
+                        fileName += @"\baseImage\baseCletLittle.jpg";
                     }
                     break;
-
             }
 
             try {
@@ -208,6 +207,19 @@ namespace Fract
             m = bitStart.Width;
             n = bitStart.Height;
             pixels = new int[n, m];
+
+            if (radioButtonGray.Checked)
+            {
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < m; j++)
+                        bitStart.SetPixel(j,i,bitGray.GetPixel(j, i));
+            }
+            else
+            {
+                for (int i = 0; i < n; i++)
+                    for (int j = 0; j < m; j++)
+                        bitStart.SetPixel(j, i, bitEtalon.GetPixel(j, i));
+            }
 
             //получаем массив интовых чисел из изображения
             for (int i = 0; i < n; i++)//строки
@@ -526,7 +538,7 @@ namespace Fract
 
             String name = dateString + "___size=" + bitStart.Height+"__"+ searcDomen+"___"+className + "___R=" + R + "___E="+epsilon;
 
-            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
+            System.IO.File.WriteAllText(Environment.CurrentDirectory+@"\resultFiles\" + name + ".txt", lon);
             //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
 
             //запись в файл
@@ -614,7 +626,7 @@ namespace Fract
 
             String name = dateString + "_RGB___size=" + bitStart.Height + "___R=" + R + "___E=" + epsilon;
 
-            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
+            System.IO.File.WriteAllText(Environment.CurrentDirectory + @"\resultFiles\" + name + ".txt", lon);
             //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
 
             //запись в файл
@@ -701,7 +713,7 @@ namespace Fract
 
             String name = dateString + "_YIQ___size=" + bitStart.Height + "___R=" + R + "___E=" + epsilon;
 
-            System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + ".txt", lon);
+            System.IO.File.WriteAllText(Environment.CurrentDirectory + @"\resultFiles\" + name + ".txt", lon);
             //System.IO.File.WriteAllText(@"D:\\университет\\диплом\\bloks_files\\" + name + "Test.txt", lonTest);
 
             //запись в файл
@@ -1215,13 +1227,14 @@ namespace Fract
 
         private void radioButtonGray_CheckedChanged(object sender, EventArgs e)
         {           
-             comboBoxColor.Enabled = false;
+            comboBoxColor.Enabled = false;
+            pictureBoxStartImage.Image = bitGray;
         }
 
         private void radioButtonColors_CheckedChanged(object sender, EventArgs e)
         {
-
             comboBoxColor.Enabled = true;
+            pictureBoxStartImage.Image = bitEtalon;                       
         }
 
         /// //////////////////////////////////////////////////////////////
@@ -1302,10 +1315,12 @@ namespace Fract
             {
                 String fileName = openFileDialog.FileName;
                 bitStart = new Bitmap(Image.FromFile(fileName));
-                                
+                bitEtalon = new Bitmap(Image.FromFile(fileName));
+                bitGray = getGrey(bitEtalon);
+
                 if (radioButtonGray.Checked)
                 {
-                    bitStart = getGrey(bitStart);
+                    bitStart = getGrey(bitEtalon);
                 }
 
                 pictureBoxStartImage.Image = bitStart;                
@@ -1317,14 +1332,15 @@ namespace Fract
         {
             int grey;
             Color color;
-            for (int i = 0; i < bit.Width; i++)
-                for (int j = 0; j < bit.Height; j++)
+            Bitmap newBit = new Bitmap(bit.Width,bit.Height);
+            for (int i = 0; i < newBit.Width; i++)
+                for (int j = 0; j < newBit.Height; j++)
                 {
                     grey = Convert.ToInt32(bit.GetPixel(i, j).R * 0.3 + bit.GetPixel(i, j).G * 0.59 + bit.GetPixel(i, j).B * 0.11);
                     color = Color.FromArgb(grey, grey, grey);
-                    bit.SetPixel(i, j, color);
+                    newBit.SetPixel(i, j, color);
                 }
-            return bit;
+            return newBit;
         }
     }
 }
