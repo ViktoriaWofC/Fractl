@@ -495,7 +495,7 @@ namespace Fract
                 //longList.add(d);
                 longList[ii] = d;
                 stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " "+ Math.Round(rang.getS(),2) + " " + Math.Round(rang.getO(), 2)+" ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii+")   "+ rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -578,7 +578,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -593,7 +593,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -608,7 +608,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -665,7 +665,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -680,7 +680,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
@@ -695,7 +695,7 @@ namespace Fract
                 //longList.add(d);
                 //longList[ii] = d;
                 //stringList[ii] = Convert.ToString(d);
-                lon += d + " ";
+                lon += d + " " + Math.Round(rang.getS(), 2) + " " + Math.Round(rang.getO(), 2) + " ";
                 //
                 //lonTest += rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getX0() + " " + rang.getY0() + " " + rang.getBright() + "\r\n";
                 lonTest += ii + ")   " + rang.getX() + " " + rang.getY() + " " + rang.getAfinn() + " " + rang.getK() + " " + rang.getS() + " " + rang.getO() + " " + "\r\n";
